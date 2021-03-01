@@ -1,8 +1,5 @@
-#Standard libs
 import sys
-#3. parties libs
 from PyQt5 import QtWidgets
-#Local libs mine
 from nas.gui import main_window
 
 
