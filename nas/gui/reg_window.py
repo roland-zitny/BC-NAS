@@ -37,7 +37,28 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
             Displays camera menu after assigned button event.
 
         connect_camera()
+            Connects camera to camera viewfinder.
 
+        take_photo()
+            Captures photo with camera.
+
+        show_photo()
+            Displays captured photo on camera layout.
+
+        show_file_menu()
+            Displays file menu after assigned button event.
+
+        find_file():
+            Finds file of user face.
+
+        choose_file:
+            Displays chosen file as image on camera layout.
+
+        process_photo()
+            Creates stimulus from face image.
+
+        continue_registration()
+            Begins next step of registration.
     """
 
     def __init__(self, reg_user):
@@ -76,6 +97,8 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.FileMenuWidget.hide()
         self.ProcessPhotoBtn.hide()
         self.CameraErrorLabel.hide()
+        self.ContinueRegBtn.hide()
+        self.CameraConfirmLabel.hide()
 
         # Connect ui buttons to methods.
         self.CameraMenuBtn.clicked.connect(self.show_camera_menu)
@@ -86,6 +109,7 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.FileFindBtn.clicked.connect(self.find_file)
         self.ChooseFileBtn.clicked.connect(self.choose_file)
         self.ProcessPhotoBtn.clicked.connect(self.process_photo)
+        self.ContinueRegBtn.clicked.connect(self.continue_registration)
 
     def create_camera_widgets(self):
         """
@@ -127,6 +151,8 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.CameraViewfinder.hide()
         self.CameraInfoLabel.show()
         self.CameraErrorLabel.hide()
+        self.ContinueRegBtn.hide()
+        self.CameraConfirmLabel.hide()
 
         # Show or hide widgets from camera menu.
         self.CameraMenuWidget.show()
@@ -163,6 +189,8 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.CameraViewfinder.show()
         self.CameraInfoLabel.hide()
         self.CameraErrorLabel.hide()
+        self.ContinueRegBtn.hide()
+        self.CameraConfirmLabel.hide()
 
         # Get camera type from CamTypeBox
         cam_type = self.CamTypesBox.currentText()
@@ -184,6 +212,8 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         """
             Take photo of user by connected camera and show it in CameraLayout.
             Photo needs to be confirmed by assigned button.
+
+            Image is saved in temporary directory.
         """
 
         self.CameraCapture.capture(self.photo_path)
@@ -201,9 +231,8 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.CameraInfoLabel.hide()
         self.ProcessPhotoBtn.show()
         self.CameraErrorLabel.hide()
-
-        # Get width of CameraViewfinder
-        scaling_width = self.CameraLayoutWidget.frameGeometry().width()
+        self.ContinueRegBtn.hide()
+        self.CameraConfirmLabel.hide()
 
         # Set pixmap of label.
         face_pixmap = QPixmap(self.photo_path)
@@ -229,6 +258,8 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.CameraViewfinder.hide()
         self.CameraInfoLabel.show()
         self.CameraErrorLabel.hide()
+        self.ContinueRegBtn.hide()
+        self.CameraConfirmLabel.hide()
 
         # Show or hide widgets from Menu
         self.FileMenuWidget.show()
@@ -264,6 +295,8 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.CameraInfoLabel.hide()
         self.ProcessPhotoBtn.show()
         self.CameraErrorLabel.hide()
+        self.ContinueRegBtn.hide()
+        self.CameraConfirmLabel.hide()
 
         pixmap = QPixmap(self.file_path[0])
         self.FacePictureLabel.setPixmap(QPixmap(pixmap.scaledToWidth(748)))
@@ -273,8 +306,10 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
 
     def process_photo(self):
         """
-            ASDASD
+            Creates stimulus from user image. Class StimuliCreator is used.
         """
+
+        face_stimuli = None
 
         # If its camera photo.
         if self.FLAG_file_type == 1:
@@ -284,20 +319,31 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         elif self.FLAG_file_type == 2:
             face_stimuli = StimuliCreator(self.file_path[0])
 
-        if face_stimuli.get_status():
+        if face_stimuli is not None and face_stimuli.get_status():
             im_bytes = base64.b64decode(face_stimuli.get_face_b64())
             im_arr = np.frombuffer(im_bytes, dtype=np.uint8)  # im_arr is one-dim Numpy array
             img = cv2.imdecode(im_arr, flags=cv2.IMREAD_COLOR)
 
             # READ B64 image as QImage and set it as pixmap on label
             height, width, channel = img.shape
-            bytesPerLine = 3 * width
-            qImg = QImage(img.data, width, height, bytesPerLine, QImage.Format_RGB888)
-            pixmap = QPixmap(qImg)
+            bytes_per_line = 3 * width
+            q_img = QImage(img.data, width, height, bytes_per_line, QImage.Format_RGB888)
+            pixmap = QPixmap(q_img)
             self.FacePictureLabel.setPixmap(QPixmap(pixmap))
+
+            # set user stimulus
+            self.reg_user.set_user_stimulus(face_stimuli.get_face_b64())
+            self.ContinueRegBtn.show()
+            self.ProcessPhotoBtn.hide()
+            self.CameraConfirmLabel.show()
         else:
             self.CameraErrorLabel.show()
             self.FacePictureLabel.hide()
 
     def continue_registration(self):
+        """
+            Begins next step of registration with new window.
+        """
+
+        print("REG")
         pass

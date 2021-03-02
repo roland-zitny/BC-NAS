@@ -60,7 +60,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if self.RegUserName.text() and self.RegUserSurname.text():
             self.RegErrorLabel.hide()
-            new_user = User("name", "surname")
+            new_user = User(self.RegUserName.text(), self.RegUserSurname.text())
             self.reg_window = RegWindow(new_user)
             self.reg_window.show()
             self.hide()

@@ -911,6 +911,48 @@ border-color: #adaa9e;
            </property>
           </widget>
          </item>
+         <item alignment="Qt::AlignHCenter">
+          <widget class="QPushButton" name="ContinueRegBtn">
+           <property name="minimumSize">
+            <size>
+             <width>120</width>
+             <height>120</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>120</width>
+             <height>120</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton{
+background-color: #32CD30;
+border-radius: 60px;
+border-width: 4px;
+border-style: groove;
+border-color: #E2DED0;
+font: 63 12pt &quot;Bahnschrift SemiBold&quot;;
+color: white;
+}
+
+QPushButton::hover
+{
+background-color: #32CD30;
+border-color: #adaa9e;
+}
+
+QPushButton::pressed {
+border-width: 3px;
+background-color: #32CD30;
+border-color: #adaa9e;
+}</string>
+           </property>
+           <property name="text">
+            <string>Pokračovať</string>
+           </property>
+          </widget>
+         </item>
          <item>
           <spacer name="verticalSpacer_5">
            <property name="orientation">
@@ -985,6 +1027,17 @@ color: white;</string>
            </property>
            <property name="text">
             <string>Nastala chyba pri spracovaní fotografie využijte iný spôsob spracovania.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+          <widget class="QLabel" name="CameraConfirmLabel">
+           <property name="styleSheet">
+            <string notr="true">font: 10pt Bahnschrift SemiBold;
+color: white;</string>
+           </property>
+           <property name="text">
+            <string>Chcete dalej pokracovat s touto fotkou?</string>
            </property>
           </widget>
          </item>

@@ -5,15 +5,37 @@ import nas.main as main_file
 
 
 class StimuliCreator(object):
+    """
+        Class used to obtain stimulus from image of user.
+        Stimulus is image saved encoded as base64.
+
+        Attributes
+        ----------
+        path : str
+            path to image
+
+        Methods
+        -------
+        create()
+            Creates and set stimulus.
+
+        get_status()
+            Gets status of operation for error handling.
+
+        get_face_b64()
+            Get image encoded as base64.
+    """
+
     def __init__(self, path):
         self.image_path = path
         self.face_b64 = None
         self.status = False
         self.create()
 
+    # noinspection PyBroadException
     def create(self):
         """
-            ASDS
+            Find face in image and save it.
         """
 
         tmp_image_path = os.path.join(os.path.dirname(main_file.__file__), "db", "tmp", 'processed_photo.jpg')
@@ -40,7 +62,13 @@ class StimuliCreator(object):
             self.status = False
 
     def get_status(self):
+        """
+            Get status of operation.
+        """
         return self.status
 
     def get_face_b64(self):
+        """
+            Get image encoded as base64.
+        """
         return self.face_b64

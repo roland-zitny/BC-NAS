@@ -7,6 +7,11 @@ import base64
 class User:
     def __init__(self, name, surname):
         self.name = name
+        self.surname = surname
+        self.stimulus_b64 = None
+
+    def set_user_stimulus(self, stimulus):
+        self.stimulus_b64 = stimulus
 
     def save_pickle(self):
         ###########################################################
