@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtWidgets import QLabel
 import nas.main as main_file
 from nas.src.stimulicreator import StimuliCreator
+from nas.gui.stimuli_presentation import StimuliPresentation
 
 qt_reg_window_file = "gui/designs/reg_window.ui"                    # .ui file.
 Ui_RegWindow, QtBaseClass = uic.loadUiType(qt_reg_window_file)      # Load .ui file.
@@ -344,6 +345,7 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         """
             Begins next step of registration with new window.
         """
-
-        print("REG")
+        self.stimuli_window = StimuliPresentation(self.reg_user)
+        self.stimuli_window.show()
+        self.hide()
         pass
