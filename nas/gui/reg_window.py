@@ -1,14 +1,18 @@
 import os
+import cv2
+import base64
+import numpy as np
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 from PyQt5 import QtMultimedia
 from PyQt5 import QtMultimediaWidgets
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtWidgets import QDesktopWidget
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtWidgets import QLabel
 import nas.main as main_file
+from nas.src.stimulicreator import StimuliCreator
 
 qt_reg_window_file = "gui/designs/reg_window.ui"                    # .ui file.
 Ui_RegWindow, QtBaseClass = uic.loadUiType(qt_reg_window_file)      # Load .ui file.
@@ -54,7 +58,8 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.file_path = None
 
         # FLAGS
-        self.FLAG_connected_camera = False
+        self.FLAG_connected_camera = False  # True-> camera is connected, False -> camera is not connected
+        self.FLAG_file_type = 0             # 0 -> None, 1 -> camera photo, 2 -> file
 
         # Center window to screen.
         qt_rectangle = self.frameGeometry()
@@ -70,6 +75,7 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.CameraMenuWidget.hide()
         self.FileMenuWidget.hide()
         self.ProcessPhotoBtn.hide()
+        self.CameraErrorLabel.hide()
 
         # Connect ui buttons to methods.
         self.CameraMenuBtn.clicked.connect(self.show_camera_menu)
@@ -79,6 +85,7 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.FileBtn.clicked.connect(self.show_file_menu)
         self.FileFindBtn.clicked.connect(self.find_file)
         self.ChooseFileBtn.clicked.connect(self.choose_file)
+        self.ProcessPhotoBtn.clicked.connect(self.process_photo)
 
     def create_camera_widgets(self):
         """
@@ -112,11 +119,14 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
             Displays camera menu and all functional cameras.
             After choosing specific camera, it needs to be connected and controlled.
         """
+        # Reset file type
+        self.FLAG_file_type = 0
 
         # Show or hide widgets from CameraLayout.
         self.FacePictureLabel.hide()
         self.CameraViewfinder.hide()
         self.CameraInfoLabel.show()
+        self.CameraErrorLabel.hide()
 
         # Show or hide widgets from camera menu.
         self.CameraMenuWidget.show()
@@ -152,6 +162,7 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.FacePictureLabel.hide()
         self.CameraViewfinder.show()
         self.CameraInfoLabel.hide()
+        self.CameraErrorLabel.hide()
 
         # Get camera type from CamTypeBox
         cam_type = self.CamTypesBox.currentText()
@@ -189,6 +200,7 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.CameraViewfinder.hide()
         self.CameraInfoLabel.hide()
         self.ProcessPhotoBtn.show()
+        self.CameraErrorLabel.hide()
 
         # Get width of CameraViewfinder
         scaling_width = self.CameraLayoutWidget.frameGeometry().width()
@@ -200,16 +212,23 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         # Stop camera recording.
         self.camera.stop()
 
+        # Set flag to 1, camera photo
+        self.FLAG_file_type = 1
+
     def show_file_menu(self):
         """
             Displays file menu to find user image.
             After choosing specific image, it needs to be displayed and confirmed later.
         """
 
+        # Reset file type
+        self.FLAG_file_type = 0
+
         # Show or hide widgets from CameraLayout
         self.FacePictureLabel.hide()
         self.CameraViewfinder.hide()
         self.CameraInfoLabel.show()
+        self.CameraErrorLabel.hide()
 
         # Show or hide widgets from Menu
         self.FileMenuWidget.show()
@@ -228,7 +247,7 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
             This file needs to be displayed by assigned button.
         """
 
-        self.file_path = QFileDialog.getOpenFileName(self, "Fotka tváre", '', "Image files (*.jpg *.gif)")
+        self.file_path = QFileDialog.getOpenFileName(self, "Fotka tváre", '', "Image files (*.jpg *.gif *.jpeg)")
         self.FileLineEdit.setText(self.file_path[0])
 
         if self.FileLineEdit.text() != "":
@@ -244,6 +263,41 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.FacePictureLabel.show()
         self.CameraInfoLabel.hide()
         self.ProcessPhotoBtn.show()
+        self.CameraErrorLabel.hide()
 
         pixmap = QPixmap(self.file_path[0])
         self.FacePictureLabel.setPixmap(QPixmap(pixmap.scaledToWidth(748)))
+
+        # Set flag to 2, file
+        self.FLAG_file_type = 2
+
+    def process_photo(self):
+        """
+            ASDASD
+        """
+
+        # If its camera photo.
+        if self.FLAG_file_type == 1:
+            face_stimuli = StimuliCreator(self.photo_path)
+
+        # If its chosen file.
+        elif self.FLAG_file_type == 2:
+            face_stimuli = StimuliCreator(self.file_path[0])
+
+        if face_stimuli.get_status():
+            im_bytes = base64.b64decode(face_stimuli.get_face_b64())
+            im_arr = np.frombuffer(im_bytes, dtype=np.uint8)  # im_arr is one-dim Numpy array
+            img = cv2.imdecode(im_arr, flags=cv2.IMREAD_COLOR)
+
+            # READ B64 image as QImage and set it as pixmap on label
+            height, width, channel = img.shape
+            bytesPerLine = 3 * width
+            qImg = QImage(img.data, width, height, bytesPerLine, QImage.Format_RGB888)
+            pixmap = QPixmap(qImg)
+            self.FacePictureLabel.setPixmap(QPixmap(pixmap))
+        else:
+            self.CameraErrorLabel.show()
+            self.FacePictureLabel.hide()
+
+    def continue_registration(self):
+        pass

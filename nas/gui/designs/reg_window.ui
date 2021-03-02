@@ -977,6 +977,17 @@ border-color: #adaa9e;
          <property name="spacing">
           <number>0</number>
          </property>
+         <item row="0" column="0" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+          <widget class="QLabel" name="CameraErrorLabel">
+           <property name="styleSheet">
+            <string notr="true">font: 10pt Bahnschrift SemiBold;
+color: white;</string>
+           </property>
+           <property name="text">
+            <string>Nastala chyba pri spracovaní fotografie využijte iný spôsob spracovania.</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>
