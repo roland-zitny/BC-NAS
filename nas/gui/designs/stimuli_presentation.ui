@@ -7,13 +7,20 @@
     <x>0</x>
     <y>0</y>
     <width>1051</width>
-    <height>825</height>
+    <height>869</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>NAS</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../resources/icons/AppIcon.jpeg</normaloff>../../resources/icons/AppIcon.jpeg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">background-color: qlineargradient(spread:pad, x1:0 y1:0, x2:0 y2:1, stop:0 #373a3c, stop:1 #72777d);</string>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <property name="leftMargin">
      <number>0</number>
@@ -24,22 +31,26 @@
     <property name="rightMargin">
      <number>0</number>
     </property>
+    <property name="bottomMargin">
+     <number>10</number>
+    </property>
     <item>
      <widget class="QWidget" name="Header" native="true">
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>150</height>
+        <height>151</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>150</height>
+        <height>151</height>
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(96, 125, 134);</string>
+       <string notr="true">background-color: #373a3c;
+border-bottom: 1px solid white;</string>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <property name="spacing">
@@ -71,14 +82,26 @@
            <height>150</height>
           </size>
          </property>
+         <property name="styleSheet">
+          <string notr="true">border-bottom: none;</string>
+         </property>
          <property name="text">
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap>../icons/FitIcon.png</pixmap>
+          <pixmap>../../resources/icons/FitIcon.png</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+         <property name="margin">
+          <number>1</number>
+         </property>
+         <property name="indent">
+          <number>0</number>
          </property>
         </widget>
        </item>
@@ -103,7 +126,8 @@
            </property>
            <property name="styleSheet">
             <string notr="true">color: rgb(255, 255, 255);
-font: 63 26pt &quot;Yu Gothic UI Semibold&quot;;</string>
+font: 63 26pt &quot;Yu Gothic UI Semibold&quot;;
+border-bottom: none;</string>
            </property>
            <property name="text">
             <string>Identifikace a verifikace osob s využitím EEG</string>
@@ -120,7 +144,8 @@ font: 63 26pt &quot;Yu Gothic UI Semibold&quot;;</string>
            </property>
            <property name="styleSheet">
             <string notr="true">font: 63 12pt &quot;Yu Gothic UI Semibold&quot;;
-color: rgb(255, 255, 255);</string>
+color: rgb(255, 255, 255);
+border-bottom: none;</string>
            </property>
            <property name="text">
             <string>Autor : Roland Žitný - xzitny01</string>
@@ -137,7 +162,8 @@ color: rgb(255, 255, 255);</string>
            </property>
            <property name="styleSheet">
             <string notr="true">font: 63 12pt &quot;Yu Gothic UI Semibold&quot;;
-color: rgb(255, 255, 255);</string>
+color: rgb(255, 255, 255);
+border-bottom: none;</string>
            </property>
            <property name="text">
             <string>Vedúci práce : Ing. Jan Tinka</string>
@@ -150,90 +176,84 @@ color: rgb(255, 255, 255);</string>
      </widget>
     </item>
     <item>
-     <spacer name="verticalSpacer">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeType">
-       <enum>QSizePolicy::Fixed</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>30</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item>
      <widget class="QWidget" name="StimuliInfoWidget" native="true">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+      </property>
       <layout class="QVBoxLayout" name="StimuliInfoLayout">
+       <property name="topMargin">
+        <number>60</number>
+       </property>
        <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-        <widget class="QLabel" name="EEG_info_label">
+        <widget class="QLabel" name="StimPresInfo">
+         <property name="styleSheet">
+          <string notr="true">font: 10pt Bahnschrift SemiBold;
+color: white;</string>
+         </property>
          <property name="text">
-          <string>Teraz je potrebné 
- aby prebehlo zaznamenavanie vasich EEG signalov pomocou OpenBCI</string>
+          <string>Teraz nastane to to stlacen start to zacne.</string>
          </property>
         </widget>
        </item>
-       <item>
-        <spacer name="spacer_1">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>50</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item alignment="Qt::AlignHCenter">
-        <widget class="QPushButton" name="StartRecordingBtn">
+       <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+        <widget class="QPushButton" name="StartRecording">
          <property name="minimumSize">
           <size>
-           <width>300</width>
-           <height>50</height>
+           <width>200</width>
+           <height>40</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>300</width>
-           <height>50</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Start</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="spacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
+           <width>200</width>
            <height>40</height>
           </size>
          </property>
-        </spacer>
+         <property name="styleSheet">
+          <string notr="true">QPushButton{
+background-color: #E1C340;
+border-radius: 6px;
+border-width: 2px;
+border-style: groove;
+border-color: #E2DED0;
+font: 63 10pt &quot;Bahnschrift SemiBold&quot;;
+color: white;
+}
+
+QPushButton::hover
+{
+background-color: #e8ce5f;
+border-color: #adaa9e;
+}
+
+QPushButton::pressed {
+border-width: 3px;
+background-color: #e8ce5f;
+border-color: #adaa9e;
+}</string>
+         </property>
+         <property name="text">
+          <string>PushButton</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
     </item>
     <item>
      <widget class="QWidget" name="StimuliLayoutWidget" native="true">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+      </property>
       <layout class="QVBoxLayout" name="StimuliLayout">
-       <item alignment="Qt::AlignHCenter">
-        <widget class="QLabel" name="InfoTimeLabel">
+       <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+        <widget class="QLabel" name="StartTimerLabel">
+         <property name="styleSheet">
+          <string notr="true">font: 10pt Bahnschrift SemiBold;
+color: white;</string>
+         </property>
          <property name="text">
-          <string>TextLabel</string>
+          <string>5</string>
          </property>
         </widget>
        </item>
@@ -252,7 +272,8 @@ color: rgb(255, 255, 255);</string>
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true"/>
+          <string notr="true">background-color: rgb(34, 34, 34);
+border: 3px solid black</string>
          </property>
          <property name="text">
           <string/>

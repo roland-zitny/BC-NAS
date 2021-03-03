@@ -13,6 +13,9 @@ class User:
     def set_user_stimulus(self, stimulus):
         self.stimulus_b64 = stimulus
 
+    def get_user_stimulus(self):
+        return self.stimulus_b64
+
     def save_pickle(self):
         ###########################################################
         #with open("processed_face.jpg", "rb") as img_file:
