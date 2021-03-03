@@ -8,6 +8,7 @@ from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QDesktopWidget
 import nas.main as main_file
+from nas.src.eeg_recorder import EEGRecorder
 
 qt_stimuli_presentation_file = "gui/designs/stimuli_presentation.ui"  # .ui file.
 Ui_RegWindow, QtBaseClass = uic.loadUiType(qt_stimuli_presentation_file)
@@ -19,6 +20,8 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         Ui_RegWindow.__init__(self)
         self.setupUi(self)
         self.reg_user = reg_user
+        # EEG recorder
+        self.eeg_recorder = EEGRecorder()
 
         # Center window to screen.
         qt_rectangle = self.frameGeometry()
@@ -56,7 +59,6 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         # Connect ui buttons to methods.
         self.StartRecording.clicked.connect(self.start_recording)
 
-
     def start_recording(self):
         """
             ASDASD
@@ -64,6 +66,8 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         self.StimuliInfoWidget.hide()
         self.StimuliLayoutWidget.show()
         self.StartTimer.start(1000)
+        # Start to record.
+        self.eeg_recorder.start_record()
 
     def update_start_time(self):
         """
@@ -106,7 +110,7 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
             # STIMULUS
             if self.FLAG_stimulus:
                 if self.FLAG_change:
-                    x = random.randint(0,10)
+                    x = random.randint(0, 10)
                     if x > 3:
                         self.set_non_self_face_stimulus()
                     else:
@@ -157,7 +161,7 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         path, dirs, files = next(os.walk(path))
         file_count = len(files)
 
-        file_number = random.randint(1,file_count)
+        file_number = random.randint(1, file_count)
 
         nonself_face_path = os.path.join(os.path.dirname(main_file.__file__), "resources",
                                          "photos", str(file_number) + ".jpg")
