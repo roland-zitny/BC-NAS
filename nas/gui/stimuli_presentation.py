@@ -3,6 +3,7 @@ import cv2
 import os
 import numpy as np
 import random
+from datetime import datetime
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage, QPixmap
@@ -66,6 +67,12 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         self.StimuliInfoWidget.hide()
         self.StimuliLayoutWidget.show()
         self.StartTimer.start(1000)
+
+        # Print start timestamp
+        dateTimeObj = datetime.now()
+        print("START -> ", end="")
+        print(dateTimeObj.hour, ':', dateTimeObj.minute, ':', dateTimeObj.second, '.', dateTimeObj.microsecond)
+
         # Start to record.
         self.eeg_recorder.start_record()
 
@@ -103,6 +110,13 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
             if self.num_of_stimuli > 30:
                 self.FLAG_stimuli_timer = False
                 self.StimuliTimer.stop()
+
+                # Print STOP timestamp
+                dateTimeObj = datetime.now()
+                print("STOP  -> ", end="")
+                print(dateTimeObj.hour, ':', dateTimeObj.minute, ':', dateTimeObj.second, '.', dateTimeObj.microsecond)
+
+                self.eeg_recorder.stop_record()
 
         # STIMULI PRESENTATION
         if self.FLAG_stimuli_timer:
