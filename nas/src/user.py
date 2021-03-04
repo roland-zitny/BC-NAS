@@ -1,3 +1,6 @@
+import os
+import pickle
+import nas.main as main_file
 from PyQt5.QtGui import QPixmap
 import cv2
 from PIL import Image
@@ -25,5 +28,10 @@ class User:
         #    fh.write(base64.decodebytes(my_string))
         pass
 
-    def print_name(self):
+    def save_user(self):
+        path = os.path.join(os.path.dirname(main_file.__file__), "db", self.name + "_" + self.surname + ".p")
+        pickle.dump(self, open(path, "wb"))
+
+    def print_data(self):
         print(self.name)
+        print(self.surname)

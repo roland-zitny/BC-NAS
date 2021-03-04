@@ -14,17 +14,19 @@ class EEGRecorder():
     def start_record(self):
         # board = OpenBCICyton(daisy=True) --> port vie sam vyhladat
         # moznost COM6 este
-        self.board = OpenBCICyton(port="COM5", daisy=True)
-
-        #Start time timestamp
-        #print(self.board.start_time)
-
-
-        # Start stream and print it raw
-        print("START RECORD")
-        #self.board.start_stream(self.print_raw)
+        try:
+            #self.board = OpenBCICyton(port="COM6", daisy=True)
+            #Start time timestamp
+            #print(self.board.start_time)
+            # Start stream and print it raw
+            print("START RECORD")
+            #self.board.start_stream(self.print_raw)
+        except:
+            print("CHYBA NAHRVANIA")
 
     def stop_record(self):
-        print("STOP RECORD")
-        #self.board.stop_stream()
-        pass
+        try:
+            print("STOP RECORD")
+            self.board.stop_stream()
+        except:
+            print("CHYBA UKONCENIA")

@@ -1,4 +1,6 @@
 import base64
+import pickle
+
 import cv2
 import os
 import numpy as np
@@ -60,6 +62,10 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         # Connect ui buttons to methods.
         self.StartRecording.clicked.connect(self.start_recording)
 
+        # JUST TO LOAD OBJECT again
+        #favorite_color = pickle.load(open("save.p", "rb"))
+        #favorite_color.print_data()
+
     def start_recording(self):
         """
             ASDASD
@@ -116,7 +122,11 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
                 print("STOP  -> ", end="")
                 print(dateTimeObj.hour, ':', dateTimeObj.minute, ':', dateTimeObj.second, '.', dateTimeObj.microsecond)
 
+                # Stop recording
                 self.eeg_recorder.stop_record()
+
+                # SAVE user
+                self.end_registration()
 
         # STIMULI PRESENTATION
         if self.FLAG_stimuli_timer:
@@ -125,7 +135,7 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
             if self.FLAG_stimulus:
                 if self.FLAG_change:
                     x = random.randint(0, 10)
-                    if x > 3:
+                    if x > 2:
                         self.set_non_self_face_stimulus()
                     else:
                         self.set_self_face_stimulus()
@@ -182,3 +192,6 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
 
         pixmap = QPixmap(nonself_face_path)
         self.StimuliImage.setPixmap(QPixmap(pixmap))
+
+    def end_registration(self):
+        self.reg_user.save_user()
