@@ -3,13 +3,17 @@ from pyOpenBCI import OpenBCICyton
 class EEGRecorder():
     def __init__(self):
         print("EEG recorder created")
+        self.f = open("eeg.txt", "a")
 
-    def print_raw(sample):
+    def print_raw(self, sample):
         #mal byt timestamp
-        #print(sample.start_time)
-
+        print(sample.start_time)
         print(sample.channels_data)
 
+        self.f.write(sample.start_time)
+        self.f.write("\n")
+        self.f.write(sample.channels_data)
+        self.f.wite("\n")
 
     def start_record(self):
         # board = OpenBCICyton(daisy=True) --> port vie sam vyhladat
@@ -25,6 +29,8 @@ class EEGRecorder():
             print("CHYBA NAHRVANIA")
 
     def stop_record(self):
+        self.f.close()
+
         try:
             print("STOP RECORD")
             self.board.stop_stream()
