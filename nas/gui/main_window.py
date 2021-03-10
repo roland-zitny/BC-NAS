@@ -46,7 +46,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def login(self):
         """INFO"""
 
-        # Check if form is not empty
         if self.LoginLine.text():
             self.LoginErrorLabel.hide()
         else:

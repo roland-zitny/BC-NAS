@@ -1,11 +1,11 @@
 import base64
-import pickle
+
+from threading import Thread
 
 import cv2
 import os
 import numpy as np
 import random
-from datetime import datetime
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage, QPixmap
@@ -13,9 +13,11 @@ from PyQt5.QtWidgets import QDesktopWidget
 import nas.main as main_file
 from nas.src.eeg_recorder import EEGRecorder
 
+#TODO
+from nas.src.eeg_recorder_brainflow import EEGRecorder_brainflow
+
 qt_stimuli_presentation_file = "gui/designs/stimuli_presentation.ui"  # .ui file.
 Ui_RegWindow, QtBaseClass = uic.loadUiType(qt_stimuli_presentation_file)
-
 
 class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
     def __init__(self, reg_user):
@@ -24,7 +26,11 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         self.setupUi(self)
         self.reg_user = reg_user
         # EEG recorder
-        self.eeg_recorder = EEGRecorder()
+        #TODO
+        self.eeg_brainflow = None
+        self.eeg_recorder = None
+        self.recording_thread = None
+        self.stimuli_types_array = ""
 
         # Center window to screen.
         qt_rectangle = self.frameGeometry()
@@ -62,10 +68,6 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         # Connect ui buttons to methods.
         self.StartRecording.clicked.connect(self.start_recording)
 
-        # JUST TO LOAD OBJECT again
-        #favorite_color = pickle.load(open("save.p", "rb"))
-        #favorite_color.print_data()
-
     def start_recording(self):
         """
             ASDASD
@@ -74,13 +76,18 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         self.StimuliLayoutWidget.show()
         self.StartTimer.start(1000)
 
-        # Print start timestamp
-        dateTimeObj = datetime.now()
-        print("START -> ", end="")
-        print(dateTimeObj.hour, ':', dateTimeObj.minute, ':', dateTimeObj.second, '.', dateTimeObj.microsecond)
+        #TODO
+        ######################################
+        self.eeg_recorder = EEGRecorder_brainflow()
+        self.recording_thread = Thread(target=self.eeg_recorder.start_record)
+        self.recording_thread.daemon = True
+        self.recording_thread.start()
+        ######################################
 
-        # Start to record.
-        self.eeg_recorder.start_record()
+        #self.eeg_recorder = EEGRecorder()
+        #self.recording_thread = Thread(target=self.eeg_recorder.start_record)
+        #self.recording_thread.daemon = True
+        #self.recording_thread.start()
 
     def update_start_time(self):
         """
@@ -108,24 +115,21 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         """
             ADASDASD
         """
+
+        global FLAG_thread_stop
+
         if self.FLAG_stimuli_timer:
             self.stimuli_time += 0.1
             self.stimuli_time = round(self.stimuli_time, 1)
 
             # Number of stimuli.
-            if self.num_of_stimuli > 30:
+            if self.num_of_stimuli > 2:
                 self.FLAG_stimuli_timer = False
                 self.StimuliTimer.stop()
 
-                # Print STOP timestamp
-                dateTimeObj = datetime.now()
-                print("STOP  -> ", end="")
-                print(dateTimeObj.hour, ':', dateTimeObj.minute, ':', dateTimeObj.second, '.', dateTimeObj.microsecond)
-
-                # Stop recording
+                # STOP RECORDING
                 self.eeg_recorder.stop_record()
 
-                # SAVE user
                 self.end_registration()
 
         # STIMULI PRESENTATION
@@ -137,8 +141,10 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
                     x = random.randint(0, 10)
                     if x > 2:
                         self.set_non_self_face_stimulus()
+                        self.stimuli_types_array += "0"
                     else:
                         self.set_self_face_stimulus()
+                        self.stimuli_types_array += "1"
 
                     self.FLAG_change = False
 
@@ -194,4 +200,6 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         self.StimuliImage.setPixmap(QPixmap(pixmap))
 
     def end_registration(self):
-        self.reg_user.save_user()
+        print("end registration")
+        print(self.eeg_recorder.get_rec_data())
+        print(self.eeg_recorder.get_rec_timestamps())
