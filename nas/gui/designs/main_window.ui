@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1412</width>
-    <height>795</height>
+    <width>1162</width>
+    <height>798</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -324,7 +324,7 @@ border: none;
 </string>
            </property>
            <property name="placeholderText">
-            <string>ID alebo Meno</string>
+            <string>Prihlasovacie meno</string>
            </property>
           </widget>
          </item>
@@ -434,7 +434,7 @@ border-color: #82807F
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>100</width>
+          <width>60</width>
           <height>20</height>
          </size>
         </property>
@@ -516,6 +516,30 @@ color: red;
            </property>
            <property name="text">
             <string>Formulár musí byť vyplnený</string>
+           </property>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignHCenter">
+          <widget class="QLineEdit" name="RegUserLogin">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgba(255, 255, 255, 230);
+border-radius: 0px;
+border: none;</string>
+           </property>
+           <property name="placeholderText">
+            <string>Prihlasovacie meno</string>
            </property>
           </widget>
          </item>

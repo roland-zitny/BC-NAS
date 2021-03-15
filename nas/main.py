@@ -4,7 +4,10 @@ from nas.gui import main_window
 
 
 def main():
-    """Main program."""
+    """
+        Main program.
+        Opens main gui window.
+    """
 
     app = QtWidgets.QApplication(sys.argv)
     window = main_window.MainWindow()

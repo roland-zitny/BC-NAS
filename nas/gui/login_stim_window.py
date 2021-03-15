@@ -17,7 +17,7 @@ from nas.src.data_processing import DataProcessing
 # TODO
 from nas.src.eeg_recorder_brainflow import EEGRecorder_brainflow
 
-qt_stimuli_presentation_file = "gui/designs/reg_stimuli_presentation.ui"  # .ui file.
+qt_stimuli_presentation_file = "gui/designs/login_stimuli_presentation.ui"  # .ui file.
 Ui_RegWindow, QtBaseClass = uic.loadUiType(qt_stimuli_presentation_file)
 
 
@@ -202,12 +202,3 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
     def end_registration(self):
         data = self.eeg_recorder.get_rec_data()
         timestamps = self.eeg_recorder.get_rec_timestamps()
-
-        data_processing = DataProcessing(data, timestamps, self.stimuli_timestamps, 3)
-
-        data_processing.filter_data()
-        stimuli_epochs = data_processing.create_epochs()
-
-        self.reg_user.set_test_data(stimuli_epochs, self.stimuli_types_array)
-
-        self.reg_user.save_user()

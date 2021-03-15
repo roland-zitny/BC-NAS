@@ -9,7 +9,8 @@ import base64
 
 
 class User:
-    def __init__(self, name, surname):
+    def __init__(self, name, surname, login_name):
+        self.login_name = login_name
         self.name = name
         self.surname = surname
         self.stimulus_b64 = None
@@ -30,11 +31,12 @@ class User:
         return self.user_epochs, self.epochs_types
 
     def save_user(self):
-        path = os.path.join(os.path.dirname(main_file.__file__), "db", self.name + "_" + self.surname + ".p")
+        path = os.path.join(os.path.dirname(main_file.__file__), "db", self.login_name + ".p")
         pickle.dump(self, open(path, "wb"))
 
     def print_data(self):
         print("USER PRINT DATA")
+        print(self.login_name)
         print(self.name)
         print(self.surname)
         print(self.epochs_types)
