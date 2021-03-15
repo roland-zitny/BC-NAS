@@ -15,7 +15,7 @@ import nas.main as main_file
 from nas.src.data_processing import DataProcessing
 
 # TODO
-from nas.src.eeg_recorder import EEGRecorder_brainflow
+from nas.src.eeg_recorder import EEGRecorder
 
 qt_stimuli_presentation_file = "gui/designs/login_stimuli_window.ui"  # .ui file.
 Ui_RegWindow, QtBaseClass = uic.loadUiType(qt_stimuli_presentation_file)
@@ -80,7 +80,7 @@ class LoginStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         self.StimuliLayoutWidget.show()
         self.StartTimer.start(1000)
 
-        self.eeg_recorder = EEGRecorder_brainflow()
+        self.eeg_recorder = EEGRecorder()
         self.recording_thread = Thread(target=self.eeg_recorder.start_record)
         self.recording_thread.daemon = True
         self.recording_thread.start()

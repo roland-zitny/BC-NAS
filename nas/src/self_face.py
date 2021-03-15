@@ -4,7 +4,7 @@ import os
 import nas.main as main_file
 
 
-class StimuliCreator(object):
+class SelfFace(object):
     """
         Class used to obtain stimulus from image of user.
         Stimulus is image saved encoded as base64.

@@ -1,21 +1,18 @@
+import os
+import random
 import base64
 import time
-
-from threading import Thread
-
 import cv2
-import os
 import numpy as np
-import random
+from threading import Thread
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QDesktopWidget
 import nas.main as main_file
+from nas.src import config
+from nas.src.eeg_recorder import EEGRecorder
 from nas.src.data_processing import DataProcessing
-
-# TODO
-from nas.src.eeg_recorder import EEGRecorder_brainflow
 
 qt_stimuli_presentation_file = "gui/designs/reg_stimuli_window.ui"  # .ui file.
 Ui_RegWindow, QtBaseClass = uic.loadUiType(qt_stimuli_presentation_file)
@@ -26,29 +23,14 @@ class RegStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         QtWidgets.QMainWindow.__init__(self)
         Ui_RegWindow.__init__(self)
         self.setupUi(self)
-        # Object with user, his name, surname and image/stimulus.
-        self.reg_user = reg_user
+        self.reg_user = reg_user    # Object with user, his name, surname and image/stimulus.
+        self.stimuli_types_array = ""   # Array of stimulus types.
+        self.stimuli_timestamps = np.array([])  # Array of stimuli timestamps.
         self.eeg_recorder = None
         self.recording_thread = None
-        # Array of stimulus types.
-        self.stimuli_types_array = ""
-        # Array of stimuli timestamps.
-        self.stimuli_timestamps = np.array([])
-
-        # Center window to screen.
-        qt_rectangle = self.frameGeometry()
-        center_point = QDesktopWidget().availableGeometry().center()
-        qt_rectangle.moveCenter(center_point)
-        self.move(qt_rectangle.topLeft())
-        qt_rectangle.moveCenter(center_point)
-        self.move(qt_rectangle.topLeft())
-
-        # Hide unnecessary widgets.
-        self.StimuliLayoutWidget.hide()
-        self.StimuliImage.hide()
 
         # Start timer.
-        self.starting_time = 5
+        self.starting_time = config.STARTING_TIME
         self.FLAG_start_timer = True
         self.StartTimer = QTimer(self)
         self.StartTimer.timeout.connect(self.update_start_time)
@@ -63,31 +45,49 @@ class RegStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         # Flags for stimuli type.
         self.FLAG_stimulus = True
         self.FLAG_blank = False
-        # Flag of change, to not call pixmap method multiple times.
-        self.FLAG_change = True
-        # Memory of time.
-        self.time_memory = 0
+        self.FLAG_change = True     # Flag of change, to not call pixmap method multiple times.
+        self.time_memory = 0    # Memory of time.
+
+        self.set_up_window()
+
+    def set_up_window(self):
+        """
+            Set up additional parameters of window.
+        """
+
+        # Center window to screen.
+        qt_rectangle = self.frameGeometry()
+        center_point = QDesktopWidget().availableGeometry().center()
+        qt_rectangle.moveCenter(center_point)
+        self.move(qt_rectangle.topLeft())
+        qt_rectangle.moveCenter(center_point)
+        self.move(qt_rectangle.topLeft())
+
+        # Hide unnecessary widgets.
+        self.StimuliLayoutWidget.hide()
+        self.StimuliImage.hide()
 
         # Connect ui buttons to methods.
         self.StartRecording.clicked.connect(self.start_recording)
 
     def start_recording(self):
         """
-            ASDASD
+            Starts EEG recording with eeg_recorder.py.
+            To record we need to use thread.
         """
 
         self.StimuliInfoWidget.hide()
         self.StimuliLayoutWidget.show()
         self.StartTimer.start(1000)
-
-        self.eeg_recorder = EEGRecorder_brainflow()
+        self.eeg_recorder = EEGRecorder()
         self.recording_thread = Thread(target=self.eeg_recorder.start_record)
-        self.recording_thread.daemon = True
+        self.recording_thread.daemon = True     # Thread exits if app is closed.
         self.recording_thread.start()
 
     def update_start_time(self):
         """
-            asdadasd
+            Timer before stimulation and counting.
+            Default is 5 sec.
         """
 
         if self.FLAG_start_timer:
@@ -102,31 +102,27 @@ class RegStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
 
     def stimulation(self):
         """
-            ASDASDSA
+            Stimulation timer, used to change stimulus.
         """
-        self.StimuliTimer.start(100)
+        self.StimuliTimer.start(100)    # 0.1 s / 100 ms
         self.StimuliImage.show()
 
     def update_stimuli(self):
         """
-            ADASDASD
+            Change stimuli pixmap.
+            Self-face or non-self-face.
         """
 
         if self.FLAG_stimuli_timer:
             self.stimuli_time += 0.1
             self.stimuli_time = round(self.stimuli_time, 1)
 
-            # Number of stimuli.
-            if self.num_of_stimuli > 2:
+            if self.num_of_stimuli > config.STIMULI_NUM:    # Number of stimuli.
                 self.FLAG_stimuli_timer = False
                 self.StimuliTimer.stop()
-
-                # STOP RECORDING
-                self.eeg_recorder.stop_record()
-
+                self.eeg_recorder.stop_record()     # Stop recording.
                 self.end_registration()
 
-        # STIMULI PRESENTATION
         if self.FLAG_stimuli_timer:
 
             # STIMULUS
@@ -162,7 +158,10 @@ class RegStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
                     self.FLAG_change = True
 
     def set_self_face_stimulus(self):
-
+        """
+            asdasdsa
+        """
+        
         # Get image from user and use it as pixmap.
         im_bytes = base64.b64decode(self.reg_user.get_user_stimulus())
         im_arr = np.frombuffer(im_bytes, dtype=np.uint8)  # im_arr is one-dim Numpy array
@@ -202,12 +201,8 @@ class RegStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
     def end_registration(self):
         data = self.eeg_recorder.get_rec_data()
         timestamps = self.eeg_recorder.get_rec_timestamps()
-
         data_processing = DataProcessing(data, timestamps, self.stimuli_timestamps, 3)
-
         data_processing.filter_data()
         stimuli_epochs = data_processing.create_epochs()
-
         self.reg_user.set_test_data(stimuli_epochs, self.stimuli_types_array)
-
         self.reg_user.save_user()

@@ -1,12 +1,9 @@
-import argparse
 import time
-import numpy as np
-
-import brainflow
 from brainflow.board_shim import BoardShim, BrainFlowInputParams, BoardIds
-from brainflow.data_filter import DataFilter, FilterTypes
+from nas.src import config
 
-class EEGRecorder_brainflow():
+
+class EEGRecorder():
     def __init__(self):
         self.board = None
         self.data = None
@@ -25,20 +22,16 @@ class EEGRecorder_brainflow():
         params.timeout = 0
         params.file = ''
 
-
         # 0 = Cyton, 2 = Cyton + Daisy, -1 synth
-        #self.board = BoardShim(-1, params)
-        #self.board.start_stream(45000, '')
-        #print("NEPODARILO SA PRIPOJIT BOARD")
-        self.board = BoardShim(BoardIds.SYNTHETIC_BOARD.value, params)
+        self.board = BoardShim(config.BOARD_TYPE, params)
         self.board.disable_board_logger()
         BoardShim.prepare_session(self.board)
         BoardShim.start_stream(self.board)
 
     def stop_record(self):
         self.data = self.board.get_board_data()
-        eeg_channels = BoardShim.get_eeg_channels(-1)
-        self.timestamps = BoardShim.get_timestamp_channel(-1)   # 2 later
+        eeg_channels = BoardShim.get_eeg_channels(config.BOARD_TYPE)
+        self.timestamps = BoardShim.get_timestamp_channel(config.BOARD_TYPE)
         self.board.stop_stream()
         BoardShim.release_session(self.board)
 
@@ -53,7 +46,7 @@ class EEGRecorder_brainflow():
 
 
 if __name__ == '__main__':
-    recorder = EEGRecorder_brainflow()
+    recorder = EEGRecorder()
     recorder.start_record()
     time.sleep(10)
     recorder.stop_record()

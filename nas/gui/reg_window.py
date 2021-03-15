@@ -10,7 +10,7 @@ from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtWidgets import QDesktopWidget
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtWidgets import QLabel
-from nas.src.stimulicreator import StimuliCreator
+from nas.src.self_face import SelfFace
 from nas.gui.reg_stim_window import RegStimuliPresentation
 from nas.src import config
 
@@ -318,18 +318,18 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
 
     def process_photo(self):
         """
-            Creates stimulus from user image. Class StimuliCreator is used.
+            Creates stimulus from user image. Class SelfFace is used.
         """
 
         face_stimuli = None
 
         # If its camera photo.
         if self.FLAG_file_type == 1:
-            face_stimuli = StimuliCreator(config.TMP_PHOTO)
+            face_stimuli = SelfFace(config.TMP_PHOTO)
 
         # If its chosen file.
         elif self.FLAG_file_type == 2:
-            face_stimuli = StimuliCreator(self.file_path[0])
+            face_stimuli = SelfFace(self.file_path[0])
 
         if face_stimuli is not None and face_stimuli.get_status():
             im_bytes = base64.b64decode(face_stimuli.get_face_b64())
