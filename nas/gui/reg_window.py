@@ -1,4 +1,3 @@
-import os
 import cv2
 import base64
 import numpy as np
@@ -11,9 +10,9 @@ from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtWidgets import QDesktopWidget
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtWidgets import QLabel
-import nas.main as main_file
 from nas.src.stimulicreator import StimuliCreator
-from nas.gui.reg_stim_window import StimuliPresentation
+from nas.gui.reg_stim_window import RegStimuliPresentation
+from nas.src import config
 
 qt_reg_window_file = "gui/designs/reg_window.ui"                    # .ui file.
 Ui_RegWindow, QtBaseClass = uic.loadUiType(qt_reg_window_file)      # Load .ui file.
@@ -31,6 +30,9 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
 
         Methods
         -------
+        set_up_window()
+            Set up all necessary parameters of window.
+
         create_camera_widgets()
             Creates label for image, label for message and viewfinder for camera.
 
@@ -68,6 +70,8 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.setupUi(self)
         # Object of user created in main program.
         self.reg_user = reg_user
+        # User image file path.
+        self.file_path = None
         self.FacePictureLabel = None
         self.CameraInfoLabel = None
         self.CameraViewfinder = None
@@ -75,15 +79,16 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.CameraCapture = None
         self.stimuli_window = None
         self.available_cameras = QtMultimedia.QCameraInfo.availableCameras()    # all available cameras of device
-
-        # Temporary photo path in db/tmp.
-        self.photo_path = os.path.join(os.path.dirname(main_file.__file__), "db", "tmp", "tmp_photo.jpg")
-        # User image file path.
-        self.file_path = None
+        self.set_up_window()
 
         # FLAGS
         self.FLAG_connected_camera = False  # True-> camera is connected, False -> camera is not connected
         self.FLAG_file_type = 0             # 0 -> None, 1 -> camera photo, 2 -> file
+
+    def set_up_window(self):
+        """
+            Set up additional parameters of window.
+        """
 
         # Center window to screen.
         qt_rectangle = self.frameGeometry()
@@ -131,9 +136,10 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
 
         # Message to tell user why we need his photo and what to do. Displayed on CameraLayout.
         self.CameraInfoLabel = QLabel("Pre správnu funkčnosť aplikácie je potrebné zaznamenať vašu fotku tváre.\n"
-                                      "Zvolte možnosť odfotenia alebo výberu suboru.", self)
+                                      "Zvolte možnosť odfotenia alebo výberu súboru.\n\n"
+                                      "Vzniknutá fotka bude po procese registrácie odstránená.", self)
 
-        self.CameraInfoLabel.setStyleSheet("font: 10pt Bahnschrift SemiBold; color: white;")
+        self.CameraInfoLabel.setStyleSheet("font: 12pt Bahnschrift SemiBold; color: white;")
         self.CameraInfoLabel.setAlignment(Qt.AlignCenter)
         self.CameraLayout.addWidget(self.CameraInfoLabel)
         self.CameraInfoLabel.show()
@@ -222,7 +228,7 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
             Image is saved in temporary directory.
         """
 
-        self.CameraCapture.capture(self.photo_path)
+        self.CameraCapture.capture(config.TMP_PHOTO)
         self.ShowPhotoBtn.show()
 
     def show_photo(self):
@@ -241,8 +247,8 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.CameraConfirmLabel.hide()
 
         # Set pixmap of label.
-        face_pixmap = QPixmap(self.photo_path)
-        self.FacePictureLabel.setPixmap(QPixmap(face_pixmap.scaledToWidth(748)))
+        face_pixmap = QPixmap(config.TMP_PHOTO)
+        self.FacePictureLabel.setPixmap(QPixmap(face_pixmap.scaledToWidth(self.CameraLayoutWidget.width() - 450)))
         self.FacePictureLabel.setAlignment(Qt.AlignCenter)
         # Stop camera recording.
         self.camera.stop()
@@ -305,7 +311,7 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.CameraConfirmLabel.hide()
 
         pixmap = QPixmap(self.file_path[0])
-        self.FacePictureLabel.setPixmap(QPixmap(pixmap.scaledToWidth(748)))
+        self.FacePictureLabel.setPixmap(QPixmap(pixmap.scaledToWidth(self.CameraLayoutWidget.width() - 450)))
 
         # Set flag to 2, file
         self.FLAG_file_type = 2
@@ -319,7 +325,7 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
 
         # If its camera photo.
         if self.FLAG_file_type == 1:
-            face_stimuli = StimuliCreator(self.photo_path)
+            face_stimuli = StimuliCreator(config.TMP_PHOTO)
 
         # If its chosen file.
         elif self.FLAG_file_type == 2:
@@ -339,6 +345,7 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
 
             # set user stimulus
             self.reg_user.set_user_stimulus(face_stimuli.get_face_b64())
+
             self.ContinueRegBtn.show()
             self.ProcessPhotoBtn.hide()
             self.CameraConfirmLabel.show()
@@ -351,6 +358,6 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
             Begins next step of registration with new window.
         """
 
-        self.stimuli_window = StimuliPresentation(self.reg_user)
+        self.stimuli_window = RegStimuliPresentation(self.reg_user)
         self.stimuli_window.showMaximized()
         self.hide()

@@ -15,13 +15,13 @@ import nas.main as main_file
 from nas.src.data_processing import DataProcessing
 
 # TODO
-from nas.src.eeg_recorder_brainflow import EEGRecorder_brainflow
+from nas.src.eeg_recorder import EEGRecorder_brainflow
 
-qt_stimuli_presentation_file = "gui/designs/login_stimuli_presentation.ui"  # .ui file.
+qt_stimuli_presentation_file = "gui/designs/login_stimuli_window.ui"  # .ui file.
 Ui_RegWindow, QtBaseClass = uic.loadUiType(qt_stimuli_presentation_file)
 
 
-class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
+class LoginStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
     def __init__(self, reg_user):
         QtWidgets.QMainWindow.__init__(self)
         Ui_RegWindow.__init__(self)

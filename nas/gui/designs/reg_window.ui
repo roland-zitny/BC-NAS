@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1051</width>
-    <height>1053</height>
+    <height>959</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -226,7 +226,7 @@ background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgb
 }
 
 QWidget::hover{
-border: 5px groove #EFF0F1;
+border: 3px groove #EFF0F1;
 border-left: none;
 }</string>
         </property>
@@ -863,28 +863,31 @@ border-color: #adaa9e;
            <property name="sizeHint" stdset="0">
             <size>
              <width>20</width>
-             <height>40</height>
+             <height>30</height>
             </size>
            </property>
           </spacer>
          </item>
-         <item alignment="Qt::AlignHCenter">
-          <widget class="QPushButton" name="ProcessPhotoBtn">
-           <property name="minimumSize">
-            <size>
-             <width>120</width>
-             <height>120</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>120</width>
-             <height>120</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QPushButton{
-background-color: #E1C340;
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QPushButton" name="ProcessPhotoBtn">
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton{
+background-color: qradialgradient(cx:0, cy:0, radius: 1,
+                fx:0.5, fy:0.5, stop:0 #f5d445 ,stop:0.5 #E1C340 stop:1 #c4aa39);
 border-radius: 60px;
 border-width: 4px;
 border-style: groove;
@@ -895,39 +898,40 @@ color: white;
 
 QPushButton::hover
 {
-background-color: #e8ce5f;
+background-color: qradialgradient(cx:0, cy:0, radius: 1.2,
+                fx:0.5, fy:0.5, stop:0 #ffdd47 ,stop:0.5 #edce45 stop:1 #d4b83d);
 border-color: #adaa9e;
 }
 
 QPushButton::pressed {
 border-width: 3px;
-background-color: #e8ce5f;
 border-color: #adaa9e;
 }</string>
-           </property>
-           <property name="text">
-            <string>Zpracovať 
+             </property>
+             <property name="text">
+              <string>Zpracovať 
  fotku</string>
-           </property>
-          </widget>
-         </item>
-         <item alignment="Qt::AlignHCenter">
-          <widget class="QPushButton" name="ContinueRegBtn">
-           <property name="minimumSize">
-            <size>
-             <width>120</width>
-             <height>120</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>120</width>
-             <height>120</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QPushButton{
-background-color: #32CD30;
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="ContinueRegBtn">
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton{
+background-color: qradialgradient(cx:0, cy:0, radius: 1,
+                fx:0.5, fy:0.5, stop:0 #81B622 ,stop:0.5 #59981A stop:1 #3D550C);
 border-radius: 60px;
 border-width: 4px;
 border-style: groove;
@@ -938,20 +942,22 @@ color: white;
 
 QPushButton::hover
 {
-background-color: #32CD30;
+background-color: qradialgradient(cx:0, cy:0, radius: 1,
+                fx:0.5, fy:0.5, stop:0 #91cc27 ,stop:0.5 #5fa31c stop:1 #507010);;
 border-color: #adaa9e;
 }
 
 QPushButton::pressed {
 border-width: 3px;
-background-color: #32CD30;
 border-color: #adaa9e;
 }</string>
-           </property>
-           <property name="text">
-            <string>Pokračovať</string>
-           </property>
-          </widget>
+             </property>
+             <property name="text">
+              <string>Pokračovať</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
          <item>
           <spacer name="verticalSpacer_5">
@@ -1014,30 +1020,55 @@ border-color: #adaa9e;
           <number>10</number>
          </property>
          <property name="bottomMargin">
-          <number>10</number>
+          <number>50</number>
          </property>
          <property name="spacing">
           <number>0</number>
          </property>
          <item row="0" column="0" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
           <widget class="QLabel" name="CameraErrorLabel">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>50</height>
+            </size>
+           </property>
            <property name="styleSheet">
-            <string notr="true">font: 10pt Bahnschrift SemiBold;
-color: white;</string>
+            <string notr="true">font: 12pt Bahnschrift SemiBold;
+color: #900300;</string>
            </property>
            <property name="text">
-            <string>Nastala chyba pri spracovaní fotografie využijte iný spôsob spracovania.</string>
+            <string>Nastala chyba pri spracovaní fotografie využijte iný spôsob spracovania,
+ alebo zaznamenajte fotku znova. </string>
            </property>
           </widget>
          </item>
          <item row="1" column="0" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
           <widget class="QLabel" name="CameraConfirmLabel">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>50</height>
+            </size>
+           </property>
            <property name="styleSheet">
-            <string notr="true">font: 10pt Bahnschrift SemiBold;
+            <string notr="true">font: 12pt Bahnschrift SemiBold;
 color: white;</string>
            </property>
            <property name="text">
-            <string>Chcete dalej pokracovat s touto fotkou?</string>
+            <string>Chcete ďalej pokračovať s touto fotkou?</string>
            </property>
           </widget>
          </item>

@@ -226,7 +226,7 @@ background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgb
 }
 
 QWidget::hover{
-border: 5px groove #EFF0F1;	
+border: 3px groove #EFF0F1;	
 border-left: none;
 }</string>
         </property>
@@ -460,7 +460,7 @@ border-right: none;
 background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgb(253, 213, 94), stop:1 rgb(250, 208, 44));
 }
 QWidget::hover{
-border: 5px groove #EFF0F1;
+border: 3px groove #EFF0F1;
 border-right: none;	
 }</string>
         </property>

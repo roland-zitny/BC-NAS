@@ -5,6 +5,7 @@ from PyQt5 import uic
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDesktopWidget
 from nas.gui.reg_window import RegWindow
+from nas.gui.login_stim_window import LoginStimuliPresentation
 from nas.src.user import User
 from nas.src import config
 
@@ -18,6 +19,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         Methods
         --------
+        set_up_window()
+            Set up all necessary parameters of window.
+
         register()
             Registration process.
 
@@ -31,6 +35,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.reg_window = None
         self.login_window = None
+        self.set_up_window()
+
+    def set_up_window(self):
+        """
+            Set up additional parameters of window.
+        """
 
         # Hide widgets.
         self.LoginErrorLabel.hide()
@@ -64,7 +74,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 user = pickle.load(pickle_file)
                 pickle_file.close()
 
-                self.login_window = RegWindow(user)
+                self.login_window = LoginStimuliPresentation(user)
                 self.login_window.showMaximized()
                 self.hide()
 
