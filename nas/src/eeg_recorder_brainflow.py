@@ -3,7 +3,7 @@ import time
 import numpy as np
 
 import brainflow
-from brainflow.board_shim import BoardShim, BrainFlowInputParams
+from brainflow.board_shim import BoardShim, BrainFlowInputParams, BoardIds
 from brainflow.data_filter import DataFilter, FilterTypes
 
 class EEGRecorder_brainflow():
@@ -25,21 +25,25 @@ class EEGRecorder_brainflow():
         params.timeout = 0
         params.file = ''
 
-        try:
-            # 0 = Cyton, 2 = Cyton + Daisy
-            self.board = BoardShim(2, params)
-            self.board.start_stream(45000, '')
-        except:
-            print("NEPODARILO SA PRIPOJIT BOARD")
+
+        # 0 = Cyton, 2 = Cyton + Daisy, -1 synth
+        #self.board = BoardShim(-1, params)
+        #self.board.start_stream(45000, '')
+        #print("NEPODARILO SA PRIPOJIT BOARD")
+        self.board = BoardShim(BoardIds.SYNTHETIC_BOARD.value, params)
+        self.board.disable_board_logger()
+        BoardShim.prepare_session(self.board)
+        BoardShim.start_stream(self.board)
 
     def stop_record(self):
-        try:
-            self.data = self.board.get_board_data()
-            self.timestamps = self.get_timestamp_channel(2)
-            self.board.stop_stream()
-            self.release_session()
-        except:
-            print("NEPRIPOJILA SA DOSKA")
+        self.data = self.board.get_board_data()
+        eeg_channels = BoardShim.get_eeg_channels(-1)
+        self.timestamps = BoardShim.get_timestamp_channel(-1)   # 2 later
+        self.board.stop_stream()
+        BoardShim.release_session(self.board)
+
+        self.timestamps = self.data[self.timestamps]
+        self.data = self.data[eeg_channels]
 
     def get_rec_data(self):
         return self.data

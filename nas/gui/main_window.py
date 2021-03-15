@@ -53,15 +53,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def register(self):
         """
-            Creates new user with his registration name and surname and creates
+            Creates new user with his registration name and surname, and creates
             new window for gathering user photo.
         """
 
         if self.RegUserName.text() and self.RegUserSurname.text():
             self.RegErrorLabel.hide()
+            # Creates user object with name and surname.
             new_user = User(self.RegUserName.text(), self.RegUserSurname.text())
             self.reg_window = RegWindow(new_user)
-            self.reg_window.show()
+            self.reg_window.showMaximized()
             self.hide()
         else:
             self.RegErrorLabel.show()

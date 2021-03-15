@@ -52,10 +52,7 @@
        <string notr="true">background-color: #373a3c;
 border-bottom: 1px solid white;</string>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <property name="spacing">
-        <number>30</number>
-       </property>
+      <layout class="QGridLayout" name="gridLayout" rowstretch="0" columnstretch="0,0">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -68,7 +65,10 @@ border-bottom: 1px solid white;</string>
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item alignment="Qt::AlignLeft">
+       <property name="horizontalSpacing">
+        <number>30</number>
+       </property>
+       <item row="0" column="0">
         <widget class="QLabel" name="label">
          <property name="minimumSize">
           <size>
@@ -105,7 +105,7 @@ border-bottom: 1px solid white;</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="0" column="1">
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <property name="spacing">
           <number>0</number>

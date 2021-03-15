@@ -5,6 +5,7 @@ from nas.gui import main_window
 
 def main():
     """Main program."""
+
     app = QtWidgets.QApplication(sys.argv)
     window = main_window.MainWindow()
     window.show()

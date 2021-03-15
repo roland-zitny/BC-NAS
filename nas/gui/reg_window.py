@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtWidgets import QLabel
 import nas.main as main_file
 from nas.src.stimulicreator import StimuliCreator
-from nas.gui.stimuli_presentation import StimuliPresentation
+from nas.gui.reg_stim_window import StimuliPresentation
 
 qt_reg_window_file = "gui/designs/reg_window.ui"                    # .ui file.
 Ui_RegWindow, QtBaseClass = uic.loadUiType(qt_reg_window_file)      # Load .ui file.
@@ -66,15 +66,17 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         QtWidgets.QMainWindow.__init__(self)
         Ui_RegWindow.__init__(self)
         self.setupUi(self)
+        # Object of user created in main program.
         self.reg_user = reg_user
         self.FacePictureLabel = None
         self.CameraInfoLabel = None
         self.CameraViewfinder = None
         self.camera = None
         self.CameraCapture = None
+        self.stimuli_window = None
         self.available_cameras = QtMultimedia.QCameraInfo.availableCameras()    # all available cameras of device
 
-        # Temporary photo path.
+        # Temporary photo path in db/tmp.
         self.photo_path = os.path.join(os.path.dirname(main_file.__file__), "db", "tmp", "tmp_photo.jpg")
         # User image file path.
         self.file_path = None
@@ -91,6 +93,7 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         qt_rectangle.moveCenter(center_point)
         self.move(qt_rectangle.topLeft())
 
+        # Create new qt widgets.
         self.create_camera_widgets()
 
         # Hide unnecessary widgets.
@@ -129,6 +132,7 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         # Message to tell user why we need his photo and what to do. Displayed on CameraLayout.
         self.CameraInfoLabel = QLabel("Pre správnu funkčnosť aplikácie je potrebné zaznamenať vašu fotku tváre.\n"
                                       "Zvolte možnosť odfotenia alebo výberu suboru.", self)
+
         self.CameraInfoLabel.setStyleSheet("font: 10pt Bahnschrift SemiBold; color: white;")
         self.CameraInfoLabel.setAlignment(Qt.AlignCenter)
         self.CameraLayout.addWidget(self.CameraInfoLabel)
@@ -144,6 +148,7 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
             Displays camera menu and all functional cameras.
             After choosing specific camera, it needs to be connected and controlled.
         """
+
         # Reset file type
         self.FLAG_file_type = 0
 
@@ -345,7 +350,7 @@ class RegWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         """
             Begins next step of registration with new window.
         """
+
         self.stimuli_window = StimuliPresentation(self.reg_user)
-        self.stimuli_window.show()
+        self.stimuli_window.showMaximized()
         self.hide()
-        pass

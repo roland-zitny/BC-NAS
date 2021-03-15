@@ -1,4 +1,5 @@
 import base64
+import time
 
 from threading import Thread
 
@@ -11,26 +12,28 @@ from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QDesktopWidget
 import nas.main as main_file
-from nas.src.eeg_recorder import EEGRecorder
+from nas.src.data_processing import DataProcessing
 
-#TODO
+# TODO
 from nas.src.eeg_recorder_brainflow import EEGRecorder_brainflow
 
 qt_stimuli_presentation_file = "gui/designs/stimuli_presentation.ui"  # .ui file.
 Ui_RegWindow, QtBaseClass = uic.loadUiType(qt_stimuli_presentation_file)
+
 
 class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
     def __init__(self, reg_user):
         QtWidgets.QMainWindow.__init__(self)
         Ui_RegWindow.__init__(self)
         self.setupUi(self)
+        # Object with user, his name, surname and image/stimulus.
         self.reg_user = reg_user
-        # EEG recorder
-        #TODO
-        self.eeg_brainflow = None
         self.eeg_recorder = None
         self.recording_thread = None
+        # Array of stimulus types.
         self.stimuli_types_array = ""
+        # Array of stimuli timestamps.
+        self.stimuli_timestamps = np.array([])
 
         # Center window to screen.
         qt_rectangle = self.frameGeometry()
@@ -72,22 +75,15 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         """
             ASDASD
         """
+
         self.StimuliInfoWidget.hide()
         self.StimuliLayoutWidget.show()
         self.StartTimer.start(1000)
 
-        #TODO
-        ######################################
         self.eeg_recorder = EEGRecorder_brainflow()
         self.recording_thread = Thread(target=self.eeg_recorder.start_record)
         self.recording_thread.daemon = True
         self.recording_thread.start()
-        ######################################
-
-        #self.eeg_recorder = EEGRecorder()
-        #self.recording_thread = Thread(target=self.eeg_recorder.start_record)
-        #self.recording_thread.daemon = True
-        #self.recording_thread.start()
 
     def update_start_time(self):
         """
@@ -115,8 +111,6 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         """
             ADASDASD
         """
-
-        global FLAG_thread_stop
 
         if self.FLAG_stimuli_timer:
             self.stimuli_time += 0.1
@@ -179,6 +173,9 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         bytes_per_line = 3 * width
         q_img = QImage(img.data, width, height, bytes_per_line, QImage.Format_RGB888)
         pixmap = QPixmap(q_img)
+        # Save stimuli timestamps.
+        stimuli_timestamp = time.time()
+        self.stimuli_timestamps = np.append(self.stimuli_timestamps, stimuli_timestamp)
         self.StimuliImage.setPixmap(QPixmap(pixmap))
 
     def set_non_self_face_stimulus(self):
@@ -197,9 +194,20 @@ class StimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
                                          "photos", str(file_number) + ".jpg")
 
         pixmap = QPixmap(nonself_face_path)
+        # Save stimuli timestamps.
+        stimuli_timestamp = time.time()
+        self.stimuli_timestamps = np.append(self.stimuli_timestamps, stimuli_timestamp)
         self.StimuliImage.setPixmap(QPixmap(pixmap))
 
     def end_registration(self):
-        print("end registration")
-        print(self.eeg_recorder.get_rec_data())
-        print(self.eeg_recorder.get_rec_timestamps())
+        data = self.eeg_recorder.get_rec_data()
+        timestamps = self.eeg_recorder.get_rec_timestamps()
+
+        data_processing = DataProcessing(data, timestamps, self.stimuli_timestamps, 3)
+
+        data_processing.filter_data()
+        stimuli_epochs = data_processing.create_epochs()
+
+        self.reg_user.set_test_data(stimuli_epochs, self.stimuli_types_array)
+
+        self.reg_user.save_user()
