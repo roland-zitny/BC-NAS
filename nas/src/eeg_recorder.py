@@ -4,13 +4,20 @@ from nas.src import config
 
 
 class EEGRecorder():
+    """
+        Class
+    """
+
     def __init__(self):
         self.board = None
         self.data = None
         self.timestamps = None
 
     def start_record(self):
-        print("start")
+        """
+            asdsa
+        """
+
         params = BrainFlowInputParams()
         params.ip_port = 0
         params.serial_port = 'COM7'
@@ -29,6 +36,10 @@ class EEGRecorder():
         BoardShim.start_stream(self.board)
 
     def stop_record(self):
+        """
+            asdsa
+        """
+
         self.data = self.board.get_board_data()
         eeg_channels = BoardShim.get_eeg_channels(config.BOARD_TYPE)
         self.timestamps = BoardShim.get_timestamp_channel(config.BOARD_TYPE)
@@ -39,9 +50,17 @@ class EEGRecorder():
         self.data = self.data[eeg_channels]
 
     def get_rec_data(self):
+        """
+            asdsa
+        """
+
         return self.data
 
     def get_rec_timestamps(self):
+        """
+            asdsa
+        """
+
         return self.timestamps
 
 
