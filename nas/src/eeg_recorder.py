@@ -3,7 +3,7 @@ from brainflow.board_shim import BoardShim, BrainFlowInputParams, BoardIds
 from nas.src import config
 
 
-class EEGRecorder():
+class EEGRecorder:
     """
         Class
     """
@@ -20,7 +20,7 @@ class EEGRecorder():
 
         params = BrainFlowInputParams()
         params.ip_port = 0
-        params.serial_port = 'COM7'
+        params.serial_port = config.BOARD_SERIAL_PORT
         params.mac_address = ''
         params.other_info = ''
         params.serial_number = ''

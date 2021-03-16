@@ -13,3 +13,4 @@ STARTING_TIME = 5
 # 50 default, 10 self-face, possible 30;40 ... every fifth is stimuli
 STIMULI_NUM = 50
 BOARD_TYPE = BoardIds.SYNTHETIC_BOARD.value
+BOARD_SERIAL_PORT = 'COM7'
