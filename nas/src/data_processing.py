@@ -19,8 +19,13 @@ class DataProcessing():
             DataFilter.perform_wavelet_denoising(self.data[i], 'coif3', 3)
 
     def create_epochs(self):
+        #print("CYTON+DAISY: ", end="" )
+        #print(BoardShim.get_eeg_names(BoardIds.CYTON_DAISY_BOARD.value))
+        #print("SYNTH: ", end="")
+        #print(BoardShim.get_eeg_names(BoardIds.SYNTHETIC_BOARD.value))
+
         stimuli_epochs = []
-        for i in range(self.num_of_stimuli - 1):
+        for i in range(self.num_of_stimuli):
             stimuli_time_ms = self.stimuli_timestamps[i] * 1000
 
             F3 = np.array([])
@@ -33,10 +38,10 @@ class DataProcessing():
                 # 800 ms time window
                 # Je moznost ist aj cez sampling rate , cize tu je 256/2 * 0.6  a dostaneme pocet vzoriek na 0.6 sec.
                 # Je mozne pracovat s casom. TODO
-                # 100 je data ako 256/2 * 0.8
+                # 100 je data ako 256/2 * 0.8 = 102.4
                 # Pre daisy+ cyton 125 / 2 * 0.8 -> 50 segmentov
                 if eeg_timestamp_ms >= stimuli_time_ms - 50 and eeg_timestamp_ms <= stimuli_time_ms + 750:
-                    if len(F3) < 100:
+                    if len(F3) < 100: # TODO podla zariadenia 40 pre cython + daisy 125/2*0.8 = 50 - 10
                         F3 = np.append(F3, self.data[10, y])
                         F4 = np.append(F4, self.data[11, y])
                         C3 = np.append(C3, self.data[2, y])

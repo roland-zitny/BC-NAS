@@ -12,5 +12,8 @@ NON_FACE_DIR = os.path.join(os.path.dirname(main_file.__file__), "resources", "p
 STARTING_TIME = 5
 # 50 default, 10 self-face, possible 30;40 ... every fifth is stimuli
 STIMULI_NUM = 50
-BOARD_TYPE = BoardIds.SYNTHETIC_BOARD.value
+BOARD_TYPE = BoardIds.SYNTHETIC_BOARD.value     #BoardIds.CYTON_DAISY_BOARD.value
 BOARD_SERIAL_PORT = 'COM7'
+
+# SYNTH C3,C4,F3,F4 -> 1,3,10,13
+# Cyton+DAisy C3,C4,F3,F4 -> 2,3,10,11

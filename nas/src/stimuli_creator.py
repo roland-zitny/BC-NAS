@@ -19,12 +19,12 @@ class StimuliCreator:
             if self.non_self_face_count < 4:
                 self.non_self_face_count += 1
                 self.stimuli_types = np.append(self.stimuli_types, 0)
-                return self.set_non_self_face_stimulus()   # Non Self Face
+                return self.set_non_self_face_stimulus()  # Non Self Face
             else:
                 self.self_face_count += 1
                 self.non_self_face_count = 0
                 self.stimuli_types = np.append(self.stimuli_types, 1)
-                return self.set_self_face_stimulus()   # Self Face
+                return self.set_self_face_stimulus()  # Self Face
         else:
             return None
 

@@ -186,54 +186,85 @@ border-bottom: none;</string>
        </property>
        <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
         <widget class="QLabel" name="StimPresInfo">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>80</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>80</height>
+          </size>
+         </property>
          <property name="styleSheet">
-          <string notr="true">font: 10pt Bahnschrift SemiBold;
+          <string notr="true">font: 12pt Bahnschrift SemiBold;
 color: white;</string>
          </property>
          <property name="text">
-          <string>Teraz nastane to to stlacen start to zacne.</string>
+          <string>Po stlačení tlačidla štart začne zaznamenávanie mozgových signálov.
+Ubezpečte sa že máte správne zapojené zaznamenávacie zariadenie a
+sústredte sa prosím na zobrazované stimuly.</string>
          </property>
         </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>50</height>
+          </size>
+         </property>
+        </spacer>
        </item>
        <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
         <widget class="QPushButton" name="StartRecording">
          <property name="minimumSize">
           <size>
-           <width>200</width>
-           <height>40</height>
+           <width>180</width>
+           <height>180</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>200</width>
-           <height>40</height>
+           <width>180</width>
+           <height>180</height>
           </size>
          </property>
          <property name="styleSheet">
           <string notr="true">QPushButton{
-background-color: #E1C340;
-border-radius: 6px;
-border-width: 2px;
+background-color: qradialgradient(cx:0, cy:0, radius: 1,
+                fx:0.5, fy:0.5, stop:0 #81B622 ,stop:0.5 #59981A stop:1 #3D550C);
+border-radius: 90px;
+border-width: 4px;
 border-style: groove;
 border-color: #E2DED0;
-font: 63 10pt &quot;Bahnschrift SemiBold&quot;;
+font: 63 18pt &quot;Bahnschrift SemiBold&quot;;
 color: white;
 }
 
 QPushButton::hover
 {
-background-color: #e8ce5f;
+background-color: qradialgradient(cx:0, cy:0, radius: 1,
+                fx:0.5, fy:0.5, stop:0 #91cc27 ,stop:0.5 #5fa31c stop:1 #507010);;
 border-color: #adaa9e;
 }
 
 QPushButton::pressed {
 border-width: 3px;
-background-color: #e8ce5f;
 border-color: #adaa9e;
 }</string>
          </property>
          <property name="text">
-          <string>PushButton</string>
+          <string>Štart</string>
          </property>
         </widget>
        </item>
@@ -249,8 +280,8 @@ border-color: #adaa9e;
        <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
         <widget class="QLabel" name="StartTimerLabel">
          <property name="styleSheet">
-          <string notr="true">font: 10pt Bahnschrift SemiBold;
-color: white;</string>
+          <string notr="true">font: 80pt &quot;OCR A Extended&quot;;
+color: #EEEDE7;</string>
          </property>
          <property name="text">
           <string>5</string>
@@ -261,14 +292,14 @@ color: white;</string>
         <widget class="QLabel" name="StimuliImage">
          <property name="minimumSize">
           <size>
-           <width>500</width>
-           <height>500</height>
+           <width>600</width>
+           <height>600</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>500</width>
-           <height>500</height>
+           <width>600</width>
+           <height>600</height>
           </size>
          </property>
          <property name="styleSheet">

@@ -33,7 +33,7 @@ class RegStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         Ui_RegWindow.__init__(self)
         self.setupUi(self)
         self.reg_user = reg_user    # Object with user, his name, surname and image/stimulus.
-        self.stimuli_types_array = ""   # Array of stimulus types.
+        self.stimuli_types_array = np.array([])   # Array of stimulus types.
         self.stimuli_timestamps = np.array([])  # Array of stimuli timestamps.
         self.eeg_recorder = None
         self.recording_thread = None
@@ -174,5 +174,5 @@ class RegStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         data_processing.filter_data()
         stimuli_epochs = data_processing.create_epochs()
 
-        self.reg_user.set_test_data(stimuli_epochs, self.stimuli_types_array)
+        self.reg_user.set_test_data(stimuli_epochs, self.stimuli_creator.get_stimuli_types())
         self.reg_user.save_user()
