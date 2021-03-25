@@ -8,6 +8,30 @@ from nas.src import config
 
 
 class StimuliCreator:
+    """
+        Class to mimic random stimulation of user with images of faces.
+
+        Attributes
+        ----------
+        user_face: base64
+            face of user
+
+        Methods
+        -------
+        learning_stimuli():
+            Set of stimuli for registration.
+
+        set_non_self_face_stimulus():
+            Set non self face as stimulus.
+
+        set_self_face_stimulus():
+            Set self face as stimulus.
+
+        get_stimuli_types():
+            Returns types of stimuli.
+
+    """
+
     def __init__(self, user_face):
         self.user_face = user_face
         self.stimuli_types = np.array([])
@@ -15,6 +39,10 @@ class StimuliCreator:
         self.non_self_face_count = 0
 
     def learning_stimuli(self):
+        """
+            Registration stimulation.
+        """
+
         if self.self_face_count < 10:
             if self.non_self_face_count < 4:
                 self.non_self_face_count += 1
@@ -28,9 +56,13 @@ class StimuliCreator:
         else:
             return None
 
+    def randomized_stimuli(self):
+        if self.self_face_count < 10:
+            print("ss")
+
     def set_non_self_face_stimulus(self):
         """
-            ASDASD
+             Set non self face as stimulus.
         """
 
         # Get number of files with non self faces.
@@ -46,7 +78,7 @@ class StimuliCreator:
 
     def set_self_face_stimulus(self):
         """
-            asdasdsa
+            Set self face as stimulus.
         """
 
         # Get image from user and use it as pixmap.
@@ -62,4 +94,7 @@ class StimuliCreator:
         return pixmap
 
     def get_stimuli_types(self):
+        """
+            Return types of stimuli.
+        """
         return self.stimuli_types

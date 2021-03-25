@@ -1,6 +1,8 @@
 import time
 import numpy as np
 from threading import Thread
+
+import scipy
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QPixmap
@@ -9,16 +11,41 @@ from nas.src import config
 from nas.src.eeg_recorder import EEGRecorder
 from nas.src.data_processing import DataProcessing
 from nas.src.stimuli_creator import StimuliCreator
-import random
+from datetime import datetime
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 qt_stimuli_presentation_file = "gui/designs/login_stimuli_window.ui"  # .ui file.
 Ui_RegWindow, QtBaseClass = uic.loadUiType(qt_stimuli_presentation_file)
 
-# TODO
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-
 
 class LoginStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
+    """
+        Class used to obtain EEG data from user for his login.
+
+        Attributes
+        ----------
+        reg_user : object
+            object of registered user
+
+        Methods
+        -------
+        set_up_window()
+            Set up all necessary parameters of window.
+
+        start_recording()
+            Starts EEG recording with class eeg_recorder.
+
+        update_start_time()
+            Starting timer.
+
+        stimulation()
+            Stimulation timer.
+
+        update_stimuli()
+            Update types of stimulus.
+
+    """
+
     def __init__(self, reg_user):
         QtWidgets.QMainWindow.__init__(self)
         Ui_RegWindow.__init__(self)
@@ -72,7 +99,7 @@ class LoginStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         self.StartRecording.clicked.connect(self.start_recording)
 
         # TODO
-        #self.test()
+        # self.test()
 
     def start_recording(self):
         """
@@ -86,6 +113,10 @@ class LoginStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         self.eeg_recorder = EEGRecorder()
         self.recording_thread = Thread(target=self.eeg_recorder.start_record)
         self.recording_thread.daemon = True  # Thread exits if app is closed.
+        print("start:", end="")
+        print(time.time())
+        now = datetime.now()
+        print(now)
         self.recording_thread.start()
 
     def update_start_time(self):
@@ -122,13 +153,19 @@ class LoginStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
             self.stimuli_time += 0.01
             self.stimuli_time = round(self.stimuli_time, 2)
 
-            if self.num_of_stimuli == config.STIMULI_NUM:  # Number of stimuli.
+            if self.num_of_stimuli == config.STIMULI_NUM + 1:  # Number of stimuli. TODO +1 lebo aby zaznamenal na
+                # TODO posledny stimul dostatok
                 self.FLAG_stimuli_timer = False
                 self.StimuliTimer.stop()
                 self.eeg_recorder.stop_record()  # Stop recording.
                 # self.end_registration()
-                #TODO TEST
-                self.test()
+                # TODO TEST
+                #print("end:", end="")
+                #print(time.time())
+                #now = datetime.now()
+                #print(now)
+                #self.test()
+                self.test2()
 
         if self.FLAG_stimuli_timer:
             if self.FLAG_stimulus:
@@ -158,12 +195,25 @@ class LoginStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
                     self.FLAG_blank = False
                     self.FLAG_change = True
 
+
+    def test2(self):
+        data = self.eeg_recorder.get_rec_data()
+        timestamps = self.eeg_recorder.get_rec_timestamps()
+        data_processing = DataProcessing(data, timestamps, self.stimuli_timestamps, config.STIMULI_NUM)
+        data_processing.filter_data()
+
+        #INTEGRAL TODO
+        stimuli_epochs = data_processing.create_epochs()
+        x = scipy.integrate.simps((stimuli_epochs[0])[0])
+        print(x)
+
     def test(self):
         data = self.eeg_recorder.get_rec_data()
         timestamps = self.eeg_recorder.get_rec_timestamps()
         data_processing = DataProcessing(data, timestamps, self.stimuli_timestamps, config.STIMULI_NUM)
         data_processing.filter_data()
         stimuli_epochs = data_processing.create_epochs()
+
 
         stim_ep_f3 = []
         stim_ep_f4 = []
@@ -180,7 +230,6 @@ class LoginStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         stim_ep_f4.pop()
         stim_ep_c3.pop()
         stim_ep_c4.pop()
-
 
         epochs, types = self.reg_user.get_test_data()
         types_list = types.tolist()
@@ -201,7 +250,6 @@ class LoginStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         c3_list.pop()
         c4_list.pop()
         types_list.pop()
-
 
         ##################### Treaning #########################
 
@@ -248,33 +296,61 @@ class LoginStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         print(result_c4)
 
         f3_good = 0
+        f3_self_face = 0
         f4_good = 0
+        f4_self_face = 0
         c3_good = 0
+        c3_self_face = 0
         c4_good = 0
+        c4_self_face = 0
 
         for i in range(len(in_types)):
+
             if in_types[i] == result_f3[i]:
+                if in_types[i] == 1:
+                    f3_self_face += 1
+
                 f3_good += 1
 
             if in_types[i] == result_f4[i]:
+                if in_types[i] == 1:
+                    f4_self_face += 1
+
                 f4_good += 1
 
             if in_types[i] == result_c3[i]:
+                if in_types[i] == 1:
+                    c3_self_face += 1
+
                 c3_good += 1
 
             if in_types[i] == result_c4[i]:
+                if in_types[i] == 1:
+                    c4_self_face += 1
+
                 c4_good += 1
 
-        print("F3 z 49 dobre:  ",end="")
-        print(f3_good)
+        print("F3 z 49 dobre:  ", end="")
+        print(f3_good, end="")
+        print("   self_face: ", end="")
+        print(f3_self_face)
         print("F4 z 49 dobre:  ", end="")
-        print(f4_good)
+        print(f4_good, end="")
+        print("   self_face: ", end="")
+        print(f4_self_face)
         print("C3 z 49 dobre:  ", end="")
-        print(c3_good)
+        print(c3_good, end="")
+        print("   self_face: ", end="")
+        print(c3_self_face)
         print("C4 z 49 dobre:  ", end="")
-        print(c4_good)
-        print("Celkovo:  ",end="")
-        print((f3_good+f4_good+c3_good+c4_good)/4)
-        print(((f3_good+f4_good+c3_good+c4_good)/4)/49)
+        print(c4_good, end="")
+        print("   self_face: ", end="")
+        print(c4_self_face)
+        print("Celkovo:  ", end="")
+        print((f3_good + f4_good + c3_good + c4_good) / 4)
+        print(((f3_good + f4_good + c3_good + c4_good) / 4) / 49)
 
+        x = f3_self_face / 9 + f4_self_face / 9 + c3_self_face / 9 + c4_self_face / 9
+        x = x / 4
 
+        print(x)

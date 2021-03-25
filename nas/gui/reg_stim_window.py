@@ -26,6 +26,23 @@ class RegStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
 
         Methods
         -------
+        set_up_window()
+            Set up all necessary parameters of window.
+
+        start_recording()
+            Starts EEG recording with class eeg_recorder.
+
+        update_start_time()
+        Starting timer.
+
+        stimulation()
+            Stimulation timer.
+
+        update_stimuli()
+            Update types of stimulus.
+
+        end_registration()
+            End registration and save user data.
     """
 
     def __init__(self, reg_user):

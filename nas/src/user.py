@@ -9,6 +9,39 @@ import base64
 
 
 class User:
+    """
+        Class for saving and loading user data.
+
+        Attributes
+        ----------
+        name: string
+            name of user
+
+        surname: string
+            surname of user
+
+        login_name: string
+            ID of user used for login.
+
+        Methods
+        -------
+        set_user_stimulus():
+            stimulus setter.
+
+        get_user_stimulus():
+            stimulus getter.
+
+        set_test_data():
+            test data setter.
+
+        get_test_data():
+            test data getter.
+
+        save_user():
+            Pickle user.
+
+    """
+
     def __init__(self, name, surname, login_name):
         self.login_name = login_name
         self.name = name
@@ -18,19 +51,39 @@ class User:
         self.epochs_types = None
 
     def set_user_stimulus(self, stimulus):
+        """
+            Stimulus setter
+        """
+
         self.stimulus_b64 = stimulus
 
     def get_user_stimulus(self):
+        """
+            Stimulus getter.
+        """
+
         return self.stimulus_b64
 
     def set_test_data(self, epochs, epochs_types):
+        """
+            Test data setter.
+        """
+
         self.user_epochs = epochs
         self.epochs_types = epochs_types
 
     def get_test_data(self):
+        """
+            Test data getter.
+        """
+
         return self.user_epochs, self.epochs_types
 
     def save_user(self):
+        """
+            Method to save user object as pickle.
+        """
+
         path = os.path.join(os.path.dirname(main_file.__file__), "db", self.login_name + ".p")
         pickle.dump(self, open(path, "wb"))
 

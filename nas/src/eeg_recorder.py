@@ -9,7 +9,26 @@ import numpy as np
 
 class EEGRecorder:
     """
-        Class
+        Class used to record EEG data of user.
+
+        Attributes
+        ----------
+        None
+
+        Methods
+        -------
+        start_record():
+            Recording session.
+
+        stop_record():
+            Stops session.
+
+        get_rec_data():
+            Data getter.
+
+        get_rec_timestamps():
+            Timestamps getter.
+
     """
 
     def __init__(self):
@@ -19,7 +38,7 @@ class EEGRecorder:
 
     def start_record(self):
         """
-            asdsa
+            Start recording session.
         """
 
         params = BrainFlowInputParams()
@@ -41,7 +60,7 @@ class EEGRecorder:
 
     def stop_record(self):
         """
-            asdsa
+            Stops session.
         """
 
         self.data = self.board.get_board_data()
@@ -50,9 +69,10 @@ class EEGRecorder:
         self.board.stop_stream()
         BoardShim.release_session(self.board)
 
-        # SAVE DATA
-        file_name = str(round(time.time() * 1000))
-        DataFilter.write_file(self.data, file_name + '.csv', 'w')
+        # SAVE DATA TODO
+        #print(len(self.data[0]))
+        #file_name = str(round(time.time() * 1000))
+        #DataFilter.write_file(self.data, file_name + '.csv', 'w')
 
         self.timestamps = self.data[self.timestamps]
         self.data = self.data[eeg_channels]
