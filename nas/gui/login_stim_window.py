@@ -13,6 +13,7 @@ from nas.src.data_processing import DataProcessing
 from nas.src.stimuli_creator import StimuliCreator
 from datetime import datetime
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from nas.src.classifier import Classifier
 
 qt_stimuli_presentation_file = "gui/designs/login_stimuli_window.ui"  # .ui file.
 Ui_RegWindow, QtBaseClass = uic.loadUiType(qt_stimuli_presentation_file)
@@ -170,7 +171,7 @@ class LoginStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         if self.FLAG_stimuli_timer:
             if self.FLAG_stimulus:
                 if self.FLAG_change:
-                    pixmap = self.stimuli_creator.learning_stimuli()
+                    pixmap = self.stimuli_creator.randomized_stimuli()
                     # Save stimuli timestamps.
                     stimuli_timestamp = time.time()
                     self.stimuli_timestamps = np.append(self.stimuli_timestamps, stimuli_timestamp)
@@ -202,155 +203,18 @@ class LoginStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         data_processing = DataProcessing(data, timestamps, self.stimuli_timestamps, config.STIMULI_NUM)
         data_processing.filter_data()
 
-        #INTEGRAL TODO
+        # LOGIN DATA
         stimuli_epochs = data_processing.create_epochs()
-        x = scipy.integrate.simps((stimuli_epochs[0])[0])
-        print(x)
-
-    def test(self):
-        data = self.eeg_recorder.get_rec_data()
-        timestamps = self.eeg_recorder.get_rec_timestamps()
-        data_processing = DataProcessing(data, timestamps, self.stimuli_timestamps, config.STIMULI_NUM)
-        data_processing.filter_data()
-        stimuli_epochs = data_processing.create_epochs()
-
-
-        stim_ep_f3 = []
-        stim_ep_f4 = []
-        stim_ep_c3 = []
-        stim_ep_c4 = []
-
-        for i in range(len(stimuli_epochs)):
-            stim_ep_f3.append(stimuli_epochs[i][0].tolist())
-            stim_ep_f4.append(stimuli_epochs[i][1].tolist())
-            stim_ep_c3.append(stimuli_epochs[i][2].tolist())
-            stim_ep_c4.append(stimuli_epochs[i][3].tolist())
-
-        stim_ep_f3.pop()
-        stim_ep_f4.pop()
-        stim_ep_c3.pop()
-        stim_ep_c4.pop()
-
+        # REG DATA
         epochs, types = self.reg_user.get_test_data()
-        types_list = types.tolist()
-        f3_list = []
-        f4_list = []
-        c3_list = []
-        c4_list = []
+        # LOGIN STIM TYPES
+        login_stimuli_types = self.stimuli_creator.get_stimuli_types()
 
-        # F3,F4,C3,C4
-        for i in range(len(epochs)):
-            f3_list.append(epochs[i][0].tolist())
-            f4_list.append(epochs[i][1].tolist())
-            c3_list.append(epochs[i][2].tolist())
-            c4_list.append(epochs[i][3].tolist())
+        classifier = Classifier(stimuli_epochs, epochs, types)
+        classifier.reduce_dimension_lda()
+        result = classifier.classifie("LDA")
 
-        f3_list.pop()
-        f4_list.pop()
-        c3_list.pop()
-        c4_list.pop()
-        types_list.pop()
+        print(result)
+        print("ASDASDASDASDSADSA")
+        print(login_stimuli_types[:-1])
 
-        ##################### Treaning #########################
-
-        model_f3 = LinearDiscriminantAnalysis()
-        model_f3.fit(f3_list, types_list)
-
-        model_f4 = LinearDiscriminantAnalysis()
-        model_f4.fit(f4_list, types_list)
-
-        model_c3 = LinearDiscriminantAnalysis()
-        model_c3.fit(c3_list, types_list)
-
-        model_c4 = LinearDiscriminantAnalysis()
-        model_c4.fit(c4_list, types_list)
-
-        ########################### PREDICT #############################
-        result_f3 = model_f3.predict(stim_ep_f3)
-        result_f3 = result_f3.tolist()
-
-        result_f4 = model_f4.predict(stim_ep_f4)
-        result_f4 = result_f4.tolist()
-
-        result_c3 = model_c3.predict(stim_ep_c3)
-        result_c3 = result_c3.tolist()
-
-        result_c4 = model_c4.predict(stim_ep_c4)
-        result_c4 = result_c4.tolist()
-
-        in_types = self.stimuli_creator.get_stimuli_types()
-        in_types = in_types.tolist()
-        in_types.pop()
-
-        ################################ RESULT ##############################
-
-        print("IN: ")
-        print(in_types)
-        print("OUT F3: ")
-        print(result_f3)
-        print("OUT F4: ")
-        print(result_f4)
-        print("OUT C3: ")
-        print(result_c3)
-        print("OUT C4: ")
-        print(result_c4)
-
-        f3_good = 0
-        f3_self_face = 0
-        f4_good = 0
-        f4_self_face = 0
-        c3_good = 0
-        c3_self_face = 0
-        c4_good = 0
-        c4_self_face = 0
-
-        for i in range(len(in_types)):
-
-            if in_types[i] == result_f3[i]:
-                if in_types[i] == 1:
-                    f3_self_face += 1
-
-                f3_good += 1
-
-            if in_types[i] == result_f4[i]:
-                if in_types[i] == 1:
-                    f4_self_face += 1
-
-                f4_good += 1
-
-            if in_types[i] == result_c3[i]:
-                if in_types[i] == 1:
-                    c3_self_face += 1
-
-                c3_good += 1
-
-            if in_types[i] == result_c4[i]:
-                if in_types[i] == 1:
-                    c4_self_face += 1
-
-                c4_good += 1
-
-        print("F3 z 49 dobre:  ", end="")
-        print(f3_good, end="")
-        print("   self_face: ", end="")
-        print(f3_self_face)
-        print("F4 z 49 dobre:  ", end="")
-        print(f4_good, end="")
-        print("   self_face: ", end="")
-        print(f4_self_face)
-        print("C3 z 49 dobre:  ", end="")
-        print(c3_good, end="")
-        print("   self_face: ", end="")
-        print(c3_self_face)
-        print("C4 z 49 dobre:  ", end="")
-        print(c4_good, end="")
-        print("   self_face: ", end="")
-        print(c4_self_face)
-        print("Celkovo:  ", end="")
-        print((f3_good + f4_good + c3_good + c4_good) / 4)
-        print(((f3_good + f4_good + c3_good + c4_good) / 4) / 49)
-
-        x = f3_self_face / 9 + f4_self_face / 9 + c3_self_face / 9 + c4_self_face / 9
-        x = x / 4
-
-        print(x)

@@ -37,6 +37,8 @@ class StimuliCreator:
         self.stimuli_types = np.array([])
         self.self_face_count = 0
         self.non_self_face_count = 0
+        self.pause_sequence = 0
+        self.pause_offset = 0
 
     def learning_stimuli(self):
         """
@@ -54,11 +56,26 @@ class StimuliCreator:
                 self.stimuli_types = np.append(self.stimuli_types, 1)
                 return self.set_self_face_stimulus()  # Self Face
         else:
-            return None
+            return self.set_non_self_face_stimulus()
 
     def randomized_stimuli(self):
-        if self.self_face_count < 10:
-            print("ss")
+        if self.self_face_count < round(config.STIMULI_NUM * 0.2):
+            if self.pause_sequence == 0:
+                self.pause_sequence = random.randint(1, 4)
+
+            if self.non_self_face_count < (self.pause_sequence + self.pause_offset):
+                self.non_self_face_count += 1
+                self.stimuli_types = np.append(self.stimuli_types, 0)
+                return self.set_non_self_face_stimulus()
+            else:
+                self.self_face_count += 1
+                self.non_self_face_count = 0
+                self.pause_offset = 4 - self.pause_sequence
+                self.pause_sequence = 0
+                self.stimuli_types = np.append(self.stimuli_types, 1)
+                return self.set_self_face_stimulus()
+        else:
+            return self.set_non_self_face_stimulus()
 
     def set_non_self_face_stimulus(self):
         """

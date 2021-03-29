@@ -73,7 +73,6 @@ class EEGRecorder:
         #print(len(self.data[0]))
         #file_name = str(round(time.time() * 1000))
         #DataFilter.write_file(self.data, file_name + '.csv', 'w')
-
         self.timestamps = self.data[self.timestamps]
         self.data = self.data[eeg_channels]
 
