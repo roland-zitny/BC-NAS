@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('../../'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'Person identification and verification using EEG'
+project = 'NAS - Neural Access System'
 copyright = '2021, Roland Žitný'
 author = 'Roland Žitný'
 
