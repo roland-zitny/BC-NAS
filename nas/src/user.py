@@ -53,6 +53,8 @@ class User:
     def set_user_stimulus(self, stimulus):
         """
             Stimulus setter
+
+            :param XXX: neviem
         """
 
         self.stimulus_b64 = stimulus
