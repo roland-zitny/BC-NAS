@@ -1,6 +1,6 @@
 import os
 import pickle
-import nas.main as main_file
+#import nas.main as main_file
 from PyQt5.QtGui import QPixmap
 import cv2
 from PIL import Image
@@ -86,8 +86,8 @@ class User:
             Method to save user object as pickle.
         """
 
-        path = os.path.join(os.path.dirname(main_file.__file__), "db", self.login_name + ".p")
-        pickle.dump(self, open(path, "wb"))
+        #path = os.path.join(os.path.dirname(main_file.__file__), "db", self.login_name + ".p")
+        #pickle.dump(self, open(path, "wb"))
 
     def print_data(self):
         print("USER PRINT DATA")

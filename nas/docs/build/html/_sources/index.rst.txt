@@ -3,19 +3,18 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+===============================
 NAS - Neural Access System
 ===============================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   about
+   inst_usage
+   configuration
+   modules
+   support
+   license
 
-.. include:: ../../../README.md
-
-User file
-==================
-.. automodule:: src.user
-   :members:
 
 Indices and tables
 ==================
