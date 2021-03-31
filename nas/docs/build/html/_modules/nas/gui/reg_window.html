@@ -1,0 +1,532 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>nas.gui.reg_window &mdash; NAS - Neural Access System beta documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> NAS - Neural Access System
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../inst_usage.html">Installation &amp; usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">NAS - Neural Access System</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>nas.gui.reg_window</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for nas.gui.reg_window</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">uic</span>
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtMultimedia</span>
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtMultimediaWidgets</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QPixmap</span><span class="p">,</span> <span class="n">QImage</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QDesktopWidget</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QFileDialog</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QLabel</span>
+<span class="kn">from</span> <span class="nn">nas.src.self_face</span> <span class="kn">import</span> <span class="n">SelfFace</span>
+<span class="kn">from</span> <span class="nn">reg_stim_window</span> <span class="kn">import</span> <span class="n">RegStimuliPresentation</span>
+<span class="kn">from</span> <span class="nn">nas.src</span> <span class="kn">import</span> <span class="n">config</span>
+
+<span class="c1">#qt_reg_window_file = &quot;gui/designs/reg_window.ui&quot;                    # .ui file.</span>
+<span class="c1">#qt_reg_window_file = os.path.join(&#39;gui/designs/&#39;, &quot;reg_window.ui&quot;)</span>
+<span class="n">directory_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+<span class="n">new_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory_path</span><span class="p">,</span> <span class="s2">&quot;designs&quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s2">&quot;reg_window.ui&quot;</span><span class="p">)</span>
+<span class="n">qt_reg_window_file</span> <span class="o">=</span> <span class="n">new_path</span>
+<span class="n">Ui_RegWindow</span><span class="p">,</span> <span class="n">QtBaseClass</span> <span class="o">=</span> <span class="n">uic</span><span class="o">.</span><span class="n">loadUiType</span><span class="p">(</span><span class="n">qt_reg_window_file</span><span class="p">)</span>      <span class="c1"># Load .ui file.</span>
+
+
+<div class="viewcode-block" id="RegistrationWindow"><a class="viewcode-back" href="../../../modules.html#nas.gui.reg_window.RegistrationWindow">[docs]</a><span class="k">class</span> <span class="nc">RegistrationWindow</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="p">,</span> <span class="n">Ui_RegWindow</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class used to display and manipulate with registration window of graphic user interface.</span>
+<span class="sd">        Main function of this class is to obtain user face photo which is used as EEG stimulus.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg_user</span><span class="p">):</span>
+        <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">Ui_RegWindow</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setupUi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># Object of user created in main program.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reg_user</span> <span class="o">=</span> <span class="n">reg_user</span>
+        <span class="c1"># User image file path.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FacePictureLabel</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraInfoLabel</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraViewfinder</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraCapture</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_window</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">available_cameras</span> <span class="o">=</span> <span class="n">QtMultimedia</span><span class="o">.</span><span class="n">QCameraInfo</span><span class="o">.</span><span class="n">availableCameras</span><span class="p">()</span>    <span class="c1"># all available cameras of device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_up_window</span><span class="p">()</span>
+
+        <span class="c1"># FLAGS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_connected_camera</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># True-&gt; camera is connected, False -&gt; camera is not connected</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_file_type</span> <span class="o">=</span> <span class="mi">0</span>             <span class="c1"># 0 -&gt; None, 1 -&gt; camera photo, 2 -&gt; file</span>
+
+<div class="viewcode-block" id="RegistrationWindow.set_up_window"><a class="viewcode-back" href="../../../modules.html#nas.gui.reg_window.RegistrationWindow.set_up_window">[docs]</a>    <span class="k">def</span> <span class="nf">set_up_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Set up additional parameters of window.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Center window to screen.</span>
+        <span class="n">qt_rectangle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frameGeometry</span><span class="p">()</span>
+        <span class="n">center_point</span> <span class="o">=</span> <span class="n">QDesktopWidget</span><span class="p">()</span><span class="o">.</span><span class="n">availableGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+        <span class="n">qt_rectangle</span><span class="o">.</span><span class="n">moveCenter</span><span class="p">(</span><span class="n">center_point</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">qt_rectangle</span><span class="o">.</span><span class="n">topLeft</span><span class="p">())</span>
+        <span class="n">qt_rectangle</span><span class="o">.</span><span class="n">moveCenter</span><span class="p">(</span><span class="n">center_point</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">qt_rectangle</span><span class="o">.</span><span class="n">topLeft</span><span class="p">())</span>
+
+        <span class="c1"># Create new qt widgets.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_camera_widgets</span><span class="p">()</span>
+
+        <span class="c1"># Hide unnecessary widgets.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraMenuWidget</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FileMenuWidget</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ProcessPhotoBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraErrorLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ContinueRegBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraConfirmLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+
+        <span class="c1"># Connect ui buttons to methods.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraMenuBtn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_camera_menu</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CamConnectBtn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connect_camera</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TakePhotoBtn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">take_photo</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ShowPhotoBtn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_photo</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FileBtn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_file_menu</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FileFindBtn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ChooseFileBtn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">choose_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ProcessPhotoBtn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">process_photo</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ContinueRegBtn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">continue_registration</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RegistrationWindow.create_camera_widgets"><a class="viewcode-back" href="../../../modules.html#nas.gui.reg_window.RegistrationWindow.create_camera_widgets">[docs]</a>    <span class="k">def</span> <span class="nf">create_camera_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Creates necessary widgets for camera layout.</span>
+<span class="sd">            QLabel for image itself.</span>
+<span class="sd">            QLabel for message about this window.</span>
+<span class="sd">            QCameraViewfinder for camera.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Label with face of user, used to confirm photo or file.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FacePictureLabel</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FacePictureLabel</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FacePictureLabel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FacePictureLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+
+        <span class="c1"># Message to tell user why we need his photo and what to do. Displayed on CameraLayout.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraInfoLabel</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Pre správnu funkčnosť aplikácie je potrebné zaznamenať vašu fotku tváre.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                      <span class="s2">&quot;Zvolte možnosť odfotenia alebo výberu súboru.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                                      <span class="s2">&quot;Vzniknutá fotka bude po procese registrácie odstránená.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraInfoLabel</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;font: 12pt Bahnschrift SemiBold; color: white;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraInfoLabel</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CameraInfoLabel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraInfoLabel</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="c1"># Camera viewfinder, used to show camera input.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraViewfinder</span> <span class="o">=</span> <span class="n">QtMultimediaWidgets</span><span class="o">.</span><span class="n">QCameraViewfinder</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CameraViewfinder</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraViewfinder</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RegistrationWindow.show_camera_menu"><a class="viewcode-back" href="../../../modules.html#nas.gui.reg_window.RegistrationWindow.show_camera_menu">[docs]</a>    <span class="k">def</span> <span class="nf">show_camera_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Displays camera menu and all functional cameras.</span>
+<span class="sd">            After choosing specific camera, it needs to be connected and controlled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Reset file type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_file_type</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Show or hide widgets from CameraLayout.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FacePictureLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraViewfinder</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraInfoLabel</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraErrorLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ContinueRegBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraConfirmLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+
+        <span class="c1"># Show or hide widgets from camera menu.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraMenuWidget</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FileMenuWidget</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ShowPhotoBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ProcessPhotoBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+
+        <span class="c1"># Clear CamTypesBox widget.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CamTypesBox</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="c1"># If available camera doesnt exists do:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_cameras</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">CamTypesBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;Nedostupná kamera&quot;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">CamTypesBox</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;background-color: rgba(255, 255, 255, 220);&quot;</span>
+                                           <span class="s2">&quot;border-color: black;&quot;</span>
+                                           <span class="s2">&quot;border-radius: 5px;&quot;</span>
+                                           <span class="s2">&quot;border-width: 3px;&quot;</span>
+                                           <span class="s2">&quot;color: red;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">CamConnectBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">TakePhotoBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Set box of camera types.</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">available_cameras</span><span class="p">)):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">CamTypesBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">available_cameras</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">description</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="RegistrationWindow.connect_camera"><a class="viewcode-back" href="../../../modules.html#nas.gui.reg_window.RegistrationWindow.connect_camera">[docs]</a>    <span class="k">def</span> <span class="nf">connect_camera</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Connect chosen camera to camera viewfinder, created in create_camera_widgets().</span>
+<span class="sd">            Photo needs to be captured by assigned button and later confirmed to next processing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Show or hide widgets from CameraLayout.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FacePictureLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraViewfinder</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraInfoLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraErrorLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ContinueRegBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraConfirmLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+
+        <span class="c1"># Get camera type from CamTypeBox</span>
+        <span class="n">cam_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CamTypesBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">available_cameras</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_cameras</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">description</span><span class="p">()</span> <span class="o">==</span> <span class="n">cam_type</span><span class="p">:</span>
+                <span class="n">cam_type</span> <span class="o">=</span> <span class="n">i</span>
+
+        <span class="c1"># Create QCamera object and connect it to camera device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="n">QtMultimedia</span><span class="o">.</span><span class="n">QCamera</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">available_cameras</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">cam_type</span><span class="p">)])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">setViewfinder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CameraViewfinder</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">setCaptureMode</span><span class="p">(</span><span class="n">QtMultimedia</span><span class="o">.</span><span class="n">QCamera</span><span class="o">.</span><span class="n">CaptureStillImage</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="c1"># Create QCameraImageCapture object to capture photo of user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraCapture</span> <span class="o">=</span> <span class="n">QtMultimedia</span><span class="o">.</span><span class="n">QCameraImageCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_connected_camera</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="RegistrationWindow.take_photo"><a class="viewcode-back" href="../../../modules.html#nas.gui.reg_window.RegistrationWindow.take_photo">[docs]</a>    <span class="k">def</span> <span class="nf">take_photo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Take photo of user by connected camera and show it in CameraLayout.</span>
+<span class="sd">            Photo needs to be confirmed by assigned button.</span>
+
+<span class="sd">            Image is saved in temporary directory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraCapture</span><span class="o">.</span><span class="n">capture</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">TMP_PHOTO</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ShowPhotoBtn</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RegistrationWindow.show_photo"><a class="viewcode-back" href="../../../modules.html#nas.gui.reg_window.RegistrationWindow.show_photo">[docs]</a>    <span class="k">def</span> <span class="nf">show_photo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Display captured photo in CameraLayout for further confirmation.</span>
+<span class="sd">            Confirmation is executed by assigned button.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Show or hide widgets from CameraLayout.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FacePictureLabel</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraViewfinder</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraInfoLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ProcessPhotoBtn</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraErrorLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ContinueRegBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraConfirmLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+
+        <span class="c1"># Set pixmap of label.</span>
+        <span class="n">face_pixmap</span> <span class="o">=</span> <span class="n">QPixmap</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">TMP_PHOTO</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FacePictureLabel</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">QPixmap</span><span class="p">(</span><span class="n">face_pixmap</span><span class="o">.</span><span class="n">scaledToWidth</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CameraLayoutWidget</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">-</span> <span class="mi">450</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FacePictureLabel</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
+        <span class="c1"># Stop camera recording.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="c1"># Set flag to 1, camera photo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_file_type</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="RegistrationWindow.show_file_menu"><a class="viewcode-back" href="../../../modules.html#nas.gui.reg_window.RegistrationWindow.show_file_menu">[docs]</a>    <span class="k">def</span> <span class="nf">show_file_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Displays file menu to find user image.</span>
+<span class="sd">            After choosing specific image, it needs to be displayed and confirmed later.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Reset file type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_file_type</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Show or hide widgets from CameraLayout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FacePictureLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraViewfinder</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraInfoLabel</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraErrorLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ContinueRegBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraConfirmLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+
+        <span class="c1"># Show or hide widgets from Menu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FileMenuWidget</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraMenuWidget</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ChooseFileBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ProcessPhotoBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+
+        <span class="c1"># Turn off camera if was started.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_connected_camera</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_connected_camera</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="RegistrationWindow.find_file"><a class="viewcode-back" href="../../../modules.html#nas.gui.reg_window.RegistrationWindow.find_file">[docs]</a>    <span class="k">def</span> <span class="nf">find_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Find file which user wants to user as his photo.</span>
+<span class="sd">            This file needs to be displayed by assigned button.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Fotka tváre&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s2">&quot;Image files (*.jpg *.gif *.jpeg)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FileLineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FileLineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ChooseFileBtn</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RegistrationWindow.choose_file"><a class="viewcode-back" href="../../../modules.html#nas.gui.reg_window.RegistrationWindow.choose_file">[docs]</a>    <span class="k">def</span> <span class="nf">choose_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Display chosen file of user image on CameraLayout.</span>
+<span class="sd">            Image needs to be confirmed by assigned button.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Show or hide widgets from CameraLayout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FacePictureLabel</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraInfoLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ProcessPhotoBtn</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraErrorLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ContinueRegBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraConfirmLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+
+        <span class="n">pixmap</span> <span class="o">=</span> <span class="n">QPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FacePictureLabel</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">QPixmap</span><span class="p">(</span><span class="n">pixmap</span><span class="o">.</span><span class="n">scaledToWidth</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CameraLayoutWidget</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">-</span> <span class="mi">450</span><span class="p">)))</span>
+
+        <span class="c1"># Set flag to 2, file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_file_type</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+<div class="viewcode-block" id="RegistrationWindow.process_photo"><a class="viewcode-back" href="../../../modules.html#nas.gui.reg_window.RegistrationWindow.process_photo">[docs]</a>    <span class="k">def</span> <span class="nf">process_photo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Creates stimulus from user image. Class SelfFace is used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">face_stimuli</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># If its camera photo.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_file_type</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">face_stimuli</span> <span class="o">=</span> <span class="n">SelfFace</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">TMP_PHOTO</span><span class="p">)</span>
+
+        <span class="c1"># If its chosen file.</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_file_type</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">face_stimuli</span> <span class="o">=</span> <span class="n">SelfFace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">face_stimuli</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">face_stimuli</span><span class="o">.</span><span class="n">get_status</span><span class="p">():</span>
+            <span class="n">im_bytes</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">face_stimuli</span><span class="o">.</span><span class="n">get_face_b64</span><span class="p">())</span>
+            <span class="n">im_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">im_bytes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>  <span class="c1"># im_arr is one-dim Numpy array</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imdecode</span><span class="p">(</span><span class="n">im_arr</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_COLOR</span><span class="p">)</span>
+
+            <span class="c1"># READ B64 image as QImage and set it as pixmap on label</span>
+            <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">channel</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">bytes_per_line</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">width</span>
+            <span class="n">q_img</span> <span class="o">=</span> <span class="n">QImage</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">bytes_per_line</span><span class="p">,</span> <span class="n">QImage</span><span class="o">.</span><span class="n">Format_RGB888</span><span class="p">)</span>
+            <span class="n">pixmap</span> <span class="o">=</span> <span class="n">QPixmap</span><span class="p">(</span><span class="n">q_img</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">FacePictureLabel</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">QPixmap</span><span class="p">(</span><span class="n">pixmap</span><span class="p">))</span>
+
+            <span class="c1"># set user stimulus</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reg_user</span><span class="o">.</span><span class="n">set_user_stimulus</span><span class="p">(</span><span class="n">face_stimuli</span><span class="o">.</span><span class="n">get_face_b64</span><span class="p">())</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">ContinueRegBtn</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ProcessPhotoBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">CameraConfirmLabel</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">CameraErrorLabel</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">FacePictureLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RegistrationWindow.continue_registration"><a class="viewcode-back" href="../../../modules.html#nas.gui.reg_window.RegistrationWindow.continue_registration">[docs]</a>    <span class="k">def</span> <span class="nf">continue_registration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Begins next step of registration with new window.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_window</span> <span class="o">=</span> <span class="n">RegStimuliPresentation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reg_user</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_window</span><span class="o">.</span><span class="n">showMaximized</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Roland Žitný.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

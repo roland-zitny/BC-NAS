@@ -9,27 +9,11 @@ from nas.src import config
 
 class StimuliCreator:
     """
-        Class to mimic random stimulation of user with images of faces.
+        Class for random display of stimuli to the user.
+        These stimuli consist of `self-face` and `non-self-face` images.
 
-        Attributes
-        ----------
-        user_face: base64
-            face of user
-
-        Methods
-        -------
-        learning_stimuli():
-            Set of stimuli for registration.
-
-        set_non_self_face_stimulus():
-            Set non self face as stimulus.
-
-        set_self_face_stimulus():
-            Set self face as stimulus.
-
-        get_stimuli_types():
-            Returns types of stimuli.
-
+        :param user_face: User stimulus.
+        :type user_face: base64 string
     """
 
     def __init__(self, user_face):
@@ -42,7 +26,12 @@ class StimuliCreator:
 
     def learning_stimuli(self):
         """
-            Registration stimulation.
+            Stimulation for the registration process.
+            This stimulation is not randomized.
+            Every fifth stimulus is self-face stimulus.
+
+            :return: ``set_non_self_face_stimulus()`` or ``set_self_face_stimulus()``
+            :rtype: QPixmap
         """
 
         if self.self_face_count < 10:
@@ -59,6 +48,14 @@ class StimuliCreator:
             return self.set_non_self_face_stimulus()
 
     def randomized_stimuli(self):
+        """
+            Stimulation for the log in process.
+            This stimulation is randomized.
+
+            :return: ``set_non_self_face_stimulus()`` or ``set_self_face_stimulus()``
+            :rtype: QPixmap
+        """
+
         if self.self_face_count < round(config.STIMULI_NUM * 0.2):
             if self.pause_sequence == 0:
                 self.pause_sequence = random.randint(1, 4)
@@ -77,9 +74,13 @@ class StimuliCreator:
         else:
             return self.set_non_self_face_stimulus()
 
-    def set_non_self_face_stimulus(self):
+    @staticmethod
+    def set_non_self_face_stimulus():
         """
-             Set non self face as stimulus.
+             Get non-self-face stimulus.
+
+             :return: Specific non-self-face stimulus.
+             :rtype: QPixmap
         """
 
         # Get number of files with non self faces.
@@ -95,7 +96,10 @@ class StimuliCreator:
 
     def set_self_face_stimulus(self):
         """
-            Set self face as stimulus.
+             Get self-face stimulus.
+
+             :return: Self-face stimulus.
+             :rtype: QPixmap
         """
 
         # Get image from user and use it as pixmap.
@@ -112,6 +116,11 @@ class StimuliCreator:
 
     def get_stimuli_types(self):
         """
-            Return types of stimuli.
+            Return types of generated stimuli types.
+            This list is used for classification.
+
+            :return: List of generated stimuli types.
+            :rtype: list
         """
+
         return self.stimuli_types

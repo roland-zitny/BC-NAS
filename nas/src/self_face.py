@@ -1,29 +1,15 @@
 import cv2
 import base64
-import os
-import nas.main as main_file
+from nas.src import config
 
 
 class SelfFace(object):
     """
-        Class used to obtain stimulus from image of user.
-        Stimulus is image saved encoded as base64.
+        A class that creates a stimulus from a photo of a user's face.
+        Stimulus is an image encoded in base64 string.
 
-        Attributes
-        ----------
-        path : str
-            path to image
-
-        Methods
-        -------
-        create()
-            Creates and set stimulus.
-
-        get_status()
-            Gets status of operation for error handling.
-
-        get_face_b64()
-            Get image encoded as base64.
+        :param path: Path to the desired photo. This path can be changed in ``config.py``.
+        :type path: string
     """
 
     def __init__(self, path):
@@ -35,10 +21,14 @@ class SelfFace(object):
     # noinspection PyBroadException
     def create(self):
         """
-            Find face in image and save it.
+            It will try to crop the user's face.
+            Sets the success of the operation.
+            Sets the success of the operation and encodes this result using `base64`.
+            The processed photo is temporarily saved in `tmp_image_path`.
+            This path can be changed in ``config.py``.
         """
 
-        tmp_image_path = os.path.join(os.path.dirname(main_file.__file__), "db", "tmp", 'processed_photo.jpg')
+        tmp_image_path = config.TMP_PROC_PHOTO
 
         try:
             image = cv2.imread(self.image_path)
@@ -63,12 +53,20 @@ class SelfFace(object):
 
     def get_status(self):
         """
-            Get status of operation.
+            `Create` status getter.
+            This status is used to report an error to the user.
+
+            :return: Status of operation. ``True`` if successful otherwise ``False``.
+            :rtype: bool
         """
+
         return self.status
 
     def get_face_b64(self):
         """
-            Get image encoded as base64.
+            Stimulus getter.
+
+            :return: Encoded stimulus.
+            :rtype: base64 string
         """
         return self.face_b64

@@ -1,32 +1,22 @@
 import os
-from os import path
 import pickle
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDesktopWidget
-from nas.gui.reg_window import RegWindow
-from nas.gui.login_stim_window import LoginStimuliPresentation
+from nas.gui.registration_window import RegistrationWindow
+from nas.gui.login_stimulation_window import LoginStimulationPresentation
 from nas.src.user import User
 from nas.src import config
 
-qt_main_window_file = "gui/designs/main_window.ui"  # .ui file.
-Ui_MainWindow, QtBaseClass = uic.loadUiType(qt_main_window_file)  # Load .ui file.
+directory_path = os.path.dirname(os.path.abspath(__file__))
+ui_path = os.path.join(directory_path, "designs" + os.sep + "main_window.ui")
+Ui_MainWindow, QtBaseClass = uic.loadUiType(ui_path)  # Load .ui file.
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     """
-        Class used to display and manipulate with main window of graphic user interface.
-
-        Methods
-        --------
-        set_up_window()
-            Set up all necessary parameters of window.
-
-        register()
-            Registration process.
-
-        login()
-            Login process.
+        Class for displaying the main window of the graphical user interface and its manipulation.
+        The user can register or log in.
     """
 
     def __init__(self):
@@ -39,7 +29,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def set_up_window(self):
         """
-            Set up additional parameters of window.
+            Makes other window settings, such as connecting buttons, etc.
         """
 
         # Hide widgets.
@@ -56,16 +46,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Connect ui buttons to methods.
         self.RegistrationBtn.clicked.connect(self.register)
-        self.LoginBtn.clicked.connect(self.login)
+        self.LoginBtn.clicked.connect(self.log_in)
 
-    def login(self):
+    def log_in(self):
         """
-            If user is registered load his data and continue login.
+            Checks whether the user is registered and if so, continues by opening the ``login_stimulation_window``.
+            The ``user`` object created during registration is loaded.
         """
 
         if self.LoginLine.text():
             self.LoginErrorLabel.hide()
-            if self.check_login_possibility(self.LoginLine.text()):
+            if not self.check_id(self.LoginLine.text()):
                 self.LoginErrorLabel.setText("Užívateľ nie je registrovaný")
                 self.LoginErrorLabel.show()
             else:
@@ -74,7 +65,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 user = pickle.load(pickle_file)
                 pickle_file.close()
 
-                self.login_window = LoginStimuliPresentation(user)
+                self.login_window = LoginStimulationPresentation(user)
                 self.login_window.showMaximized()
                 self.hide()
 
@@ -84,17 +75,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def register(self):
         """
-            Creates new user with his registration name, surname and user login name.
-            Creates new window for gathering user photo.
+            Checks if the user is registered and if not, continues by opening ``reg_window``.
+            Creates new ``user`` with his `name`, `surname` and `login ID`.
         """
 
         if self.RegUserName.text() and self.RegUserSurname.text() and self.RegUserLogin.text():
             self.RegErrorLabel.hide()
             # Check if login is available.
-            if self.check_login_possibility(self.RegUserLogin.text()):
+            if not self.check_id(self.RegUserLogin.text()):
                 # Creates user object with name, surname and login name.
                 new_user = User(self.RegUserName.text(), self.RegUserSurname.text(), self.RegUserLogin.text())
-                self.reg_window = RegWindow(new_user)
+                self.reg_window = RegistrationWindow(new_user)
                 self.reg_window.showMaximized()
                 self.hide()
             else:
@@ -104,21 +95,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.RegErrorLabel.setText("Formulár musí byť vyplnený")
             self.RegErrorLabel.show()
 
-    def check_login_possibility(self, login) -> bool:
+    @staticmethod
+    def check_id(login):
         """
-            Check is user login is available.
+            Check if user login exists in database.
 
-            Attributes
-            ----------
-                login: login name
+            :param login: User login ID.
+            :type login: string
 
-            Return
-            ------
-                True -> not available
-                False -> available
+            :return: True if login exists in database, false if login is available.
+            :rtype: bool
         """
 
-        if path.exists(os.path.join(config.DB_DIR + os.sep + login + ".p")):
-            return False
-        else:
+        if os.path.exists(os.path.join(config.DB_DIR + os.sep + login + ".p")):
             return True
+        else:
+            return False

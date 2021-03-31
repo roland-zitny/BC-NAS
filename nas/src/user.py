@@ -1,98 +1,76 @@
 import os
 import pickle
-#import nas.main as main_file
-from PyQt5.QtGui import QPixmap
-import cv2
-from PIL import Image
-import io
-import base64
+from nas.src import config
 
 
 class User:
     """
-        Class for saving and loading user data.
+        Class for creating a user object and storing it.
 
-        Attributes
-        ----------
-        name: string
-            name of user
-
-        surname: string
-            surname of user
-
-        login_name: string
-            ID of user used for login.
-
-        Methods
-        -------
-        set_user_stimulus():
-            stimulus setter.
-
-        get_user_stimulus():
-            stimulus getter.
-
-        set_test_data():
-            test data setter.
-
-        get_test_data():
-            test data getter.
-
-        save_user():
-            Pickle user.
-
+        :param name: User name.
+        :type name: string
+        :param surname: User surname.
+        :type surname: string
+        :param login_id: User login ID.
+        :type login_id: string
     """
 
-    def __init__(self, name, surname, login_name):
-        self.login_name = login_name
+    def __init__(self, name, surname, login_id):
+        self.login_id = login_id
         self.name = name
         self.surname = surname
         self.stimulus_b64 = None
-        self.user_epochs = None
-        self.epochs_types = None
+        self.user_stimuli_windows = None
+        self.window_types = None
 
     def set_user_stimulus(self, stimulus):
         """
-            Stimulus setter
+            User's stimulus setter.
 
-            :param XXX: neviem
+            :param stimulus: Picture of a user's face.
+            :type stimulus: base64 string
         """
 
         self.stimulus_b64 = stimulus
 
     def get_user_stimulus(self):
         """
-            Stimulus getter.
-        """
+            User's stimulus getter.
 
+            :return: Picture of a user's face.
+            :rtype: base64 string
+        """
         return self.stimulus_b64
 
-    def set_test_data(self, epochs, epochs_types):
+    def set_reg_data(self, user_stimuli_windows, window_types):
         """
-            Test data setter.
+            Registration data setter.
+            Length of `user_stimuli_windows` and `window_types` must be the same.
+
+            :param user_stimuli_windows: User responses to stimuli divided into time windows.
+            :type user_stimuli_windows: list TODO
+            :param window_types: Types of individual time windows. 1 for self-face and 0 for non-self-face.
+            :type window_types: list TODO
         """
 
-        self.user_epochs = epochs
-        self.epochs_types = epochs_types
+        self.user_stimuli_windows = user_stimuli_windows
+        self.window_types = window_types
 
-    def get_test_data(self):
+    def get_reg_data(self):
         """
-            Test data getter.
+            Registration data getter.
+
+            :return: user_stimuli_windows, window_types
+            :rtype: list, list
         """
 
-        return self.user_epochs, self.epochs_types
+        return self.user_stimuli_windows, self.window_types
 
     def save_user(self):
         """
-            Method to save user object as pickle.
+            Saves the user object using ``pickle`` library.
+            The path where the object is saved can be changed in ``config.py``.
         """
 
-        #path = os.path.join(os.path.dirname(main_file.__file__), "db", self.login_name + ".p")
-        #pickle.dump(self, open(path, "wb"))
-
-    def print_data(self):
-        print("USER PRINT DATA")
-        print(self.login_name)
-        print(self.name)
-        print(self.surname)
-        print(self.epochs_types)
-        print(self.user_epochs)
+        path = os.path.join(config.DB_DIR, self.login_id + ".p")
+        pickle.dump(self, open(path, "wb"))

@@ -90,13 +90,21 @@
 <li class="toctree-l1"><a class="reference internal" href="inst_usage.html">Installation &amp; usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#main-file">Main file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#gui">gui</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#module-src.user">User file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-nas.main">Main File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#graphic-user-interface">Graphic User Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-nas.gui.main_window">MainWindow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-nas.gui.registration_window">RegistrationWindow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-nas.gui.reg_stimulation_window">RegStimulationPresentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-nas.gui.login_stimulation_window">LoginStimulationPresentation</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#src">src</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#src-file">Src file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#source">Source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-nas.src.user">User</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-nas.src.self_face">SelfFace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-nas.src.stimuli_creator">StimuliCreator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-nas.src.eeg_recorder">EEGRecorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-nas.src.data_processing">DataProcessing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-nas.src.classifier">Classifier</a></li>
 </ul>
 </li>
 </ul>
@@ -172,71 +180,366 @@
             
   <div class="section" id="modules">
 <h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
-<p>Modules</p>
+<p>The <cite>Neural Access System</cite> modules are divided into two sections, namely <code class="docutils literal notranslate"><span class="pre">gui</span></code> and <code class="docutils literal notranslate"><span class="pre">src</span></code>.
+The <code class="docutils literal notranslate"><span class="pre">gui</span></code> section contains another folder with the designs of individual graphical user windows.
+These designs were created using <a class="reference external" href="https://doc.qt.io/qt-5/qtdesigner-manual.html">qt designer</a>.
+The project also contains a <code class="docutils literal notranslate"><span class="pre">db</span></code> folder for registered users and a <code class="docutils literal notranslate"><span class="pre">db</span></code> folder also contains
+a <code class="docutils literal notranslate"><span class="pre">tmp</span></code> folder for temporarily storing the files needed for the registration itself.
+The <code class="docutils literal notranslate"><span class="pre">resources</span></code> folder is used to store <cite>non-self-face</cite> stimuli and necessary
+images for the graphical user interface.</p>
+<p>Most modules contain preset values for some parameters, which you can edit in the <code class="docutils literal notranslate"><span class="pre">config.py</span></code> file.
+For information about the <code class="docutils literal notranslate"><span class="pre">config.py</span></code> file, visit the <cite>configuration</cite> chapter.</p>
 <div class="toctree-wrapper compound">
 </div>
-<div class="section" id="main-file">
-<h2>Main file<a class="headerlink" href="#main-file" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-nas.main">
+<span id="main-file"></span><h2>Main File<a class="headerlink" href="#module-nas.main" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="nas.main.main">
+<code class="sig-prename descclassname"><span class="pre">nas.main.</span></code><code class="sig-name descname"><span class="pre">main</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/main.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.main.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main program.
+Opens <code class="docutils literal notranslate"><span class="pre">main_window</span></code>.</p>
+</dd></dl>
+
 </div>
-<div class="section" id="gui">
-<h2>gui<a class="headerlink" href="#gui" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="module-src.user">
-<span id="user-file"></span><h3>User file<a class="headerlink" href="#module-src.user" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="graphic-user-interface">
+<h2>Graphic User Interface<a class="headerlink" href="#graphic-user-interface" title="Permalink to this headline">¶</a></h2>
+<p>The graphical user interface consists of four windows,
+namely <code class="docutils literal notranslate"><span class="pre">MainWindow</span></code>, <code class="docutils literal notranslate"><span class="pre">RegistrationWindow</span></code> , <code class="docutils literal notranslate"><span class="pre">RegStimulationWindow</span></code> and
+<code class="docutils literal notranslate"><span class="pre">LoginStimulationWindow</span></code>.</p>
+<div class="section" id="module-nas.gui.main_window">
+<span id="mainwindow"></span><h3>MainWindow<a class="headerlink" href="#module-nas.gui.main_window" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt id="src.user.User">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">src.user.</span></code><code class="sig-name descname"><span class="pre">User</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">login_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/user.html#User"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.user.User" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class for saving and loading user data.</p>
-<dl class="simple">
-<dt>name: string</dt><dd><p>name of user</p>
-</dd>
-<dt>surname: string</dt><dd><p>surname of user</p>
-</dd>
-<dt>login_name: string</dt><dd><p>ID of user used for login.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>set_user_stimulus():</dt><dd><p>stimulus setter.</p>
-</dd>
-<dt>get_user_stimulus():</dt><dd><p>stimulus getter.</p>
-</dd>
-<dt>set_test_data():</dt><dd><p>test data setter.</p>
-</dd>
-<dt>get_test_data():</dt><dd><p>test data getter.</p>
-</dd>
-<dt>save_user():</dt><dd><p>Pickle user.</p>
-</dd>
-</dl>
+<dt id="nas.gui.main_window.MainWindow">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">nas.gui.main_window.</span></code><code class="sig-name descname"><span class="pre">MainWindow</span></code><a class="reference internal" href="_modules/nas/gui/main_window.html#MainWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.main_window.MainWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for displaying the main window of the graphical user interface and its manipulation.
+The user can register or log in.</p>
 <dl class="py method">
-<dt id="src.user.User.get_test_data">
-<code class="sig-name descname"><span class="pre">get_test_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/user.html#User.get_test_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.user.User.get_test_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test data getter.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="src.user.User.get_user_stimulus">
-<code class="sig-name descname"><span class="pre">get_user_stimulus</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/user.html#User.get_user_stimulus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.user.User.get_user_stimulus" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stimulus getter.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="src.user.User.save_user">
-<code class="sig-name descname"><span class="pre">save_user</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/user.html#User.save_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.user.User.save_user" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to save user object as pickle.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="src.user.User.set_test_data">
-<code class="sig-name descname"><span class="pre">set_test_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs_types</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/user.html#User.set_test_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.user.User.set_test_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test data setter.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="src.user.User.set_user_stimulus">
-<code class="sig-name descname"><span class="pre">set_user_stimulus</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stimulus</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/user.html#User.set_user_stimulus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.user.User.set_user_stimulus" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stimulus setter</p>
+<dt id="nas.gui.main_window.MainWindow.check_id">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">check_id</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">login</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/main_window.html#MainWindow.check_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.main_window.MainWindow.check_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if user login exists in database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>XXX</strong> – neviem</p>
+<dd class="field-odd"><p><strong>login</strong> (<em>string</em>) – User login ID.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if login exists in database, false if login is available.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.main_window.MainWindow.log_in">
+<code class="sig-name descname"><span class="pre">log_in</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/main_window.html#MainWindow.log_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.main_window.MainWindow.log_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether the user is registered and if so, continues by opening the <code class="docutils literal notranslate"><span class="pre">login_stimulation_window</span></code>.
+The <code class="docutils literal notranslate"><span class="pre">user</span></code> object created during registration is loaded.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.main_window.MainWindow.register">
+<code class="sig-name descname"><span class="pre">register</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/main_window.html#MainWindow.register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.main_window.MainWindow.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the user is registered and if not, continues by opening <code class="docutils literal notranslate"><span class="pre">reg_window</span></code>.
+Creates new <code class="docutils literal notranslate"><span class="pre">user</span></code> with his <cite>name</cite>, <cite>surname</cite> and <cite>login ID</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.main_window.MainWindow.set_up_window">
+<code class="sig-name descname"><span class="pre">set_up_window</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/main_window.html#MainWindow.set_up_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.main_window.MainWindow.set_up_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes other window settings, such as connecting buttons, etc.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nas.gui.registration_window">
+<span id="registrationwindow"></span><h3>RegistrationWindow<a class="headerlink" href="#module-nas.gui.registration_window" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="nas.gui.registration_window.RegistrationWindow">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">nas.gui.registration_window.</span></code><code class="sig-name descname"><span class="pre">RegistrationWindow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reg_user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/registration_window.html#RegistrationWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.registration_window.RegistrationWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for displaying the registration window of the graphical user interface and its manipulation.
+The main function of this window is to get a photo of the user’s face and turn it into a stimulus.
+There are two options for capturing a photo, one via the device’s camera and the other via file upload.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>reg_user</strong> (<code class="docutils literal notranslate"><span class="pre">user</span></code>) – The object of the registering user.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="nas.gui.registration_window.RegistrationWindow.capture_photo">
+<code class="sig-name descname"><span class="pre">capture_photo</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/registration_window.html#RegistrationWindow.capture_photo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.registration_window.RegistrationWindow.capture_photo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Capture a photo of the user’s face with connected camera.
+Photo needs to be confirmed by assigned button.
+The photo is stored in the temporary folder <cite>tmp</cite>.
+The path to a temporary folder can be changed in <code class="docutils literal notranslate"><span class="pre">config.py</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.registration_window.RegistrationWindow.choose_file">
+<code class="sig-name descname"><span class="pre">choose_file</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/registration_window.html#RegistrationWindow.choose_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.registration_window.RegistrationWindow.choose_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays the selected user face file on <cite>CameraLayout</cite>.
+Image needs to be confirmed by assigned button.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.registration_window.RegistrationWindow.connect_camera">
+<code class="sig-name descname"><span class="pre">connect_camera</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/registration_window.html#RegistrationWindow.connect_camera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.registration_window.RegistrationWindow.connect_camera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect chosen camera to camera viewfinder, created in <cite>create_camera_widgets()</cite>.
+Photo needs to be captured by assigned button and later confirmed for next processing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.registration_window.RegistrationWindow.continue_registration">
+<code class="sig-name descname"><span class="pre">continue_registration</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/registration_window.html#RegistrationWindow.continue_registration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.registration_window.RegistrationWindow.continue_registration" title="Permalink to this definition">¶</a></dt>
+<dd><p>It starts the next stage of registration by opening the reg_stimulation_window.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.registration_window.RegistrationWindow.create_camera_widgets">
+<code class="sig-name descname"><span class="pre">create_camera_widgets</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/registration_window.html#RegistrationWindow.create_camera_widgets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.registration_window.RegistrationWindow.create_camera_widgets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates necessary widgets for camera layout.
+<cite>QLabel</cite> for image itself.
+<cite>QLabel</cite> for message about this window.
+<cite>QCameraViewfinder</cite> for camera.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.registration_window.RegistrationWindow.find_file">
+<code class="sig-name descname"><span class="pre">find_file</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/registration_window.html#RegistrationWindow.find_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.registration_window.RegistrationWindow.find_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens the file dialog to select the desired user face file.
+This file needs to be displayed by assigned button.
+Supported file types are <code class="docutils literal notranslate"><span class="pre">.jpg</span></code>, <code class="docutils literal notranslate"><span class="pre">.gif</span></code>, <code class="docutils literal notranslate"><span class="pre">.jpeg</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.registration_window.RegistrationWindow.process_photo">
+<code class="sig-name descname"><span class="pre">process_photo</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/registration_window.html#RegistrationWindow.process_photo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.registration_window.RegistrationWindow.process_photo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a stimulus from a user’s face photo.
+The <code class="docutils literal notranslate"><span class="pre">SelfFace</span></code> class is used.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.registration_window.RegistrationWindow.set_up_window">
+<code class="sig-name descname"><span class="pre">set_up_window</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/registration_window.html#RegistrationWindow.set_up_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.registration_window.RegistrationWindow.set_up_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes other window settings, such as connecting buttons, etc.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.registration_window.RegistrationWindow.show_camera_menu">
+<code class="sig-name descname"><span class="pre">show_camera_menu</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/registration_window.html#RegistrationWindow.show_camera_menu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.registration_window.RegistrationWindow.show_camera_menu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays camera menu and all functional cameras.
+After choosing specific camera, it needs to be connected and controlled.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.registration_window.RegistrationWindow.show_file_menu">
+<code class="sig-name descname"><span class="pre">show_file_menu</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/registration_window.html#RegistrationWindow.show_file_menu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.registration_window.RegistrationWindow.show_file_menu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays the file menu for searching the user’s photo file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.registration_window.RegistrationWindow.show_photo">
+<code class="sig-name descname"><span class="pre">show_photo</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/registration_window.html#RegistrationWindow.show_photo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.registration_window.RegistrationWindow.show_photo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays the captured photo in <cite>CameraLayout</cite> for further confirmation.
+Confirmation is executed by assigned button.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nas.gui.reg_stimulation_window">
+<span id="regstimulationpresentation"></span><h3>RegStimulationPresentation<a class="headerlink" href="#module-nas.gui.reg_stimulation_window" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="nas.gui.reg_stimulation_window.RegStimuliPresentation">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">nas.gui.reg_stimulation_window.</span></code><code class="sig-name descname"><span class="pre">RegStimuliPresentation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reg_user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/reg_stimulation_window.html#RegStimuliPresentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.reg_stimulation_window.RegStimuliPresentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for displaying the reg. stimulation window of the graphical user interface and its manipulation.
+The main function of this class is to display individual stimuli to the user and record his EEG signals in his
+reactions to them.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>reg_user</strong> (<code class="docutils literal notranslate"><span class="pre">user</span></code>) – The object of the registering user.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="nas.gui.reg_stimulation_window.RegStimuliPresentation.end_registration">
+<code class="sig-name descname"><span class="pre">end_registration</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/reg_stimulation_window.html#RegStimuliPresentation.end_registration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.reg_stimulation_window.RegStimuliPresentation.end_registration" title="Permalink to this definition">¶</a></dt>
+<dd><p>It terminates the registration, processes the recorded EEG data into a suitable form with <cite>DataProcessing</cite>,
+sets the registration parameters of the <code class="docutils literal notranslate"><span class="pre">user</span></code> object,
+saves the <code class="docutils literal notranslate"><span class="pre">user</span></code> object, cleans the temporary folder and enables the
+subsequent functions of the registered user.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.reg_stimulation_window.RegStimuliPresentation.set_up_window">
+<code class="sig-name descname"><span class="pre">set_up_window</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/reg_stimulation_window.html#RegStimuliPresentation.set_up_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.reg_stimulation_window.RegStimuliPresentation.set_up_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes other window settings, such as connecting buttons, etc.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.reg_stimulation_window.RegStimuliPresentation.start_recording">
+<code class="sig-name descname"><span class="pre">start_recording</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/reg_stimulation_window.html#RegStimuliPresentation.start_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.reg_stimulation_window.RegStimuliPresentation.start_recording" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts recording EEG signals. It is necessary to use a thread for proper functionality.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.reg_stimulation_window.RegStimuliPresentation.stimulation">
+<code class="sig-name descname"><span class="pre">stimulation</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/reg_stimulation_window.html#RegStimuliPresentation.stimulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.reg_stimulation_window.RegStimuliPresentation.stimulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timer of the stimulation itself</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.reg_stimulation_window.RegStimuliPresentation.update_start_time">
+<code class="sig-name descname"><span class="pre">update_start_time</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/reg_stimulation_window.html#RegStimuliPresentation.update_start_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.reg_stimulation_window.RegStimuliPresentation.update_start_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stimulation start timer.
+The default is set to 5 seconds, but this time can be changed in the <code class="docutils literal notranslate"><span class="pre">conf.py</span></code> file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.reg_stimulation_window.RegStimuliPresentation.update_stimuli">
+<code class="sig-name descname"><span class="pre">update_stimuli</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/reg_stimulation_window.html#RegStimuliPresentation.update_stimuli"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.reg_stimulation_window.RegStimuliPresentation.update_stimuli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the stimulus type.
+StimuliCreator is used.
+Each stimulus is timed to 0.3 seconds followed by 1 second of the blank screen.
+<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">random</span> <span class="pre">time</span> <span class="pre">0.295</span> <span class="pre">-</span> <span class="pre">0.31</span> <span class="pre">and</span> <span class="pre">0.95</span> <span class="pre">-</span> <span class="pre">1.1</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nas.gui.login_stimulation_window">
+<span id="loginstimulationpresentation"></span><h3>LoginStimulationPresentation<a class="headerlink" href="#module-nas.gui.login_stimulation_window" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="nas.gui.login_stimulation_window.LoginStimulationPresentation">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">nas.gui.login_stimulation_window.</span></code><code class="sig-name descname"><span class="pre">LoginStimulationPresentation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reg_user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/login_stimulation_window.html#LoginStimulationPresentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.login_stimulation_window.LoginStimulationPresentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for displaying the login stimulation window of the graphical user interface and its manipulation.
+The main function of this class is to display individual stimuli to the user and record his EEG signals in his
+reactions to them. These reactions are then classified to indicate whether the user is granted access.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>reg_user</strong> (<code class="docutils literal notranslate"><span class="pre">user</span></code>) – The object of the registered user.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="nas.gui.login_stimulation_window.LoginStimulationPresentation.get_access_data">
+<code class="sig-name descname"><span class="pre">get_access_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/login_stimulation_window.html#LoginStimulationPresentation.get_access_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.login_stimulation_window.LoginStimulationPresentation.get_access_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Classifies access EEG data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.login_stimulation_window.LoginStimulationPresentation.set_up_window">
+<code class="sig-name descname"><span class="pre">set_up_window</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/login_stimulation_window.html#LoginStimulationPresentation.set_up_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.login_stimulation_window.LoginStimulationPresentation.set_up_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes other window settings, such as connecting buttons, etc.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.login_stimulation_window.LoginStimulationPresentation.start_recording">
+<code class="sig-name descname"><span class="pre">start_recording</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/login_stimulation_window.html#LoginStimulationPresentation.start_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.login_stimulation_window.LoginStimulationPresentation.start_recording" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts recording EEG signals. It is necessary to use a thread for proper functionality.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.login_stimulation_window.LoginStimulationPresentation.stimulation">
+<code class="sig-name descname"><span class="pre">stimulation</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/login_stimulation_window.html#LoginStimulationPresentation.stimulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.login_stimulation_window.LoginStimulationPresentation.stimulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timer of the stimulation itself</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.login_stimulation_window.LoginStimulationPresentation.update_start_time">
+<code class="sig-name descname"><span class="pre">update_start_time</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/login_stimulation_window.html#LoginStimulationPresentation.update_start_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.login_stimulation_window.LoginStimulationPresentation.update_start_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stimulation start timer.
+The default is set to 5 seconds, but this time can be changed in the <code class="docutils literal notranslate"><span class="pre">conf.py</span></code> file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.gui.login_stimulation_window.LoginStimulationPresentation.update_stimuli">
+<code class="sig-name descname"><span class="pre">update_stimuli</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/gui/login_stimulation_window.html#LoginStimulationPresentation.update_stimuli"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.gui.login_stimulation_window.LoginStimulationPresentation.update_stimuli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the stimulus type.
+StimuliCreator is used.
+Each stimulus is timed to 0.3 seconds followed by 1 second of the blank screen.
+<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">random</span> <span class="pre">time</span> <span class="pre">0.295</span> <span class="pre">-</span> <span class="pre">0.31</span> <span class="pre">and</span> <span class="pre">0.95</span> <span class="pre">-</span> <span class="pre">1.1</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="source">
+<h2>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
+<p>Source files consist of <code class="docutils literal notranslate"><span class="pre">user</span></code>, <code class="docutils literal notranslate"><span class="pre">self_face</span></code>, <code class="docutils literal notranslate"><span class="pre">stimuli_creator</span></code>, <code class="docutils literal notranslate"><span class="pre">eeg_recorder</span></code>
+, <code class="docutils literal notranslate"><span class="pre">data_processing</span></code> and <code class="docutils literal notranslate"><span class="pre">classifier</span></code>.</p>
+<div class="section" id="module-nas.src.user">
+<span id="user"></span><h3>User<a class="headerlink" href="#module-nas.src.user" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="nas.src.user.User">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">nas.src.user.</span></code><code class="sig-name descname"><span class="pre">User</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">login_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/user.html#User"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.user.User" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for creating a user object and storing it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>string</em>) – User name.</p></li>
+<li><p><strong>surname</strong> (<em>string</em>) – User surname.</p></li>
+<li><p><strong>login_id</strong> (<em>string</em>) – User login ID.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="nas.src.user.User.get_reg_data">
+<code class="sig-name descname"><span class="pre">get_reg_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/user.html#User.get_reg_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.user.User.get_reg_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registration data getter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>user_stimuli_windows, window_types</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list, list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.src.user.User.get_user_stimulus">
+<code class="sig-name descname"><span class="pre">get_user_stimulus</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/user.html#User.get_user_stimulus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.user.User.get_user_stimulus" title="Permalink to this definition">¶</a></dt>
+<dd><p>User’s stimulus getter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Picture of a user’s face.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>base64 string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.src.user.User.save_user">
+<code class="sig-name descname"><span class="pre">save_user</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/user.html#User.save_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.user.User.save_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the user object using <code class="docutils literal notranslate"><span class="pre">pickle</span></code> library.
+The path where the object is saved can be changed in <code class="docutils literal notranslate"><span class="pre">config.py</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.src.user.User.set_reg_data">
+<code class="sig-name descname"><span class="pre">set_reg_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_stimuli_windows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_types</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/user.html#User.set_reg_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.user.User.set_reg_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registration data setter.
+Length of <cite>user_stimuli_windows</cite> and <cite>window_types</cite> must be the same.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_stimuli_windows</strong> (<em>list TODO</em>) – User responses to stimuli divided into time windows.</p></li>
+<li><p><strong>window_types</strong> (<em>list TODO</em>) – Types of individual time windows. 1 for self-face and 0 for non-self-face.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.src.user.User.set_user_stimulus">
+<code class="sig-name descname"><span class="pre">set_user_stimulus</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stimulus</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/user.html#User.set_user_stimulus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.user.User.set_user_stimulus" title="Permalink to this definition">¶</a></dt>
+<dd><p>User’s stimulus setter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>stimulus</strong> (<em>base64 string</em>) – Picture of a user’s face.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -244,11 +547,277 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-nas.src.self_face">
+<span id="selfface"></span><h3>SelfFace<a class="headerlink" href="#module-nas.src.self_face" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="nas.src.self_face.SelfFace">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">nas.src.self_face.</span></code><code class="sig-name descname"><span class="pre">SelfFace</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/self_face.html#SelfFace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.self_face.SelfFace" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class that creates a stimulus from a photo of a user’s face.
+Stimulus is an image encoded in base64 string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>string</em>) – Path to the desired photo. This path can be changed in <code class="docutils literal notranslate"><span class="pre">config.py</span></code>.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="nas.src.self_face.SelfFace.create">
+<code class="sig-name descname"><span class="pre">create</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/self_face.html#SelfFace.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.self_face.SelfFace.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>It will try to crop the user’s face.
+Sets the success of the operation.
+Sets the success of the operation and encodes this result using <cite>base64</cite>.
+The processed photo is temporarily saved in <cite>tmp_image_path</cite>.
+This path can be changed in <code class="docutils literal notranslate"><span class="pre">config.py</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.src.self_face.SelfFace.get_face_b64">
+<code class="sig-name descname"><span class="pre">get_face_b64</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/self_face.html#SelfFace.get_face_b64"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.self_face.SelfFace.get_face_b64" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stimulus getter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Encoded stimulus.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>base64 string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.src.self_face.SelfFace.get_status">
+<code class="sig-name descname"><span class="pre">get_status</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/self_face.html#SelfFace.get_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.self_face.SelfFace.get_status" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>Create</cite> status getter.
+This status is used to report an error to the user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Status of operation. <code class="docutils literal notranslate"><span class="pre">True</span></code> if successful otherwise <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="src">
-<h2>src<a class="headerlink" href="#src" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="src-file">
-<h3>Src file<a class="headerlink" href="#src-file" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="module-nas.src.stimuli_creator">
+<span id="stimulicreator"></span><h3>StimuliCreator<a class="headerlink" href="#module-nas.src.stimuli_creator" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="nas.src.stimuli_creator.StimuliCreator">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">nas.src.stimuli_creator.</span></code><code class="sig-name descname"><span class="pre">StimuliCreator</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_face</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/stimuli_creator.html#StimuliCreator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.stimuli_creator.StimuliCreator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for random display of stimuli to the user.
+These stimuli consist of <cite>self-face</cite> and <cite>non-self-face</cite> images.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>user_face</strong> (<em>base64 string</em>) – User stimulus.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="nas.src.stimuli_creator.StimuliCreator.get_stimuli_types">
+<code class="sig-name descname"><span class="pre">get_stimuli_types</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/stimuli_creator.html#StimuliCreator.get_stimuli_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.stimuli_creator.StimuliCreator.get_stimuli_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return types of generated stimuli types.
+This list is used for classification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of generated stimuli types.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.src.stimuli_creator.StimuliCreator.learning_stimuli">
+<code class="sig-name descname"><span class="pre">learning_stimuli</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/stimuli_creator.html#StimuliCreator.learning_stimuli"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.stimuli_creator.StimuliCreator.learning_stimuli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stimulation for the registration process.
+This stimulation is not randomized.
+Every fifth stimulus is self-face stimulus.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">set_non_self_face_stimulus()</span></code> or <code class="docutils literal notranslate"><span class="pre">set_self_face_stimulus()</span></code></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>QPixmap</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.src.stimuli_creator.StimuliCreator.randomized_stimuli">
+<code class="sig-name descname"><span class="pre">randomized_stimuli</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/stimuli_creator.html#StimuliCreator.randomized_stimuli"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.stimuli_creator.StimuliCreator.randomized_stimuli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stimulation for the log in process.
+This stimulation is randomized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">set_non_self_face_stimulus()</span></code> or <code class="docutils literal notranslate"><span class="pre">set_self_face_stimulus()</span></code></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>QPixmap</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.src.stimuli_creator.StimuliCreator.set_non_self_face_stimulus">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">set_non_self_face_stimulus</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/stimuli_creator.html#StimuliCreator.set_non_self_face_stimulus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.stimuli_creator.StimuliCreator.set_non_self_face_stimulus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get non-self-face stimulus.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Specific non-self-face stimulus.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>QPixmap</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.src.stimuli_creator.StimuliCreator.set_self_face_stimulus">
+<code class="sig-name descname"><span class="pre">set_self_face_stimulus</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/stimuli_creator.html#StimuliCreator.set_self_face_stimulus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.stimuli_creator.StimuliCreator.set_self_face_stimulus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get self-face stimulus.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Self-face stimulus.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>QPixmap</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nas.src.eeg_recorder">
+<span id="eegrecorder"></span><h3>EEGRecorder<a class="headerlink" href="#module-nas.src.eeg_recorder" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="nas.src.eeg_recorder.EEGRecorder">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">nas.src.eeg_recorder.</span></code><code class="sig-name descname"><span class="pre">EEGRecorder</span></code><a class="reference internal" href="_modules/nas/src/eeg_recorder.html#EEGRecorder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.eeg_recorder.EEGRecorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class recording EEG signals.</p>
+<dl class="py method">
+<dt id="nas.src.eeg_recorder.EEGRecorder.get_rec_data">
+<code class="sig-name descname"><span class="pre">get_rec_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/eeg_recorder.html#EEGRecorder.get_rec_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.eeg_recorder.EEGRecorder.get_rec_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>EEG data getter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Array of EEG data.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.src.eeg_recorder.EEGRecorder.get_rec_timestamps">
+<code class="sig-name descname"><span class="pre">get_rec_timestamps</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/eeg_recorder.html#EEGRecorder.get_rec_timestamps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.eeg_recorder.EEGRecorder.get_rec_timestamps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timestamps getter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Data timestamps.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.src.eeg_recorder.EEGRecorder.start_record">
+<code class="sig-name descname"><span class="pre">start_record</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/eeg_recorder.html#EEGRecorder.start_record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.eeg_recorder.EEGRecorder.start_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts recording session.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.src.eeg_recorder.EEGRecorder.stop_record">
+<code class="sig-name descname"><span class="pre">stop_record</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/eeg_recorder.html#EEGRecorder.stop_record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.eeg_recorder.EEGRecorder.stop_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops recording session.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nas.src.data_processing">
+<span id="dataprocessing"></span><h3>DataProcessing<a class="headerlink" href="#module-nas.src.data_processing" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="nas.src.data_processing.DataProcessing">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">nas.src.data_processing.</span></code><code class="sig-name descname"><span class="pre">DataProcessing</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stimuli_timestamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stimuli_num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/data_processing.html#DataProcessing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.data_processing.DataProcessing" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class that processes and filters EEG data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numpy.array</em>) – EEG data.</p></li>
+<li><p><strong>timestamps</strong> (<em>numpy.array</em>) – EEG data timestamps.</p></li>
+<li><p><strong>stimuli_timestamps</strong> (<em>numpy.array</em>) – Timestamps of stimulation.</p></li>
+<li><p><strong>stimuli_num</strong> (<em>int</em>) – Number of stimules.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="nas.src.data_processing.DataProcessing.create_time_windows">
+<code class="sig-name descname"><span class="pre">create_time_windows</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/data_processing.html#DataProcessing.create_time_windows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.data_processing.DataProcessing.create_time_windows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to get stimuli time windows.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of time windows.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.src.data_processing.DataProcessing.filter_data">
+<code class="sig-name descname"><span class="pre">filter_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/data_processing.html#DataProcessing.filter_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.data_processing.DataProcessing.filter_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filters data from unwanted artifacts and filters noise.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nas.src.classifier">
+<span id="classifier"></span><h3>Classifier<a class="headerlink" href="#module-nas.src.classifier" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="nas.src.classifier.Classifier">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">nas.src.classifier.</span></code><code class="sig-name descname"><span class="pre">Classifier</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">login_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reg_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reg_data_types</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/classifier.html#Classifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.classifier.Classifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class that classifies login EEG data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>login_data</strong> (<em>list</em>) – Login EEG data. List of login data time windows.</p></li>
+<li><p><strong>reg_data</strong> (<em>list</em>) – Registration EEG data. List of registration data time windows.</p></li>
+<li><p><strong>reg_data_types</strong> (<em>list</em>) – Registration data time windows types.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="nas.src.classifier.Classifier.classify">
+<code class="sig-name descname"><span class="pre">classify</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">classification_method</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/classifier.html#Classifier.classify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.classifier.Classifier.classify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Classify login EEG data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>classification_method</strong> (<em>string</em>) – Method of classification.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of classification.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="nas.src.classifier.Classifier.reduce_dimension_lda">
+<code class="sig-name descname"><span class="pre">reduce_dimension_lda</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nas/src/classifier.html#Classifier.reduce_dimension_lda"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nas.src.classifier.Classifier.reduce_dimension_lda" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduction of the dimension of EEG data for the correct functioning of the classification method.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 </div>

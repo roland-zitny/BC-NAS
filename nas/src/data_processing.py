@@ -1,35 +1,23 @@
-import brainflow
 import numpy as np
-from matplotlib import pyplot as plt
-from brainflow import BoardShim, BoardIds, DataFilter, AggOperations, FilterTypes
+from brainflow import BoardShim, DataFilter, FilterTypes
 from nas.src import config
 
 
-class DataProcessing():
+class DataProcessing:
     """
-        Class used to process and filter EEG data recorded by Brainflow library.
+        A class that processes and filters EEG data.
 
-        Attributes
-        ----------
-        data : numpy array
-            whole EEG data, 15 channels
+        :param data: EEG data.
+        :type data: numpy.array
 
-        timestamps : numpy array
-            timestamps of EEG data
+        :param timestamps: EEG data timestamps.
+        :type timestamps: numpy.array
 
-        stimuli_timestamps :
-            timestamps of stimuli
+        :param stimuli_timestamps: Timestamps of stimulation.
+        :type stimuli_timestamps: numpy.array
 
-        stim_num :
-            number of stimuli
-
-        Methods
-        -------
-        filter_data :
-            Data filtering.
-
-        create_epochs :
-            Gets stimuli time windows.
+        :param stimuli_num: Number of stimules.
+        :type stimuli_num: int
     """
 
     def __init__(self, data, timestamps, stimuli_timestamps, stimuli_num):
@@ -40,7 +28,7 @@ class DataProcessing():
 
     def filter_data(self):
         """
-            Method to filter and clean data.
+            Filters data from unwanted artifacts and filters noise.
         """
 
         # BANDSTOP & Wavelet denoising TODO
@@ -49,11 +37,12 @@ class DataProcessing():
                                         FilterTypes.BUTTERWORTH.value, 0)
             DataFilter.perform_wavelet_denoising(self.data[i], 'coif3', 3)
 
-        print("vyfiltrovane")
-
-    def create_epochs(self):
+    def create_time_windows(self):
         """
             Method to get stimuli time windows.
+
+            :return: List of time windows.
+            :rtype: list
         """
 
         # TODO pridat dalsie features ako integral max min atd co bude vhodne to sa este nevie

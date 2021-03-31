@@ -1,34 +1,13 @@
 import time
-
+import os
 from brainflow import DataFilter
-from brainflow.board_shim import BoardShim, BrainFlowInputParams, BoardIds
+from brainflow.board_shim import BoardShim, BrainFlowInputParams
 from nas.src import config
-import pandas as pd
-import numpy as np
 
 
 class EEGRecorder:
     """
-        Class used to record EEG data of user.
-
-        Attributes
-        ----------
-        None
-
-        Methods
-        -------
-        start_record():
-            Recording session.
-
-        stop_record():
-            Stops session.
-
-        get_rec_data():
-            Data getter.
-
-        get_rec_timestamps():
-            Timestamps getter.
-
+        Class recording EEG signals.
     """
 
     def __init__(self):
@@ -38,7 +17,7 @@ class EEGRecorder:
 
     def start_record(self):
         """
-            Start recording session.
+            Starts recording session.
         """
 
         params = BrainFlowInputParams()
@@ -60,7 +39,7 @@ class EEGRecorder:
 
     def stop_record(self):
         """
-            Stops session.
+            Stops recording session.
         """
 
         self.data = self.board.get_board_data()
@@ -70,29 +49,28 @@ class EEGRecorder:
         BoardShim.release_session(self.board)
 
         # SAVE DATA TODO
-        #print(len(self.data[0]))
-        #file_name = str(round(time.time() * 1000))
-        #DataFilter.write_file(self.data, file_name + '.csv', 'w')
+        file_name = str(round(time.time() * 1000))
+        DataFilter.write_file(self.data, config.EEG_DATASET_FILE + os.sep + file_name + '.csv', 'w')
+
         self.timestamps = self.data[self.timestamps]
         self.data = self.data[eeg_channels]
 
     def get_rec_data(self):
         """
-            asdsa
+            EEG data getter.
+
+            :return: Array of EEG data.
+            :rtype: numpy.array
         """
 
         return self.data
 
     def get_rec_timestamps(self):
         """
-            asdsa
+            Timestamps getter.
+
+            :return: Data timestamps.
+            :rtype: numpy.array
         """
 
         return self.timestamps
-
-
-if __name__ == '__main__':
-    recorder = EEGRecorder()
-    recorder.start_record()
-    time.sleep(10)
-    recorder.stop_record()

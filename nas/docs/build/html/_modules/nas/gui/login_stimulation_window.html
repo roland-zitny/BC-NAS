@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>nas.gui.login_stimulation_window &mdash; NAS - Neural Access System beta documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> NAS - Neural Access System
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../inst_usage.html">Installation &amp; usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">NAS - Neural Access System</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>nas.gui.login_stimulation_window</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for nas.gui.login_stimulation_window</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">uic</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QTimer</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QPixmap</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QDesktopWidget</span>
+<span class="kn">from</span> <span class="nn">nas.src</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">nas.src.eeg_recorder</span> <span class="kn">import</span> <span class="n">EEGRecorder</span>
+<span class="kn">from</span> <span class="nn">nas.src.data_processing</span> <span class="kn">import</span> <span class="n">DataProcessing</span>
+<span class="kn">from</span> <span class="nn">nas.src.stimuli_creator</span> <span class="kn">import</span> <span class="n">StimuliCreator</span>
+<span class="kn">from</span> <span class="nn">nas.src.classifier</span> <span class="kn">import</span> <span class="n">Classifier</span>
+
+<span class="n">directory_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+<span class="n">ui_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory_path</span><span class="p">,</span> <span class="s2">&quot;designs&quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s2">&quot;login_stimuli_window.ui&quot;</span><span class="p">)</span>
+<span class="n">Ui_RegWindow</span><span class="p">,</span> <span class="n">QtBaseClass</span> <span class="o">=</span> <span class="n">uic</span><span class="o">.</span><span class="n">loadUiType</span><span class="p">(</span><span class="n">ui_path</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="LoginStimulationPresentation"><a class="viewcode-back" href="../../../modules.html#nas.gui.login_stimulation_window.LoginStimulationPresentation">[docs]</a><span class="k">class</span> <span class="nc">LoginStimulationPresentation</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="p">,</span> <span class="n">Ui_RegWindow</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class for displaying the login stimulation window of the graphical user interface and its manipulation.</span>
+<span class="sd">        The main function of this class is to display individual stimuli to the user and record his EEG signals in his</span>
+<span class="sd">        reactions to them. These reactions are then classified to indicate whether the user is granted access.</span>
+
+<span class="sd">        :param reg_user: The object of the registered user.</span>
+<span class="sd">        :type reg_user: ``user``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg_user</span><span class="p">):</span>
+        <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">Ui_RegWindow</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setupUi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reg_user</span> <span class="o">=</span> <span class="n">reg_user</span>  <span class="c1"># Object with user, his name, surname and image/stimulus.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_types_array</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  <span class="c1"># Array of stimulus types.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_timestamps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>  <span class="c1"># Array of stimuli timestamps.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eeg_recorder</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recording_thread</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_creator</span> <span class="o">=</span> <span class="n">StimuliCreator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reg_user</span><span class="o">.</span><span class="n">get_user_stimulus</span><span class="p">())</span>
+
+        <span class="c1"># Start timer.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">starting_time</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">STARTING_TIME</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_start_timer</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StartTimer</span> <span class="o">=</span> <span class="n">QTimer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StartTimer</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_start_time</span><span class="p">)</span>
+
+        <span class="c1"># Stimuli timer.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_time</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_of_stimuli</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_stimuli_timer</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StimuliTimer</span> <span class="o">=</span> <span class="n">QTimer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StimuliTimer</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_stimuli</span><span class="p">)</span>
+
+        <span class="c1"># Flags for stimuli type.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_stimulus</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_blank</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_change</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Flag of change, to not call pixmap method multiple times.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_memory</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Memory of time.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_up_window</span><span class="p">()</span>
+
+<div class="viewcode-block" id="LoginStimulationPresentation.set_up_window"><a class="viewcode-back" href="../../../modules.html#nas.gui.login_stimulation_window.LoginStimulationPresentation.set_up_window">[docs]</a>    <span class="k">def</span> <span class="nf">set_up_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Makes other window settings, such as connecting buttons, etc.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Center window to screen.</span>
+        <span class="n">qt_rectangle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frameGeometry</span><span class="p">()</span>
+        <span class="n">center_point</span> <span class="o">=</span> <span class="n">QDesktopWidget</span><span class="p">()</span><span class="o">.</span><span class="n">availableGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+        <span class="n">qt_rectangle</span><span class="o">.</span><span class="n">moveCenter</span><span class="p">(</span><span class="n">center_point</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">qt_rectangle</span><span class="o">.</span><span class="n">topLeft</span><span class="p">())</span>
+        <span class="n">qt_rectangle</span><span class="o">.</span><span class="n">moveCenter</span><span class="p">(</span><span class="n">center_point</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">qt_rectangle</span><span class="o">.</span><span class="n">topLeft</span><span class="p">())</span>
+
+        <span class="c1"># Hide unnecessary widgets.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StimuliLayoutWidget</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StimuliImage</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+
+        <span class="c1"># Connect ui buttons to methods.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StartRecording</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_recording</span><span class="p">)</span></div>
+
+        <span class="c1"># TODO</span>
+        <span class="c1"># self.test()</span>
+
+<div class="viewcode-block" id="LoginStimulationPresentation.start_recording"><a class="viewcode-back" href="../../../modules.html#nas.gui.login_stimulation_window.LoginStimulationPresentation.start_recording">[docs]</a>    <span class="k">def</span> <span class="nf">start_recording</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Starts recording EEG signals. It is necessary to use a thread for proper functionality.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">StimuliInfoWidget</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StimuliLayoutWidget</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StartTimer</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eeg_recorder</span> <span class="o">=</span> <span class="n">EEGRecorder</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recording_thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eeg_recorder</span><span class="o">.</span><span class="n">start_record</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recording_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Thread exits if app is closed.</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;start:&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">now</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recording_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="LoginStimulationPresentation.update_start_time"><a class="viewcode-back" href="../../../modules.html#nas.gui.login_stimulation_window.LoginStimulationPresentation.update_start_time">[docs]</a>    <span class="k">def</span> <span class="nf">update_start_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Stimulation start timer.</span>
+<span class="sd">            The default is set to 5 seconds, but this time can be changed in the ``conf.py`` file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_start_timer</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">starting_time</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">StartTimerLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">starting_time</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">starting_time</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_start_timer</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">StartTimer</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">StartTimerLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stimulation</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="LoginStimulationPresentation.stimulation"><a class="viewcode-back" href="../../../modules.html#nas.gui.login_stimulation_window.LoginStimulationPresentation.stimulation">[docs]</a>    <span class="k">def</span> <span class="nf">stimulation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Timer of the stimulation itself</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">StimuliTimer</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># 0.1 s / 100 ms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">StimuliImage</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="LoginStimulationPresentation.update_stimuli"><a class="viewcode-back" href="../../../modules.html#nas.gui.login_stimulation_window.LoginStimulationPresentation.update_stimuli">[docs]</a>    <span class="k">def</span> <span class="nf">update_stimuli</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Updates the stimulus type.</span>
+<span class="sd">            StimuliCreator is used.</span>
+<span class="sd">            Each stimulus is timed to 0.3 seconds followed by 1 second of the blank screen.</span>
+<span class="sd">            ``TODO random time 0.295 - 0.31 and 0.95 - 1.1``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_stimuli_timer</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_time</span> <span class="o">+=</span> <span class="mf">0.01</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_time</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stimuli_time</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_of_stimuli</span> <span class="o">==</span> <span class="n">config</span><span class="o">.</span><span class="n">STIMULI_NUM</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># Number of stimuli. TODO +1 lebo aby zaznamenal na</span>
+                <span class="c1"># TODO posledny stimul dostatok</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_stimuli_timer</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">StimuliTimer</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">eeg_recorder</span><span class="o">.</span><span class="n">stop_record</span><span class="p">()</span>  <span class="c1"># Stop recording.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_access_data</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_stimuli_timer</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_stimulus</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_change</span><span class="p">:</span>
+                    <span class="n">pixmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_creator</span><span class="o">.</span><span class="n">randomized_stimuli</span><span class="p">()</span>
+                    <span class="c1"># Save stimuli timestamps.</span>
+                    <span class="n">stimuli_timestamp</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_timestamps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stimuli_timestamps</span><span class="p">,</span> <span class="n">stimuli_timestamp</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">StimuliImage</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">QPixmap</span><span class="p">(</span><span class="n">pixmap</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_change</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_time</span> <span class="o">==</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_memory</span> <span class="o">+</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>  <span class="c1"># TODO add random na 0.3</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">time_memory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_time</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">num_of_stimuli</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_stimulus</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_blank</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_change</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_blank</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_change</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">StimuliImage</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_change</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_time</span> <span class="o">==</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_memory</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>  <span class="c1"># TODO add random na 1.0</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">time_memory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_time</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_stimulus</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_blank</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_change</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="LoginStimulationPresentation.get_access_data"><a class="viewcode-back" href="../../../modules.html#nas.gui.login_stimulation_window.LoginStimulationPresentation.get_access_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_access_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Classifies access EEG data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eeg_recorder</span><span class="o">.</span><span class="n">get_rec_data</span><span class="p">()</span>
+        <span class="n">timestamps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eeg_recorder</span><span class="o">.</span><span class="n">get_rec_timestamps</span><span class="p">()</span>
+
+        <span class="n">data_processing</span> <span class="o">=</span> <span class="n">DataProcessing</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">timestamps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_timestamps</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">STIMULI_NUM</span><span class="p">)</span>
+        <span class="n">data_processing</span><span class="o">.</span><span class="n">filter_data</span><span class="p">()</span>
+
+        <span class="c1"># login data &amp; types</span>
+        <span class="n">login_stimuli_windows</span> <span class="o">=</span> <span class="n">data_processing</span><span class="o">.</span><span class="n">create_time_windows</span><span class="p">()</span>
+        <span class="n">login_stimuli_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_creator</span><span class="o">.</span><span class="n">get_stimuli_types</span><span class="p">()</span>
+
+        <span class="c1"># reg data</span>
+        <span class="n">reg_stimuli_windows</span><span class="p">,</span> <span class="n">reg_stimuli_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reg_user</span><span class="o">.</span><span class="n">get_reg_data</span><span class="p">()</span>
+
+        <span class="n">classifier</span> <span class="o">=</span> <span class="n">Classifier</span><span class="p">(</span><span class="n">login_stimuli_windows</span><span class="p">,</span> <span class="n">reg_stimuli_windows</span><span class="p">,</span> <span class="n">reg_stimuli_types</span><span class="p">)</span>
+        <span class="n">classifier</span><span class="o">.</span><span class="n">reduce_dimension_lda</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="s2">&quot;LDA&quot;</span><span class="p">)</span>
+
+        <span class="c1"># TODO dorobit dalsie oknot to iste pri reg_stim_window</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---------------------------&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">login_stimuli_types</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Roland Žitný.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
