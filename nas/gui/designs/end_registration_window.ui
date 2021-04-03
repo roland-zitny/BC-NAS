@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1162</width>
+    <height>798</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>NAS</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../resources/icons/AppIcon.jpeg</normaloff>../../resources/icons/AppIcon.jpeg</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(240, 238, 226);
+</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">background-color: qlineargradient(spread:pad, x1:0 y1:0, x2:0 y2:1, stop:0 #373a3c, stop:1 #72777d);</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <item row="0" column="0" colspan="2">
+     <widget class="QWidget" name="Header" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>151</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>151</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: #373a3c;
+border-bottom: 1px solid white;
+
+
+</string>
+      </property>
+      <layout class="QHBoxLayout" name="Header_layout">
+       <property name="spacing">
+        <number>30</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="fit_icon">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>150</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>150</width>
+           <height>150</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border-bottom: none;</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap>../../resources/icons/FitIcon.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+         <property name="wordWrap">
+          <bool>false</bool>
+         </property>
+         <property name="margin">
+          <number>1</number>
+         </property>
+         <property name="indent">
+          <number>0</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="header_info_layout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="app_name">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>60</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(255, 255, 255);
+font: 63 26pt &quot;Yu Gothic UI Semibold&quot;;
+border-bottom: none;</string>
+           </property>
+           <property name="text">
+            <string>Identifikace a verifikace osob s využitím EEG</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="author">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 63 12pt &quot;Yu Gothic UI Semibold&quot;;
+color: rgb(255, 255, 255);
+border-bottom: none;
+</string>
+           </property>
+           <property name="text">
+            <string>Autor : Roland Žitný - xzitny01</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="supervisor">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 63 12pt &quot;Yu Gothic UI Semibold&quot;;
+color: rgb(255, 255, 255);
+border-bottom: none;
+</string>
+           </property>
+           <property name="text">
+            <string>Vedúci práce : Ing. Jan Tinka</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <layout class="QHBoxLayout" name="main_function">
+      <property name="spacing">
+       <number>15</number>
+      </property>
+      <property name="sizeConstraint">
+       <enum>QLayout::SetDefaultConstraint</enum>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>60</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>60</number>
+      </property>
+      <item>
+       <widget class="QWidget" name="verticalWidget" native="true">
+        <property name="styleSheet">
+         <string notr="true">background-color: rgba(255, 255, 255,0);</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QWidget" name="horizontalWidget" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>300</height>
+            </size>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="spacing">
+             <number>5</number>
+            </property>
+            <item alignment="Qt::AlignLeft">
+             <widget class="QWidget" name="verticalWidget" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>450</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>350</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_3">
+               <property name="leftMargin">
+                <number>30</number>
+               </property>
+               <item alignment="Qt::AlignTop">
+                <widget class="QLabel" name="EndInfo">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>60</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>60</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">font: 63 18pt &quot;Yu Gothic UI Semibold&quot;;
+color: rgb(255, 255, 255);
+border-bottom: none;</string>
+                 </property>
+                 <property name="text">
+                  <string>Vaša registrácia bola úspešná</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="end_name">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">font: 63 10pt &quot;Yu Gothic UI Semibold&quot;;
+color: rgb(255, 255, 255);
+border-bottom: none;</string>
+                 </property>
+                 <property name="text">
+                  <string>Meno:  </string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="end_surname">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">font: 63 10pt &quot;Yu Gothic UI Semibold&quot;;
+color: rgb(255, 255, 255);
+border-bottom: none;</string>
+                 </property>
+                 <property name="text">
+                  <string>Priezvisko:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="end_loginId">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">font: 63 10pt &quot;Yu Gothic UI Semibold&quot;;
+color: rgb(255, 255, 255);
+border-bottom: none;</string>
+                 </property>
+                 <property name="text">
+                  <string>Prihlasovacie meno:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QWidget" name="verticalWidget" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>450</width>
+                <height>450</height>
+               </size>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_4">
+               <item alignment="Qt::AlignTop">
+                <widget class="QLabel" name="ReactionLabel">
+                 <property name="minimumSize">
+                  <size>
+                   <width>450</width>
+                   <height>450</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignHCenter">
+          <widget class="QPushButton" name="TestLogin">
+           <property name="minimumSize">
+            <size>
+             <width>400</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton{
+background-color: qradialgradient(cx:0, cy:0, radius: 1,
+                fx:0.5, fy:0.5, stop:0 #FFB001 ,stop:0.5 #FF8000 stop:1 #DC7726);
+font: 63 10pt &quot;Yu Gothic UI Semibold&quot;;
+color: rgb(255, 255, 255);
+border-bottom: none;
+
+border-radius: 25px;
+border-width: 3px;
+padding: 2px;
+border-style: groove;
+border-color: #FFED86;
+}
+
+QPushButton::hover
+{
+background-color: qradialgradient(cx:0, cy:0, radius: 1.2,
+                fx:0.5, fy:0.5, stop:0 #ffc001 ,stop:0.5 #ff8c00 stop:1 #e37a27);
+border-color: #fff2ab;
+}
+
+QPushButton::pressed {
+border-width: 1.5px;
+border-color: #F8CF2C
+}</string>
+           </property>
+           <property name="text">
+            <string>Testovacie prihlásenie</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

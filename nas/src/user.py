@@ -74,3 +74,33 @@ class User:
 
         path = os.path.join(config.DB_DIR, self.login_id + ".p")
         pickle.dump(self, open(path, "wb"))
+
+    def get_name(self):
+        """
+            User name getter.
+
+            :return: User name.
+            :rtype: string
+        """
+
+        return self.name
+
+    def get_surname(self):
+        """
+            User surname getter.
+
+            :return: User surname.
+            :rtype: string
+        """
+
+        return self.surname
+
+    def get_id(self):
+        """
+            User id getter.
+
+            :return: User id.
+            :rtype: string
+        """
+
+        return self.login_id

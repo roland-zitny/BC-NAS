@@ -12,6 +12,7 @@ from nas.src.eeg_recorder import EEGRecorder
 from nas.src.data_processing import DataProcessing
 from nas.src.stimuli_creator import StimuliCreator
 from nas.src.classifier import Classifier
+from nas.gui.end_login_window import EndLoginWindow
 
 directory_path = os.path.dirname(os.path.abspath(__file__))
 ui_path = os.path.join(directory_path, "designs" + os.sep + "login_stimuli_window.ui")
@@ -37,6 +38,7 @@ class LoginStimulationPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         self.stimuli_timestamps = np.array([])  # Array of stimuli timestamps.
         self.eeg_recorder = None
         self.recording_thread = None
+        self.end_login_window = None
         self.stimuli_creator = StimuliCreator(self.reg_user.get_user_stimulus())
 
         # Start timer.
@@ -94,10 +96,6 @@ class LoginStimulationPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         self.eeg_recorder = EEGRecorder()
         self.recording_thread = Thread(target=self.eeg_recorder.start_record)
         self.recording_thread.daemon = True  # Thread exits if app is closed.
-        print("start:", end="")
-        print(time.time())
-        now = datetime.now()
-        print(now)
         self.recording_thread.start()
 
     def update_start_time(self):
@@ -194,7 +192,14 @@ class LoginStimulationPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         result = classifier.classify("LDA")
 
         # TODO dorobit dalsie oknot to iste pri reg_stim_window
-        print("RESULT")
-        print(result)
-        print("---------------------------")
-        print(login_stimuli_types)
+        #print("RESULT")
+        #print(result)
+        #print("---------------------------")
+        #print(login_stimuli_types)
+        self.end_log_in()
+
+    def end_log_in(self):
+        self.end_login_window = EndLoginWindow(self.reg_user, 1)
+        self.end_login_window.showMaximized()
+        self.hide()
+

@@ -11,6 +11,7 @@ from nas.src.user import User
 from nas.src.eeg_recorder import EEGRecorder
 from nas.src.data_processing import DataProcessing
 from nas.src.stimuli_creator import StimuliCreator
+from nas.gui.end_registration_window import EndRegistrationWindow
 
 directory_path = os.path.dirname(os.path.abspath(__file__))
 ui_path = os.path.join(directory_path, "designs" + os.sep + "reg_stimuli_window.ui")
@@ -36,6 +37,7 @@ class RegStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         self.stimuli_timestamps = np.array([])  # Array of stimuli timestamps.
         self.eeg_recorder = None
         self.recording_thread = None
+        self.end_registration_window = None
         self.stimuli_creator = StimuliCreator(self.reg_user.get_user_stimulus())
 
         # Start timer.
@@ -180,3 +182,7 @@ class RegStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
 
         self.reg_user.set_reg_data(stimuli_epochs, self.stimuli_creator.get_stimuli_types())
         self.reg_user.save_user()
+
+        self.end_registration_window = EndRegistrationWindow(self.reg_user)
+        self.end_registration_window.showMaximized()
+        self.hide()

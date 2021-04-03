@@ -1,6 +1,11 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-
+import tensorflow as tf
+from tensorflow.keras import datasets, layers, models
+from nas.src import config
+from brainflow import BoardShim
 
 class Classifier:
     """
@@ -59,7 +64,33 @@ class Classifier:
             self.fit_data = self.fit_data
             self.reg_data_types = self.reg_data_types
             model = LinearDiscriminantAnalysis()
-            model.fit(self.fit_data, self.reg_data_types)
+            model.fit(self.fit_data, self.reg_data_types[:-1])
             self.predict_data = self.predict_data
             result = model.predict(self.predict_data)
             return result
+
+        if classification_method == "CNN":
+            num_of_x = round(BoardShim.get_sampling_rate(config.BOARD_TYPE) * 0.6)
+
+            model = models.Sequential()
+            model.add(layers.Conv1D(40, kernel_size=2, activation='relu', input_shape=(4,150)))
+            model.add(layers.Flatten())
+            model.add(layers.Dense(2))
+            model.summary()
+
+            model.compile(optimizer='adam',
+                          loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+                          metrics=['accuracy'])
+
+            x = self.reg_data[0].tolist()
+            x1 = self.reg_data[1].tolist()
+            x2 = self.reg_data[2].tolist()
+            x3 = self.reg_data[3].tolist()
+            x4 = self.reg_data[4].tolist()
+            model.fit([x, x1, x2, x3, x4], [0, 1, 0, 0, 1], epochs=1)
+
+            info = model.predict([x,x1,x4,x2,x3]).astype("int32")
+
+            print(info)
+
+            return [0, 1, 2, 3]

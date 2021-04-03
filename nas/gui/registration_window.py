@@ -214,7 +214,7 @@ class RegistrationWindow(QtWidgets.QMainWindow, Ui_RegWindow):
 
         # Set pixmap of label.
         face_pixmap = QPixmap(config.TMP_PHOTO)
-        self.FacePictureLabel.setPixmap(QPixmap(face_pixmap.scaledToWidth(self.CameraLayoutWidget.width() - 450)))
+        self.FacePictureLabel.setPixmap(QPixmap(face_pixmap.scaledToWidth(500)))
         self.FacePictureLabel.setAlignment(Qt.AlignCenter)
         # Stop camera recording.
         self.camera.stop()
@@ -277,7 +277,7 @@ class RegistrationWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.CameraConfirmLabel.hide()
 
         pixmap = QPixmap(self.file_path[0])
-        self.FacePictureLabel.setPixmap(QPixmap(pixmap.scaledToWidth(self.CameraLayoutWidget.width() - 450)))
+        self.FacePictureLabel.setPixmap(QPixmap(pixmap.scaledToWidth(500)))
 
         # Set flag to 2, file
         self.FLAG_file_type = 2

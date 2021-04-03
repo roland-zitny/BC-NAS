@@ -6,7 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/nas/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/nas/venv" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.9 (BC-NAS)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.8 (venv)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PackageRequirementsSettings">
