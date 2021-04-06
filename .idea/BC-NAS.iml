@@ -10,7 +10,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PackageRequirementsSettings">
-    <option name="requirementsPath" value="" />
+    <option name="versionSpecifier" value="Strong equality (==x.y.z)" />
+    <option name="removeUnused" value="true" />
   </component>
   <component name="ReSTService">
     <option name="DOC_DIR" value="D:\GitHub\BC-NAS\nas\docs" />

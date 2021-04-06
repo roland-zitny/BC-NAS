@@ -189,13 +189,10 @@ class LoginStimulationPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
 
         classifier = Classifier(login_stimuli_windows, reg_stimuli_windows, reg_stimuli_types)
         classifier.reduce_dimension_lda()
-        result = classifier.classify("LDA")
+        result = classifier.classify("CNN")
 
-        # TODO dorobit dalsie oknot to iste pri reg_stim_window
-        #print("RESULT")
-        #print(result)
-        #print("---------------------------")
-        #print(login_stimuli_types)
+        print(result)
+
         self.end_log_in()
 
     def end_log_in(self):

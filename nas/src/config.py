@@ -15,7 +15,7 @@ TMP_END_FIGURE = os.path.join(os.path.dirname(main_file.__file__), "db", "tmp", 
 EEG_DATASET_FILE = os.path.join(os.path.dirname(main_file.__file__), "db")  # DB directory path.
 TMP_FOLDER = os.path.join(os.path.dirname(main_file.__file__), "db", "tmp")  # DB directory path.
 # 50 default, 10 self-face, possible 30;40 ... every fifth is stimuli
-STIMULI_NUM = 10
+STIMULI_NUM = 5
 BOARD_TYPE = BoardIds.SYNTHETIC_BOARD.value     #BoardIds.CYTON_DAISY_BOARD.value / BoardIds.SYNTHETIC_BOARD.value
 BOARD_SERIAL_PORT = 'COM7'
 # SYNTH C3,C4,F3,F4 -> 1,3,10,13

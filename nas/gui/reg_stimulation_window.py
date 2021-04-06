@@ -140,7 +140,7 @@ class RegStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         if self.FLAG_stimuli_timer:
             if self.FLAG_stimulus:
                 if self.FLAG_change:
-                    pixmap = self.stimuli_creator.learning_stimuli()
+                    pixmap = self.stimuli_creator.randomized_stimuli()
                     # Save stimuli timestamps.
                     stimuli_timestamp = time.time()
                     self.stimuli_timestamps = np.append(self.stimuli_timestamps, stimuli_timestamp)

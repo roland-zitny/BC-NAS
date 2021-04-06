@@ -72,6 +72,7 @@ class StimuliCreator:
                 self.stimuli_types = np.append(self.stimuli_types, 1)
                 return self.set_self_face_stimulus()
         else:
+            self.stimuli_types = np.append(self.stimuli_types, 0)
             return self.set_non_self_face_stimulus()
 
     @staticmethod
@@ -123,4 +124,5 @@ class StimuliCreator:
             :rtype: list
         """
 
-        return self.stimuli_types
+        # Need to remove last types because we show one more stimulus just for time synch.
+        return self.stimuli_types[:-1]
