@@ -18,6 +18,14 @@ Ui_RegWindow, QtBaseClass = uic.loadUiType(ui_path)  # Load .ui file.
 
 
 class EndRegistrationWindow(QtWidgets.QMainWindow, Ui_RegWindow):
+    """
+        Class to display the final window that confirms the registration.
+        The user can perform a test login from this window.
+
+        :param reg_user: The object of the registered user.
+        :type reg_user: ``user``
+    """
+
     def __init__(self, reg_user):
         QtWidgets.QMainWindow.__init__(self)
         Ui_RegWindow.__init__(self)
@@ -50,6 +58,11 @@ class EndRegistrationWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         self.TestLogin.clicked.connect(self.testing_log_in)
 
     def get_reaction_plot(self):
+        """
+            Creates a graph of responses to self-face and non-self-face stimuli.
+            This graph is stored at `TMP_END_FIGURE`.
+        """
+
         reactions, react_types = self.reg_user.get_reg_data()
 
         self_face_reaction = None
@@ -73,17 +86,29 @@ class EndRegistrationWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         plt.savefig(config.TMP_END_FIGURE)
 
     def set_end_figure(self):
+        """
+            Draw a graph of the reaction in the window.
+        """
+
         pixmap = QPixmap(config.TMP_END_FIGURE)
         self.ReactionLabel.setPixmap(QPixmap(pixmap.scaledToHeight(500)))
         self.clean_tmp()
 
     @staticmethod
     def clean_tmp():
+        """
+            Cleans up the temporary files folder.
+        """
+
         os.remove(config.TMP_END_FIGURE)
         os.remove(config.TMP_PHOTO)
         os.remove(config.TMP_PROC_PHOTO)
 
     def testing_log_in(self):
+        """
+            Performs a test login.
+        """
+
         self.login_window = LoginStimulationPresentation(self.reg_user)
         self.login_window.showMaximized()
         self.hide()

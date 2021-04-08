@@ -198,6 +198,7 @@
 <span class="sd">            :return: Picture of a user&#39;s face.</span>
 <span class="sd">            :rtype: base64 string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stimulus_b64</span></div>
 
 <div class="viewcode-block" id="User.set_reg_data"><a class="viewcode-back" href="../../../modules.html#nas.src.user.User.set_reg_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_reg_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_stimuli_windows</span><span class="p">,</span> <span class="n">window_types</span><span class="p">):</span>
@@ -206,9 +207,9 @@
 <span class="sd">            Length of `user_stimuli_windows` and `window_types` must be the same.</span>
 
 <span class="sd">            :param user_stimuli_windows: User responses to stimuli divided into time windows.</span>
-<span class="sd">            :type user_stimuli_windows: list TODO</span>
+<span class="sd">            :type user_stimuli_windows: list</span>
 <span class="sd">            :param window_types: Types of individual time windows. 1 for self-face and 0 for non-self-face.</span>
-<span class="sd">            :type window_types: list TODO</span>
+<span class="sd">            :type window_types: list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">user_stimuli_windows</span> <span class="o">=</span> <span class="n">user_stimuli_windows</span>

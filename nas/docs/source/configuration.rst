@@ -23,10 +23,16 @@ The file contains these parameters:
 ``STARTING_TIME``       -  Starting time of stimulation.
 
 
+``TMP_END_FIGURE``      -  Path for saving the resulting graph of reactions.
+
+
 ``EEG_DATASET_FILE``    -  Path to the place where the dataset is created for further analysis.
 
 
 ``STIMULI_NUM``         -  Number of stimuli displayed.
+
+
+``CLASSIFICATION``      - Classification method. [CNN, LDA]
 
 
 ``BOARD_TYPE``          -  Type of board connected for EEG recording using the `brainflow <https://brainflow.readthedocs.io/en/stable/SupportedBoards.html>`_ library.

@@ -3,10 +3,10 @@ import pickle
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDesktopWidget
+import nas.src.config as config
 from nas.gui.registration_window import RegistrationWindow
 from nas.gui.login_stimulation_window import LoginStimulationPresentation
 from nas.src.user import User
-import nas.src.config as config
 
 directory_path = os.path.dirname(os.path.abspath(__file__))
 ui_path = os.path.join(directory_path, "designs" + os.sep + "main_window.ui")

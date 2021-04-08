@@ -164,10 +164,11 @@
 <span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QTimer</span>
 <span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QPixmap</span>
 <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QDesktopWidget</span>
-<span class="kn">from</span> <span class="nn">nas.src</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">import</span> <span class="nn">nas.src.config</span> <span class="k">as</span> <span class="nn">config</span>
 <span class="kn">from</span> <span class="nn">nas.src.eeg_recorder</span> <span class="kn">import</span> <span class="n">EEGRecorder</span>
 <span class="kn">from</span> <span class="nn">nas.src.data_processing</span> <span class="kn">import</span> <span class="n">DataProcessing</span>
 <span class="kn">from</span> <span class="nn">nas.src.stimuli_creator</span> <span class="kn">import</span> <span class="n">StimuliCreator</span>
+<span class="kn">from</span> <span class="nn">nas.gui.end_registration_window</span> <span class="kn">import</span> <span class="n">EndRegistrationWindow</span>
 
 <span class="n">directory_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
 <span class="n">ui_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory_path</span><span class="p">,</span> <span class="s2">&quot;designs&quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s2">&quot;reg_stimuli_window.ui&quot;</span><span class="p">)</span>
@@ -193,6 +194,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_timestamps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>  <span class="c1"># Array of stimuli timestamps.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eeg_recorder</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recording_thread</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_registration_window</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_creator</span> <span class="o">=</span> <span class="n">StimuliCreator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reg_user</span><span class="o">.</span><span class="n">get_user_stimulus</span><span class="p">())</span>
 
         <span class="c1"># Start timer.</span>
@@ -278,7 +280,6 @@
 <span class="sd">            Updates the stimulus type.</span>
 <span class="sd">            StimuliCreator is used.</span>
 <span class="sd">            Each stimulus is timed to 0.3 seconds followed by 1 second of the blank screen.</span>
-<span class="sd">            ``TODO random time 0.295 - 0.31 and 0.95 - 1.1``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_stimuli_timer</span><span class="p">:</span>
@@ -295,7 +296,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_stimuli_timer</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_stimulus</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_change</span><span class="p">:</span>
-                    <span class="n">pixmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_creator</span><span class="o">.</span><span class="n">learning_stimuli</span><span class="p">()</span>
+                    <span class="n">pixmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_creator</span><span class="o">.</span><span class="n">randomized_stimuli</span><span class="p">()</span>
                     <span class="c1"># Save stimuli timestamps.</span>
                     <span class="n">stimuli_timestamp</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_timestamps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stimuli_timestamps</span><span class="p">,</span> <span class="n">stimuli_timestamp</span><span class="p">)</span>
@@ -336,7 +337,11 @@
         <span class="n">stimuli_epochs</span> <span class="o">=</span> <span class="n">data_processing</span><span class="o">.</span><span class="n">create_time_windows</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">reg_user</span><span class="o">.</span><span class="n">set_reg_data</span><span class="p">(</span><span class="n">stimuli_epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_creator</span><span class="o">.</span><span class="n">get_stimuli_types</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reg_user</span><span class="o">.</span><span class="n">save_user</span><span class="p">()</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reg_user</span><span class="o">.</span><span class="n">save_user</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_registration_window</span> <span class="o">=</span> <span class="n">EndRegistrationWindow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reg_user</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_registration_window</span><span class="o">.</span><span class="n">showMaximized</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>

@@ -165,11 +165,12 @@
 <span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QTimer</span>
 <span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QPixmap</span>
 <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QDesktopWidget</span>
-<span class="kn">from</span> <span class="nn">nas.src</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">import</span> <span class="nn">nas.src.config</span> <span class="k">as</span> <span class="nn">config</span>
 <span class="kn">from</span> <span class="nn">nas.src.eeg_recorder</span> <span class="kn">import</span> <span class="n">EEGRecorder</span>
 <span class="kn">from</span> <span class="nn">nas.src.data_processing</span> <span class="kn">import</span> <span class="n">DataProcessing</span>
 <span class="kn">from</span> <span class="nn">nas.src.stimuli_creator</span> <span class="kn">import</span> <span class="n">StimuliCreator</span>
 <span class="kn">from</span> <span class="nn">nas.src.classifier</span> <span class="kn">import</span> <span class="n">Classifier</span>
+<span class="kn">from</span> <span class="nn">nas.gui.end_login_window</span> <span class="kn">import</span> <span class="n">EndLoginWindow</span>
 
 <span class="n">directory_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
 <span class="n">ui_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory_path</span><span class="p">,</span> <span class="s2">&quot;designs&quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s2">&quot;login_stimuli_window.ui&quot;</span><span class="p">)</span>
@@ -195,6 +196,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_timestamps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>  <span class="c1"># Array of stimuli timestamps.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eeg_recorder</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recording_thread</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_login_window</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_creator</span> <span class="o">=</span> <span class="n">StimuliCreator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reg_user</span><span class="o">.</span><span class="n">get_user_stimulus</span><span class="p">())</span>
 
         <span class="c1"># Start timer.</span>
@@ -238,9 +240,6 @@
         <span class="c1"># Connect ui buttons to methods.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">StartRecording</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_recording</span><span class="p">)</span></div>
 
-        <span class="c1"># TODO</span>
-        <span class="c1"># self.test()</span>
-
 <div class="viewcode-block" id="LoginStimulationPresentation.start_recording"><a class="viewcode-back" href="../../../modules.html#nas.gui.login_stimulation_window.LoginStimulationPresentation.start_recording">[docs]</a>    <span class="k">def</span> <span class="nf">start_recording</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Starts recording EEG signals. It is necessary to use a thread for proper functionality.</span>
@@ -252,10 +251,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">eeg_recorder</span> <span class="o">=</span> <span class="n">EEGRecorder</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recording_thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eeg_recorder</span><span class="o">.</span><span class="n">start_record</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recording_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Thread exits if app is closed.</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;start:&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
-        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">now</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recording_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="LoginStimulationPresentation.update_start_time"><a class="viewcode-back" href="../../../modules.html#nas.gui.login_stimulation_window.LoginStimulationPresentation.update_start_time">[docs]</a>    <span class="k">def</span> <span class="nf">update_start_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -287,15 +282,13 @@
 <span class="sd">            Updates the stimulus type.</span>
 <span class="sd">            StimuliCreator is used.</span>
 <span class="sd">            Each stimulus is timed to 0.3 seconds followed by 1 second of the blank screen.</span>
-<span class="sd">            ``TODO random time 0.295 - 0.31 and 0.95 - 1.1``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_stimuli_timer</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_time</span> <span class="o">+=</span> <span class="mf">0.01</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_time</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stimuli_time</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_of_stimuli</span> <span class="o">==</span> <span class="n">config</span><span class="o">.</span><span class="n">STIMULI_NUM</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># Number of stimuli. TODO +1 lebo aby zaznamenal na</span>
-                <span class="c1"># TODO posledny stimul dostatok</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_of_stimuli</span> <span class="o">==</span> <span class="n">config</span><span class="o">.</span><span class="n">STIMULI_NUM</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># Number of stimuli +1 because of time synchronization.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">FLAG_stimuli_timer</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">StimuliTimer</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">eeg_recorder</span><span class="o">.</span><span class="n">stop_record</span><span class="p">()</span>  <span class="c1"># Stop recording.</span>
@@ -347,14 +340,20 @@
         <span class="c1"># reg data</span>
         <span class="n">reg_stimuli_windows</span><span class="p">,</span> <span class="n">reg_stimuli_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reg_user</span><span class="o">.</span><span class="n">get_reg_data</span><span class="p">()</span>
 
-        <span class="n">classifier</span> <span class="o">=</span> <span class="n">Classifier</span><span class="p">(</span><span class="n">login_stimuli_windows</span><span class="p">,</span> <span class="n">reg_stimuli_windows</span><span class="p">,</span> <span class="n">reg_stimuli_types</span><span class="p">)</span>
+        <span class="c1"># CLASSIFIER</span>
+        <span class="n">classifier</span> <span class="o">=</span> <span class="n">Classifier</span><span class="p">(</span><span class="n">login_stimuli_windows</span><span class="p">,</span> <span class="n">reg_stimuli_windows</span><span class="p">,</span> <span class="n">reg_stimuli_types</span><span class="p">,</span> <span class="n">login_stimuli_types</span><span class="p">)</span>
+        <span class="c1"># Only deeded if LDA is used.</span>
         <span class="n">classifier</span><span class="o">.</span><span class="n">reduce_dimension_lda</span><span class="p">()</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="s2">&quot;LDA&quot;</span><span class="p">)</span>
+        <span class="n">classifier</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">CLASSIFICATION</span><span class="p">)</span></div>
+        <span class="c1">#access_right = classifier.determine_access_right()</span>
+        <span class="c1"># TODO</span>
+        <span class="c1">#self.end_log_in(access_right)</span>
 
-        <span class="c1"># TODO dorobit dalsie oknot to iste pri reg_stim_window</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---------------------------&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">login_stimuli_types</span><span class="p">)</span></div></div>
+    <span class="k">def</span> <span class="nf">end_log_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_right</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_login_window</span> <span class="o">=</span> <span class="n">EndLoginWindow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reg_user</span><span class="p">,</span> <span class="n">access_right</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_login_window</span><span class="o">.</span><span class="n">showMaximized</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span></div>
+
 </pre></div>
 
            </div>

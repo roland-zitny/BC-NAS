@@ -47,6 +47,16 @@ LoginStimulationPresentation
 .. automodule:: nas.gui.login_stimulation_window
     :members:
 
+EndRegistrationWindow
+----------------------------
+.. automodule:: nas.gui.end_registration_window
+    :members:
+
+EndLoginWindow
+----------------------------
+.. automodule:: nas.gui.end_login_window
+    :members:
+
 Source
 ===================
 Source files consist of ``user``, ``self_face``, ``stimuli_creator``, ``eeg_recorder``

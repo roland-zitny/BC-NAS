@@ -9,6 +9,15 @@ Ui_RegWindow, QtBaseClass = uic.loadUiType(ui_path)  # Load .ui file.
 
 
 class EndLoginWindow(QtWidgets.QMainWindow, Ui_RegWindow):
+    """
+        Class to display the success of a user login.
+
+        :param reg_user: The object of the registered user.
+        :type reg_user: ``user``
+        :param system_access: User access rights.
+        :type system_access: bool
+    """
+
     def __init__(self, reg_user, system_access):
         QtWidgets.QMainWindow.__init__(self)
         Ui_RegWindow.__init__(self)
