@@ -3,9 +3,14 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 import tensorflow as tf
-from tensorflow.keras import datasets, layers, models
+from tensorflow.keras import layers, models
 from nas.src import config
 from brainflow import BoardShim
+from brainflow.data_filter import DataFilter
+from sklearn.preprocessing import MinMaxScaler
+from tensorflow.keras.optimizers import Adam
+from sklearn.utils import shuffle
+
 
 class Classifier:
     """
@@ -21,12 +26,17 @@ class Classifier:
         :type reg_data_types: list
     """
 
-    def __init__(self, login_data, reg_data, reg_data_types):
+    def __init__(self, login_data, reg_data, reg_data_types, login_data_types):
         self.login_data = login_data
         self.reg_data = reg_data
         self.reg_data_types = reg_data_types
+        self.login_data_types = login_data_types
+
+        # Reduced data.
         self.fit_data = []
         self.predict_data = []
+
+        self.result = None
 
     def reduce_dimension_lda(self):
         """
@@ -61,65 +71,87 @@ class Classifier:
         """
 
         if classification_method == "LDA":
-            self.fit_data = self.fit_data
-            self.reg_data_types = self.reg_data_types
             model = LinearDiscriminantAnalysis()
             model.fit(self.fit_data, self.reg_data_types)
-            self.predict_data = self.predict_data
-            result = model.predict(self.predict_data)
-            return result
+            self.result = model.predict(self.predict_data)
 
         if classification_method == "CNN":
-            num_of_x = round(BoardShim.get_sampling_rate(config.BOARD_TYPE) * 0.6)
+            restored_data = DataFilter.read_file('5a.csv')
+            data = [restored_data[10][:-18], restored_data[11][:-18], restored_data[2][:-18], restored_data[3][:-18]]
 
-            #model = models.Sequential()
-            #model.add(layers.Conv2D(5, (4, 1), activation='relu', input_shape=(50, 4, 150, 1)))
-            #model.add(layers.Flatten())
-            #model.add(layers.Dense(2))
-            #model.summary()
+            # DATA
+            #10,11,2,3
+            #168 samples
+            data_0 = np.split(data[0], 50)
+            data_1 = np.split(data[1], 50)
+            data_2 = np.split(data[2], 50)
+            data_3 = np.split(data[3], 50)
 
-            #model.compile(optimizer='adam',
-            #              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-            #              metrics=['accuracy'])
+            training_labels = [0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1
+                               ,0,0,0,0,1,0,0,0,0,1]
 
-            #x = self.reg_data
-            #input_d = np.array(self.reg_data)
-            #output_d = self.reg_data_types
+            training_samples = []
 
-            #model.fit(input_d, output_d, epochs=1)
-            ################################################################
-            ######################## 1D ####################################
+            scaler = MinMaxScaler(feature_range=(0, 1))
+            training_labels = np.array(training_labels)
+            x = scaler.fit_transform(training_labels.reshape(-1, 1))
 
-            # cim mensi filter shape tym mensie featury hlada , asi mensie filtre su lepsie. Najcastejsie pouzivany
-            # filte je 3x3
+            for i in range(len(data_0)):
+                window1 = np.array(data_0[i])
+                window1 = scaler.fit_transform(window1.reshape(-1, 1))
+                window2 = np.array(data_1[i])
+                window2 = scaler.fit_transform(window2.reshape(-1, 1))
+                window3 = np.array(data_2[i])
+                window3 = scaler.fit_transform(window3.reshape(-1, 1))
+                window4 = np.array(data_3[i])
+                window4 = scaler.fit_transform(window4.reshape(-1, 1))
 
-            input_shape = (50, 4, 150)
-            model = models.Sequential()
+                window = [window1,window2,window3,window4]
 
-            model.add(layers.Conv1D(32, 1, activation='relu', input_shape=input_shape[1:]))
-            model.add(layers.MaxPooling1D(pool_size=2))
+                training_samples.append(window)
 
-            model.add(layers.Conv1D(64, 1, activation='relu'))
-            model.add(layers.MaxPooling1D(pool_size=2))
+            # Change data to numpy array
+            # 1,4,168
+            training_labels = np.array(training_labels)
+            training_samples = np.array(training_samples)
 
-            model.add(layers.Flatten())
+            training_labels, training_samples = shuffle(training_labels, training_samples)
 
-            model.add(layers.Dense(128, activation='relu'))
-            model.add(layers.Dense(2, activation='relu'))
+            # MODEL
+            model = models.Sequential([
+                layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same',
+                              input_shape=(4, 168, 1)),
+                layers.MaxPooling2D(pool_size=(1, 2), strides=2),
+                layers.Conv2D(filters=64, kernel_size=(3, 3), activation='relu', padding='same'),
+                layers.MaxPooling2D(pool_size=(1, 2), strides=2),
+                layers.Flatten(),
+                layers.Dense(units=2, activation='softmax'),
+            ])
 
-            model.summary()
-
-            model.compile(optimizer='adam',
-                          loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+            model.compile(optimizer=Adam(learning_rate=0.0001), loss='sparse_categorical_crossentropy',
                           metrics=['accuracy'])
 
-            x = self.reg_data
-            input_d = np.array(self.reg_data)
-            output_d = self.reg_data_types
-            model.fit(input_d, output_d, epochs=1)
+            model.fit(x=training_samples,
+                      y=training_labels,
+                      validation_split=0.2,
+                      batch_size=1,
+                      epochs=400,
+                      shuffle=True,
+                      verbose=2)
 
-            info = model.predict(input_d).astype("int32")
+    def determine_access_right(self):
+        #TODO
+        self.login_data_types = self.reg_data_types
 
-            print(info)
+        print(self.login_data_types)
+        print(self.result)
 
-            return [0, 1, 2, 3]
+        correct_reactions = 0
+
+        for i in range(len(self.login_data_types)):
+            if self.login_data_types[i] == self.result[i]:
+                correct_reactions += 1
+
+        print(correct_reactions)
+        return 1
+

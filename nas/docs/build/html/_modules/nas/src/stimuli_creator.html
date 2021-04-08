@@ -230,6 +230,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_types</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stimuli_types</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_self_face_stimulus</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_types</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stimuli_types</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_non_self_face_stimulus</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="StimuliCreator.set_non_self_face_stimulus"><a class="viewcode-back" href="../../../modules.html#nas.src.stimuli_creator.StimuliCreator.set_non_self_face_stimulus">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -281,7 +282,8 @@
 <span class="sd">            :rtype: list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_types</span></div></div>
+        <span class="c1"># Need to remove last types because we show one more stimulus just for time synch.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stimuli_types</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div></div>
 </pre></div>
 
            </div>

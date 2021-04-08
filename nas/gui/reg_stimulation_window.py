@@ -6,8 +6,7 @@ from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QDesktopWidget
-from nas.src import config
-from nas.src.user import User
+import nas.src.config as config
 from nas.src.eeg_recorder import EEGRecorder
 from nas.src.data_processing import DataProcessing
 from nas.src.stimuli_creator import StimuliCreator
@@ -123,7 +122,6 @@ class RegStimuliPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
             Updates the stimulus type.
             StimuliCreator is used.
             Each stimulus is timed to 0.3 seconds followed by 1 second of the blank screen.
-            ``TODO random time 0.295 - 0.31 and 0.95 - 1.1``
         """
 
         if self.FLAG_stimuli_timer:

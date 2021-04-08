@@ -40,6 +40,7 @@ class User:
             :return: Picture of a user's face.
             :rtype: base64 string
         """
+
         return self.stimulus_b64
 
     def set_reg_data(self, user_stimuli_windows, window_types):
@@ -48,9 +49,9 @@ class User:
             Length of `user_stimuli_windows` and `window_types` must be the same.
 
             :param user_stimuli_windows: User responses to stimuli divided into time windows.
-            :type user_stimuli_windows: list TODO
+            :type user_stimuli_windows: list
             :param window_types: Types of individual time windows. 1 for self-face and 0 for non-self-face.
-            :type window_types: list TODO
+            :type window_types: list
         """
 
         self.user_stimuli_windows = user_stimuli_windows

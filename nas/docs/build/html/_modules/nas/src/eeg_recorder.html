@@ -157,6 +157,7 @@
             
   <h1>Source code for nas.src.eeg_recorder</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">brainflow</span> <span class="kn">import</span> <span class="n">DataFilter</span>
 <span class="kn">from</span> <span class="nn">brainflow.board_shim</span> <span class="kn">import</span> <span class="n">BoardShim</span><span class="p">,</span> <span class="n">BrainFlowInputParams</span>
 <span class="kn">from</span> <span class="nn">nas.src</span> <span class="kn">import</span> <span class="n">config</span>
@@ -207,7 +208,7 @@
 
         <span class="c1"># SAVE DATA TODO</span>
         <span class="n">file_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))</span>
-        <span class="n">DataFilter</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">EEG_DATASET_FILE</span><span class="p">,</span> <span class="n">file_name</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">DataFilter</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">EEG_DATASET_FILE</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">file_name</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">eeg_channels</span><span class="p">]</span></div>

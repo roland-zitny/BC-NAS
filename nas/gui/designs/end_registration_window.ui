@@ -356,8 +356,8 @@ border-bottom: none;</string>
              <widget class="QWidget" name="verticalWidget" native="true">
               <property name="minimumSize">
                <size>
-                <width>450</width>
-                <height>450</height>
+                <width>700</width>
+                <height>700</height>
                </size>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -365,8 +365,8 @@ border-bottom: none;</string>
                 <widget class="QLabel" name="ReactionLabel">
                  <property name="minimumSize">
                   <size>
-                   <width>450</width>
-                   <height>450</height>
+                   <width>500</width>
+                   <height>500</height>
                   </size>
                  </property>
                  <property name="text">

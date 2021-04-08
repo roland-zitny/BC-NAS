@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QDesktopWidget
 from nas.gui.registration_window import RegistrationWindow
 from nas.gui.login_stimulation_window import LoginStimulationPresentation
 from nas.src.user import User
-from nas.src import config
+import nas.src.config as config
 
 directory_path = os.path.dirname(os.path.abspath(__file__))
 ui_path = os.path.join(directory_path, "designs" + os.sep + "main_window.ui")

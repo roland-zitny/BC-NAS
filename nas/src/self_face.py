@@ -69,4 +69,5 @@ class SelfFace(object):
             :return: Encoded stimulus.
             :rtype: base64 string
         """
+
         return self.face_b64

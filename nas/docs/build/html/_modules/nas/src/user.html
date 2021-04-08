@@ -198,7 +198,6 @@
 <span class="sd">            :return: Picture of a user&#39;s face.</span>
 <span class="sd">            :rtype: base64 string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stimulus_b64</span></div>
 
 <div class="viewcode-block" id="User.set_reg_data"><a class="viewcode-back" href="../../../modules.html#nas.src.user.User.set_reg_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_reg_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_stimuli_windows</span><span class="p">,</span> <span class="n">window_types</span><span class="p">):</span>
@@ -232,7 +231,37 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">DB_DIR</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">login_id</span> <span class="o">+</span> <span class="s2">&quot;.p&quot;</span><span class="p">)</span>
-        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span></div></div>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="User.get_name"><a class="viewcode-back" href="../../../modules.html#nas.src.user.User.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            User name getter.</span>
+
+<span class="sd">            :return: User name.</span>
+<span class="sd">            :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
+
+<div class="viewcode-block" id="User.get_surname"><a class="viewcode-back" href="../../../modules.html#nas.src.user.User.get_surname">[docs]</a>    <span class="k">def</span> <span class="nf">get_surname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            User surname getter.</span>
+
+<span class="sd">            :return: User surname.</span>
+<span class="sd">            :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">surname</span></div>
+
+<div class="viewcode-block" id="User.get_id"><a class="viewcode-back" href="../../../modules.html#nas.src.user.User.get_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            User id getter.</span>
+
+<span class="sd">            :return: User id.</span>
+<span class="sd">            :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">login_id</span></div></div>
 </pre></div>
 
            </div>

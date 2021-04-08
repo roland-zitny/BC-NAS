@@ -1,13 +1,12 @@
-import time
 import os
-from brainflow import DataFilter
+import time
 from brainflow.board_shim import BoardShim, BrainFlowInputParams
 from nas.src import config
 
 
 class EEGRecorder:
     """
-        Class recording EEG signals.
+        Class for recording EEG signals.
     """
 
     def __init__(self):
@@ -48,9 +47,9 @@ class EEGRecorder:
         self.board.stop_stream()
         BoardShim.release_session(self.board)
 
-        # SAVE DATA TODO
-        file_name = str(round(time.time() * 1000))
-        DataFilter.write_file(self.data, config.EEG_DATASET_FILE + os.sep + file_name + '.csv', 'w')
+        # TODO SAVING WHOLE DATA
+        #file_name = str(round(time.time() * 1000))
+        #DataFilter.write_file(self.data, config.EEG_DATASET_FILE + os.sep + file_name + '.csv', 'w')
 
         self.timestamps = self.data[self.timestamps]
         self.data = self.data[eeg_channels]

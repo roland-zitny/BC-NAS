@@ -74,7 +74,7 @@ class EndRegistrationWindow(QtWidgets.QMainWindow, Ui_RegWindow):
 
     def set_end_figure(self):
         pixmap = QPixmap(config.TMP_END_FIGURE)
-        self.ReactionLabel.setPixmap(pixmap)
+        self.ReactionLabel.setPixmap(QPixmap(pixmap.scaledToHeight(500)))
         self.clean_tmp()
 
     @staticmethod

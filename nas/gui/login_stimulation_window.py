@@ -7,7 +7,7 @@ from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QDesktopWidget
-from nas.src import config
+import nas.src.config as config
 from nas.src.eeg_recorder import EEGRecorder
 from nas.src.data_processing import DataProcessing
 from nas.src.stimuli_creator import StimuliCreator
@@ -82,9 +82,6 @@ class LoginStimulationPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         # Connect ui buttons to methods.
         self.StartRecording.clicked.connect(self.start_recording)
 
-        # TODO
-        # self.test()
-
     def start_recording(self):
         """
             Starts recording EEG signals. It is necessary to use a thread for proper functionality.
@@ -127,15 +124,13 @@ class LoginStimulationPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
             Updates the stimulus type.
             StimuliCreator is used.
             Each stimulus is timed to 0.3 seconds followed by 1 second of the blank screen.
-            ``TODO random time 0.295 - 0.31 and 0.95 - 1.1``
         """
 
         if self.FLAG_stimuli_timer:
             self.stimuli_time += 0.01
             self.stimuli_time = round(self.stimuli_time, 2)
 
-            if self.num_of_stimuli == config.STIMULI_NUM + 1:  # Number of stimuli. TODO +1 lebo aby zaznamenal na
-                # TODO posledny stimul dostatok
+            if self.num_of_stimuli == config.STIMULI_NUM + 1:  # Number of stimuli +1 because of time synchronization.
                 self.FLAG_stimuli_timer = False
                 self.StimuliTimer.stop()
                 self.eeg_recorder.stop_record()  # Stop recording.
@@ -187,16 +182,17 @@ class LoginStimulationPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         # reg data
         reg_stimuli_windows, reg_stimuli_types = self.reg_user.get_reg_data()
 
-        classifier = Classifier(login_stimuli_windows, reg_stimuli_windows, reg_stimuli_types)
+        # CLASSIFIER
+        classifier = Classifier(login_stimuli_windows, reg_stimuli_windows, reg_stimuli_types, login_stimuli_types)
+        # Only deeded if LDA is used.
         classifier.reduce_dimension_lda()
-        result = classifier.classify("CNN")
+        classifier.classify(config.CLASSIFICATION)
+        #access_right = classifier.determine_access_right()
+        # TODO
+        #self.end_log_in(access_right)
 
-        print(result)
-
-        self.end_log_in()
-
-    def end_log_in(self):
-        self.end_login_window = EndLoginWindow(self.reg_user, 1)
+    def end_log_in(self, access_right):
+        self.end_login_window = EndLoginWindow(self.reg_user, access_right)
         self.end_login_window.showMaximized()
         self.hide()
 

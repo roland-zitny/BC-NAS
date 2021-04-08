@@ -89,7 +89,11 @@
 <li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation &amp; usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#registration">Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#login">Login</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
@@ -170,11 +174,36 @@
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>TODO requirements file …</p>
+<p>To start the system, a python interpreter version <cite>3.8</cite> is required due to the <a class="reference external" href="https://www.tensorflow.org/">tensorflow</a> library,
+which was not supported by a higher version at the time of implementation.
+The project contains a <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file, which contains a list of all necessary libraries that must be installed.</p>
 </div>
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>TODO python3.x main …</p>
+<ul class="simple">
+<li><p>After starting the system, you can choose the option to <cite>register</cite> or <cite>log in</cite>.</p></li>
+</ul>
+<div class="section" id="registration">
+<h3>Registration<a class="headerlink" href="#registration" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>When registering, it is necessary to create a stimulus for the user, thanks to a photo of his face.
+This photo can be created using a connected camera or selecting a photo file.</p></li>
+<li><p>After the stimulus is created, the recording of the user’s EEG signals begins.
+To do this, it is necessary to have a device connected that allows this recording.
+During the implementation, a device from <a class="reference external" href="https://openbci.com/">OpenBCI</a> was used, namely the
+<cite>Cyton + Daisy</cite> version which contains 16 electrodes.</p></li>
+<li><p>After successful registration, an exit window will appear.</p></li>
+</ul>
+</div>
+<div class="section" id="login">
+<h3>Login<a class="headerlink" href="#login" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>It is no longer necessary to create a user stimulus when logging in, but it is necessary to record EEG signals.</p></li>
+<li><p>After the EEG signals are recorded correctly, they will be processed and classified. Such data then determines the
+success of the login.</p></li>
+<li><p>The last step is to display a window that notifies the user of the login success.</p></li>
+</ul>
+</div>
 </div>
 </div>
 

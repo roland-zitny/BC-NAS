@@ -31,7 +31,6 @@ class DataProcessing:
             Filters data from unwanted artifacts and filters noise.
         """
 
-        # BANDSTOP & Wavelet denoising TODO
         for i in range(16):
             DataFilter.perform_bandstop(self.data[i], 256, 55.0, 10.0, 3,
                                         FilterTypes.BUTTERWORTH.value, 0)
@@ -45,7 +44,7 @@ class DataProcessing:
             :rtype: list
         """
 
-        # TODO pridat dalsie features ako integral max min atd co bude vhodne to sa este nevie
+        # TODO max/min/integ, new channels, check papers
         stimuli_epochs = []
         num_of_x = round(BoardShim.get_sampling_rate(config.BOARD_TYPE) * 0.6)
 

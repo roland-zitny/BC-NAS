@@ -91,8 +91,8 @@ class StimuliCreator:
 
         file_number = random.randint(1, file_count)
 
-        nonself_face_path = os.path.join(path + os.sep + str(file_number) + ".jpg")
-        pixmap = QPixmap(nonself_face_path)
+        non_self_face_path = os.path.join(path + os.sep + str(file_number) + ".jpg")
+        pixmap = QPixmap(non_self_face_path)
         return pixmap
 
     def set_self_face_stimulus(self):

@@ -1040,12 +1040,12 @@ border-color: #adaa9e;
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">font: 12pt Bahnschrift SemiBold;
+            <string notr="true">font: 14pt Bahnschrift SemiBold;
 color: #900300;</string>
            </property>
            <property name="text">
-            <string>Nastala chyba pri spracovaní fotografie využijte iný spôsob spracovania,
- alebo zaznamenajte fotku znova. </string>
+            <string>Nastala chyba pri spracovaní fotografie.
+Je potrebné vyfotiť tvár znova alebo vybrať inú fotku.</string>
            </property>
           </widget>
          </item>

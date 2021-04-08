@@ -1,15 +1,7 @@
-import base64
 import os
-import matplotlib.pyplot as plt
-import cv2
-import numpy as np
 from PyQt5 import uic
 from PyQt5 import QtWidgets
-from PyQt5 import QtMultimedia
-from PyQt5 import QtMultimediaWidgets
-from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QDesktopWidget
-import config
 
 directory_path = os.path.dirname(os.path.abspath(__file__))
 ui_path = os.path.join(directory_path, "designs" + os.sep + "end_login_window.ui")
