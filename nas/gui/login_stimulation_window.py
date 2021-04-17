@@ -186,10 +186,10 @@ class LoginStimulationPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         classifier = Classifier(login_stimuli_windows, reg_stimuli_windows, reg_stimuli_types, login_stimuli_types)
         # Only deeded if LDA is used.
         classifier.reduce_dimension_lda()
+        classifier.prepare_cnn_data()
         classifier.classify(config.CLASSIFICATION)
-        #access_right = classifier.determine_access_right()
-        # TODO
-        #self.end_log_in(access_right)
+        access_right = classifier.determine_access_right()
+        self.end_log_in(access_right)
 
     def end_log_in(self, access_right):
         self.end_login_window = EndLoginWindow(self.reg_user, access_right)

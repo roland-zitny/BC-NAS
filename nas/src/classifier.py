@@ -1,4 +1,7 @@
 import os
+
+import scipy
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -10,6 +13,12 @@ from brainflow.data_filter import DataFilter
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.optimizers import Adam
 from sklearn.utils import shuffle
+from sklearn.metrics import roc_curve
+from sklearn.metrics import auc
+import matplotlib.pyplot as plt
+import nas.main as main_file
+from nas.src.dataset import Dataset
+import time
 
 
 class Classifier:
@@ -36,6 +45,9 @@ class Classifier:
         self.fit_data = []
         self.predict_data = []
 
+        self.training_samples = None
+        self.predicting_samples = None
+
         self.result = None
 
     def reduce_dimension_lda(self):
@@ -44,7 +56,10 @@ class Classifier:
         """
 
         # INTEGRAL TODO
-        # x = scipy.integrate.simps((stimuli_epochs[0])[0])
+        neviem = scipy.integrate.simps((self.login_data[0][0]))
+        print(neviem)
+
+        scaler = MinMaxScaler(feature_range=(0, 1))
 
         for i in range(len(self.reg_data)):
             epoch = np.array([])
@@ -60,6 +75,36 @@ class Classifier:
 
             self.predict_data.append(epoch)
 
+    def prepare_cnn_data(self):
+        scaler = MinMaxScaler(feature_range=(0, 1))
+        training_samples = []
+
+        for i in range(len(self.reg_data)):
+            #wind_0 = scaler.fit_transform(self.reg_data[i][0].reshape(-1, 1))
+            wind_0 = self.reg_data[i][0].reshape(-1, 1)
+            #wind_1 = scaler.fit_transform(self.reg_data[i][1].reshape(-1, 1))
+            wind_1 = self.reg_data[i][1].reshape(-1, 1)
+            #wind_2 = scaler.fit_transform(self.reg_data[i][2].reshape(-1, 1))
+            wind_2 = self.reg_data[i][2].reshape(-1, 1)
+            #wind_3 = scaler.fit_transform(self.reg_data[i][3].reshape(-1, 1))
+            wind_3 = self.reg_data[i][3].reshape(-1, 1)
+            window = [wind_0, wind_1, wind_2, wind_3]
+            training_samples.append(window)
+
+        self.training_samples = np.array(training_samples)
+
+        predicting_samples = []
+
+        for i in range(len(self.login_data)):
+            wind_0 = scaler.fit_transform(self.login_data[i][0].reshape(-1, 1))
+            wind_1 = scaler.fit_transform(self.login_data[i][1].reshape(-1, 1))
+            wind_2 = scaler.fit_transform(self.login_data[i][2].reshape(-1, 1))
+            wind_3 = scaler.fit_transform(self.login_data[i][3].reshape(-1, 1))
+            window = [wind_0, wind_1, wind_2, wind_3]
+            predicting_samples.append(window)
+
+        self.predicting_samples = np.array(predicting_samples)
+
     def classify(self, classification_method):
         """
             Classify login EEG data.
@@ -69,58 +114,30 @@ class Classifier:
             :return: Result of classification.
             :rtype: list
         """
-
-        if classification_method == "LDA":
+        # TODO normalizacia taktato
+        # scaler = MinMaxScaler(feature_range=(0,1))
+        # scaled_train_samples = scaler.fit_transform(train_samples.reshape(-1,1))
+        if classification_method == "LDA" or classification_method == "BOTH":
             model = LinearDiscriminantAnalysis()
             model.fit(self.fit_data, self.reg_data_types)
             self.result = model.predict(self.predict_data)
 
-        if classification_method == "CNN":
-            restored_data = DataFilter.read_file('5a.csv')
-            data = [restored_data[10][:-18], restored_data[11][:-18], restored_data[2][:-18], restored_data[3][:-18]]
+            print(self.login_data_types)
+            print(self.result)
 
-            # DATA
-            #10,11,2,3
-            #168 samples
-            data_0 = np.split(data[0], 50)
-            data_1 = np.split(data[1], 50)
-            data_2 = np.split(data[2], 50)
-            data_3 = np.split(data[3], 50)
+            print("LDA HORE")
 
-            training_labels = [0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1
-                               ,0,0,0,0,1,0,0,0,0,1]
+            fpr_rf, tpr_rf, thresholds_rf = roc_curve(self.login_data_types, self.result)
+            auc_rf = auc(fpr_rf, tpr_rf)
 
-            training_samples = []
-
-            scaler = MinMaxScaler(feature_range=(0, 1))
-            training_labels = np.array(training_labels)
-            x = scaler.fit_transform(training_labels.reshape(-1, 1))
-
-            for i in range(len(data_0)):
-                window1 = np.array(data_0[i])
-                window1 = scaler.fit_transform(window1.reshape(-1, 1))
-                window2 = np.array(data_1[i])
-                window2 = scaler.fit_transform(window2.reshape(-1, 1))
-                window3 = np.array(data_2[i])
-                window3 = scaler.fit_transform(window3.reshape(-1, 1))
-                window4 = np.array(data_3[i])
-                window4 = scaler.fit_transform(window4.reshape(-1, 1))
-
-                window = [window1,window2,window3,window4]
-
-                training_samples.append(window)
-
-            # Change data to numpy array
-            # 1,4,168
-            training_labels = np.array(training_labels)
-            training_samples = np.array(training_samples)
-
-            training_labels, training_samples = shuffle(training_labels, training_samples)
-
+        if classification_method == "CNN" or classification_method == "BOTH":
             # MODEL
+            # input data of board
+            num_of_x = round(BoardShim.get_sampling_rate(config.BOARD_TYPE) * 0.6)
+
             model = models.Sequential([
                 layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same',
-                              input_shape=(4, 168, 1)),
+                              input_shape=(4, num_of_x, 1)),
                 layers.MaxPooling2D(pool_size=(1, 2), strides=2),
                 layers.Conv2D(filters=64, kernel_size=(3, 3), activation='relu', padding='same'),
                 layers.MaxPooling2D(pool_size=(1, 2), strides=2),
@@ -128,30 +145,68 @@ class Classifier:
                 layers.Dense(units=2, activation='softmax'),
             ])
 
-            model.compile(optimizer=Adam(learning_rate=0.0001), loss='sparse_categorical_crossentropy',
-                          metrics=['accuracy'])
+            model.summary()
+            model.compile(optimizer=Adam(learning_rate=0.0003), loss='sparse_categorical_crossentropy',
+                          metrics=['accuracy'])     # ROC AUC
 
-            model.fit(x=training_samples,
-                      y=training_labels,
-                      validation_split=0.2,
+            model.fit(x=self.training_samples,
+                      y=self.reg_data_types,
                       batch_size=1,
-                      epochs=400,
-                      shuffle=True,
+                      epochs=500,
                       verbose=2)
 
-    def determine_access_right(self):
-        #TODO
-        self.login_data_types = self.reg_data_types
+            result = model.predict(x=self.predicting_samples)
+            print("RESULT NESPRACOVANE")
+            print(result)
+            result = np.round(result)
+            result = result[:,0]
+            self.result = result
 
+        fpr_keras, tpr_keras, thresholds_keras = roc_curve(self.login_data_types, self.result)
+        auc_keras = auc(fpr_keras, tpr_keras)
+
+        fig = plt.figure(1)
+        plt.plot([0, 1], [0, 1], 'k--')
+
+        if classification_method == "CNN" or classification_method == "BOTH":
+            plt.plot(fpr_keras, tpr_keras, label='CNN (area = {:.3f})'.format(auc_keras))
+        if classification_method == "LDA" or classification_method == "BOTH":
+            plt.plot(fpr_rf, tpr_rf, label='LDA (area = {:.3f})'.format(auc_rf))
+
+        plt.xlabel('False positive rate')
+        plt.ylabel('True positive rate')
+        plt.title('ROC curve')
+        plt.legend(loc='best')
+        ts = time.time()
+        plt.savefig(os.path.join(os.path.dirname(main_file.__file__), "datasets", str(ts) + ".jpg"))
+        fig
+
+        plt.show()
+
+        dataset = Dataset(self.reg_data, self.reg_data_types, self.login_data, self.login_data_types)
+        dataset.save_dataset()
+
+    def determine_access_right(self):
         print(self.login_data_types)
         print(self.result)
 
-        correct_reactions = 0
+        correct_self_face_reactions = 0
+        correct_non_self_face_reactions = 0
 
         for i in range(len(self.login_data_types)):
-            if self.login_data_types[i] == self.result[i]:
-                correct_reactions += 1
+            if self.login_data_types[i] == 1 and self.login_data_types[i] == self.result[i]:
+                correct_self_face_reactions += 1
+            if self.login_data_types[i] == 0 and self.login_data_types[i] == self.result[i]:
+                correct_non_self_face_reactions += 1
 
-        print(correct_reactions)
-        return 1
+        print(correct_self_face_reactions)
+        print(correct_non_self_face_reactions)
+
+        self_face_accuracy = (100 / round(config.STIMULI_NUM*0.2) * correct_self_face_reactions)
+        non_self_face_accuracy = (100 / config.STIMULI_NUM * correct_non_self_face_reactions)
+
+        if self_face_accuracy >= 70 and non_self_face_accuracy >= 60:
+            return True
+        else:
+            return False
 

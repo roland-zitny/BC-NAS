@@ -76,9 +76,9 @@ class EndRegistrationWindow(QtWidgets.QMainWindow, Ui_RegWindow):
 
         fig, axs = plt.subplots(2)
         fig.suptitle('Self-face & Non-self-face reakcia')
-        axs[0].plot(self_face_reaction[3])
+        axs[0].plot(self_face_reaction[0])
         axs[0].set_title('Self-face')
-        axs[1].plot(non_self_face_reaction[3])
+        axs[1].plot(non_self_face_reaction[0])
         axs[1].set_title('Non-self-face')
         plt.setp(axs[0], ylabel='mV')
         plt.setp(axs[1], ylabel='mV')
