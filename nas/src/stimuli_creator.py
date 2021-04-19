@@ -1,5 +1,7 @@
 import base64
 import os
+import glob
+import pickle
 import random
 import cv2
 import numpy as np
@@ -16,7 +18,7 @@ class StimuliCreator:
         :type user_face: base64 string
     """
 
-    def __init__(self, user_face):
+    def __init__(self, user_face=None):
         self.user_face = user_face
         self.stimuli_types = np.array([])
         self.self_face_count = 0
@@ -24,8 +26,15 @@ class StimuliCreator:
         self.pause_sequence = 0
         self.pause_offset = 0
 
+        self.identification_pixmaps = None
+        self.pixmaps_ids = None
+        self.identification_count = None
+        self.id_array_count = 0
+
     def learning_stimuli(self):
         """
+            TEST METHOD
+
             Stimulation for the registration process.
             This stimulation is not randomized.
             Every fifth stimulus is self-face stimulus.
@@ -49,7 +58,7 @@ class StimuliCreator:
 
     def randomized_stimuli(self):
         """
-            Stimulation for the log in process.
+            Stimulation for the log in and registration process.
             This stimulation is randomized.
 
             :return: ``set_non_self_face_stimulus()`` or ``set_self_face_stimulus()``
@@ -74,6 +83,55 @@ class StimuliCreator:
         else:
             self.stimuli_types = np.append(self.stimuli_types, 0)
             return self.set_non_self_face_stimulus()
+
+    def set_up_identification_data(self):
+        path = config.DB_DIR
+        pickle_files = glob.glob(path + os.sep + "*.p")
+
+        pixmaps = []
+        pixmaps_ids = []
+
+        # Get all registered users faces.
+        for i in range(len(pickle_files)):
+            pickle_file = open(pickle_files[i], 'rb')
+            user = pickle.load(pickle_file)
+            pickle_file.close()
+            user_id = user.get_id()
+            pixmaps_ids.append(user_id)
+            user_face = user.get_user_stimulus()
+            im_bytes = base64.b64decode(user_face)
+            im_arr = np.frombuffer(im_bytes, dtype=np.uint8)  # im_arr is one-dim Numpy array
+            img = cv2.imdecode(im_arr, flags=cv2.IMREAD_COLOR)
+            height, width, channel = img.shape
+            bytes_per_line = 3 * width
+            q_img = QImage(img.data, width, height, bytes_per_line, QImage.Format_RGB888)
+            pixmap = QPixmap(q_img)
+            pixmaps.append(pixmap)
+
+        self.identification_pixmaps = pixmaps
+        self.pixmaps_ids = pixmaps_ids
+        self.identification_count = len(pixmaps) * 10
+
+    def identification_stimuli(self):
+        """
+            Stimulation for the identification process.
+            This stimulation is randomized.
+
+            :return: ``set_non_self_face_stimulus()`` or ``set_self_face_stimulus()``
+            :rtype: QPixmap
+        """
+
+        if self.identification_count > -1:
+            if self.id_array_count == len(self.identification_pixmaps):
+                self.id_array_count = 0
+                c = list(zip(self.identification_pixmaps, self.pixmaps_ids))
+                random.shuffle(c)
+                self.identification_pixmaps, self.pixmaps_ids = zip(*c)
+
+            self.identification_count -= 1
+            self.id_array_count += 1
+            self.stimuli_types = np.append(self.stimuli_types, self.pixmaps_ids[self.id_array_count - 1])
+            return self.identification_pixmaps[self.id_array_count - 1]
 
     @staticmethod
     def set_non_self_face_stimulus():
@@ -126,3 +184,23 @@ class StimuliCreator:
 
         # Need to remove last types because we show one more stimulus just for time synch.
         return self.stimuli_types[:-1]
+
+    def get_identification_users_num(self):
+        """
+            Return number of stimuli needed for identification.
+
+            :return:
+            :rtype: integer
+        """
+
+        return self.identification_count
+
+    def get_all_ids(self):
+        """
+            Return list of all possible ids.
+
+            :return:
+            :rtype: list
+        """
+
+        return self.pixmaps_ids

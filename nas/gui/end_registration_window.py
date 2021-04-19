@@ -84,6 +84,7 @@ class EndRegistrationWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         plt.setp(axs[1], ylabel='mV')
         fig.tight_layout()
         plt.savefig(config.TMP_END_FIGURE)
+        plt.clf()
 
     def set_end_figure(self):
         """
@@ -100,9 +101,12 @@ class EndRegistrationWindow(QtWidgets.QMainWindow, Ui_RegWindow):
             Cleans up the temporary files folder.
         """
 
-        os.remove(config.TMP_END_FIGURE)
-        os.remove(config.TMP_PHOTO)
-        os.remove(config.TMP_PROC_PHOTO)
+        if os.path.exists(config.TMP_END_FIGURE):
+            os.remove(config.TMP_END_FIGURE)
+        if os.path.exists(config.TMP_PHOTO):
+            os.remove(config.TMP_PHOTO)
+        if os.path.exists(config.TMP_PROC_PHOTO):
+            os.remove(config.TMP_PROC_PHOTO)
 
     def testing_log_in(self):
         """

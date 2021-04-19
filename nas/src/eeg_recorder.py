@@ -1,5 +1,7 @@
 import os
 import time
+
+from brainflow import DataFilter
 from brainflow.board_shim import BoardShim, BrainFlowInputParams
 from nas.src import config
 
@@ -48,8 +50,8 @@ class EEGRecorder:
         BoardShim.release_session(self.board)
 
         # TODO SAVING WHOLE DATA
-        #file_name = str(round(time.time() * 1000))
-        #DataFilter.write_file(self.data, config.EEG_DATASET_FILE + os.sep + file_name + '.csv', 'w')
+        file_name = str(round(time.time() * 1000))
+        DataFilter.write_file(self.data, file_name + '.csv', 'w')
 
         self.timestamps = self.data[self.timestamps]
         self.data = self.data[eeg_channels]

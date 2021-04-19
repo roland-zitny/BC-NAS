@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1051</width>
-    <height>869</height>
+    <height>1378</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -189,13 +189,13 @@ border-bottom: none;</string>
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>80</height>
+           <height>120</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>80</height>
+           <height>120</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -205,7 +205,9 @@ color: white;</string>
          <property name="text">
           <string>Po stlačení tlačidla štart začne zaznamenávanie mozgových signálov.
 Ubezpečte sa že máte správne zapojené zaznamenávacie zariadenie a
-sústredte sa prosím na zobrazované stimuly.</string>
+sústredte sa prosím na zobrazované stimuly.
+V prípade nefunkčnosti je potrebné skontrolovať správne nastavanie
+portu zariadenia v config.py</string>
          </property>
         </widget>
        </item>

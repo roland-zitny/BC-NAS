@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QDesktopWidget
 import nas.src.config as config
 from nas.gui.registration_window import RegistrationWindow
 from nas.gui.login_stimulation_window import LoginStimulationPresentation
+from nas.gui.identification_window import IdentStimulationPresentation
 from nas.src.user import User
 
 directory_path = os.path.dirname(os.path.abspath(__file__))
@@ -25,6 +26,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.reg_window = None
         self.login_window = None
+        self.identification_window = None
         self.set_up_window()
 
     def set_up_window(self):
@@ -47,6 +49,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Connect ui buttons to methods.
         self.RegistrationBtn.clicked.connect(self.register)
         self.LoginBtn.clicked.connect(self.log_in)
+        self.IdentBtn.clicked.connect(self.identification)
+
+    def identification(self):
+        """
+            It will try to identify the user and remind him of
+            his ID based on his reactions to photos of registered users.
+        """
+
+        self.identification_window = IdentStimulationPresentation()
+        self.identification_window.showMaximized()
+        self.hide()
 
     def log_in(self):
         """

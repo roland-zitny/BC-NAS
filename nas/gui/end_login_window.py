@@ -40,7 +40,7 @@ class EndLoginWindow(QtWidgets.QMainWindow, Ui_RegWindow):
         qt_rectangle.moveCenter(center_point)
         self.move(qt_rectangle.topLeft())
 
-        if self.system_access == True:
+        if self.system_access:
             self.EndInfo.setText(self.EndInfo.text() + " ÚSPEŠNÉ")
         else:
             self.EndInfo.setText(self.EndInfo.text() + " NEÚSPEŠNÉ")

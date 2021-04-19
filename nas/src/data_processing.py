@@ -1,5 +1,5 @@
 import numpy as np
-from brainflow import BoardShim, DataFilter, FilterTypes, AggOperations
+from brainflow import BoardShim, DataFilter, FilterTypes
 from nas.src import config
 
 
@@ -34,8 +34,8 @@ class DataProcessing:
         for i in range(16):
             DataFilter.perform_bandstop(self.data[i], 256, 55.0, 10.0, 3,
                                         FilterTypes.BUTTERWORTH.value, 0)
-            #DataFilter.perform_wavelet_denoising(self.data[i], 'coif3', 3)
-            DataFilter.perform_rolling_filter(self.data[i],  3, AggOperations.MEAN.value)
+            DataFilter.perform_wavelet_denoising(self.data[i], 'coif3', 3)
+            #DataFilter.perform_rolling_filter(self.data[i],  3, AggOperations.MEAN.value)
 
     def create_time_windows(self):
         """
@@ -45,9 +45,8 @@ class DataProcessing:
             :rtype: list
         """
 
-        # TODO max/min/integ, new channels, check papers
         stimuli_epochs = []
-        num_of_x = round(BoardShim.get_sampling_rate(config.BOARD_TYPE) * 0.6)
+        num_of_x = round(BoardShim.get_sampling_rate(config.BOARD_TYPE) * 0.8)
 
         for i in range(self.num_of_stimuli):
             stimuli_time_ms = self.stimuli_timestamps[i] * 1000
@@ -59,7 +58,7 @@ class DataProcessing:
 
             for y in range(len(self.timestamps)):
                 eeg_timestamp_ms = self.timestamps[y] * 1000
-                if eeg_timestamp_ms >= stimuli_time_ms - 50 and len(F3) < num_of_x:
+                if eeg_timestamp_ms >= stimuli_time_ms and len(F3) < num_of_x:
                     F3 = np.append(F3, self.data[10, y])
                     F4 = np.append(F4, self.data[11, y])
                     C3 = np.append(C3, self.data[2, y])

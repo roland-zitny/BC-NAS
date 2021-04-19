@@ -1,7 +1,7 @@
 import os
 
 import scipy
-
+from sklearn import preprocessing
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -133,7 +133,7 @@ class Classifier:
         if classification_method == "CNN" or classification_method == "BOTH":
             # MODEL
             # input data of board
-            num_of_x = round(BoardShim.get_sampling_rate(config.BOARD_TYPE) * 0.6)
+            num_of_x = round(BoardShim.get_sampling_rate(config.BOARD_TYPE) * 0.8)
 
             model = models.Sequential([
                 layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same',
@@ -165,7 +165,7 @@ class Classifier:
         fpr_keras, tpr_keras, thresholds_keras = roc_curve(self.login_data_types, self.result)
         auc_keras = auc(fpr_keras, tpr_keras)
 
-        fig = plt.figure(1)
+        fig = plt.figure(1500)
         plt.plot([0, 1], [0, 1], 'k--')
 
         if classification_method == "CNN" or classification_method == "BOTH":
