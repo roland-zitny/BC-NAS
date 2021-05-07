@@ -1,3 +1,4 @@
+import pickle
 import time
 import numpy as np
 from threading import Thread
@@ -12,7 +13,7 @@ from nas.src.eeg_recorder import EEGRecorder
 from nas.src.data_processing import DataProcessing
 from nas.src.stimuli_creator import StimuliCreator
 from nas.src.classifier import Classifier
-from nas.gui.end_login_window import EndLoginWindow
+from nas.gui.end_identification_window import EndIdWindow
 
 directory_path = os.path.dirname(os.path.abspath(__file__))
 ui_path = os.path.join(directory_path, "designs" + os.sep + "identification_stimuli_window.ui")
@@ -21,7 +22,7 @@ Ui_RegWindow, QtBaseClass = uic.loadUiType(ui_path)
 
 class IdentStimulationPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
     """
-        IDENTIFICATION
+        Class for identification process.
     """
 
     def __init__(self):
@@ -32,7 +33,7 @@ class IdentStimulationPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         self.stimuli_timestamps = np.array([])  # Array of stimuli timestamps.
         self.eeg_recorder = None
         self.recording_thread = None
-        self.end_login_window = None
+        self.end_id_window = None
         self.stimuli_creator = StimuliCreator()
         self.stimuli_creator.set_up_identification_data()
         self.identification_counter = self.stimuli_creator.get_identification_users_num()
@@ -77,6 +78,13 @@ class IdentStimulationPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
 
         # Connect ui buttons to methods.
         self.StartRecording.clicked.connect(self.start_recording)
+
+        if self.identification_counter < 20:
+            self.StimuliImage.hide()
+            self.StimPresInfo.setText("Pre túto funkciu je potrebné mať registrovaných aspoň 2 užívateľov,\n"
+                                      "najlepšiou variantou je 5 registrovaných užívateľov.")
+            self.StimuliInfoWidget.show()
+            self.StartRecording.hide()
 
     def start_recording(self):
         """
@@ -162,7 +170,7 @@ class IdentStimulationPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
 
     def get_identification_data(self):
         """
-            TODO
+            Get data of all registered users.
         """
 
         possible_ids = self.stimuli_creator.get_all_ids()
@@ -170,7 +178,7 @@ class IdentStimulationPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         # EEG Data
         data = self.eeg_recorder.get_rec_data()
         timestamps = self.eeg_recorder.get_rec_timestamps()
-        data_processing = DataProcessing(data, timestamps, self.stimuli_timestamps, config.STIMULI_NUM)
+        data_processing = DataProcessing(data, timestamps, self.stimuli_timestamps, len(possible_ids) * 10)
         data_processing.filter_data()
 
         # Stimuli windows, stimuli types
@@ -179,7 +187,25 @@ class IdentStimulationPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
 
         # Reg data of all users -- concatenated
         reg_data = []
+        reg_data_types = []
 
         for i in range(len(possible_ids)):
-            path = os.path.join(config.DB_DIR + os.sep + possible_ids[i])  # DB directory path.
-            print(path)
+            path = os.path.join(config.DB_DIR + os.sep + possible_ids[i] + ".p")  # DB directory path.
+            pickle_file = open(path, 'rb')
+            user = pickle.load(pickle_file)
+            pickle_file.close()
+            # User reg data.
+            reg_stimuli_windows, reg_stimuli_types = user.get_reg_data()
+            for y in range(len(reg_stimuli_windows)):
+                reg_data.append(reg_stimuli_windows[y])
+                reg_data_types.append(reg_stimuli_types[y])
+
+        # Classifier
+        classifier = Classifier(stimuli_windows, reg_data, reg_data_types, stimuli_types, user_ids=possible_ids)
+        classifier.prepare_lda_data()
+        classifier.identification(config.CLASSIFICATION)
+        predicted_id = classifier.determine_user_id()
+
+        self.end_id_window = EndIdWindow(predicted_id)
+        self.end_id_window.showMaximized()
+        self.hide()

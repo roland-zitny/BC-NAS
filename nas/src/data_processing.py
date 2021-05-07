@@ -1,5 +1,5 @@
 import numpy as np
-from brainflow import BoardShim, DataFilter, FilterTypes
+from brainflow import BoardShim, DataFilter, FilterTypes, AggOperations
 from nas.src import config
 
 
@@ -31,10 +31,11 @@ class DataProcessing:
             Filters data from unwanted artifacts and filters noise.
         """
 
+        #db8/ coif3
         for i in range(16):
             DataFilter.perform_bandstop(self.data[i], 256, 55.0, 10.0, 3,
                                         FilterTypes.BUTTERWORTH.value, 0)
-            DataFilter.perform_wavelet_denoising(self.data[i], 'coif3', 3)
+            DataFilter.perform_wavelet_denoising(self.data[i], 'db8', 3)
             #DataFilter.perform_rolling_filter(self.data[i],  3, AggOperations.MEAN.value)
 
     def create_time_windows(self):

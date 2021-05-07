@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1051</width>
-    <height>1348</height>
+    <height>1378</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -189,13 +189,13 @@ border-bottom: none;</string>
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>120</height>
+           <height>170</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>120</height>
+           <height>171</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -207,7 +207,9 @@ color: white;</string>
 Ubezpečte sa že máte správne zapojené zaznamenávacie zariadenie a
 sústredte sa prosím na zobrazované stimuly.
 V prípade nefunkčnosti je potrebné skontrolovať správne nastavanie
-portu zariadenia v config.py</string>
+portu zariadenia v config.py
+
+Pre túto metódu je vhodné mať registrovaných aspoň 2 užívateľov.</string>
          </property>
         </widget>
        </item>

@@ -110,7 +110,7 @@ class StimuliCreator:
 
         self.identification_pixmaps = pixmaps
         self.pixmaps_ids = pixmaps_ids
-        self.identification_count = len(pixmaps) * 10
+        self.identification_count = len(pixmaps) * 10   
 
     def identification_stimuli(self):
         """

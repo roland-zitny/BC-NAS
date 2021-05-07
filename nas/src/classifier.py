@@ -2,23 +2,15 @@ import os
 
 import scipy
 from sklearn import preprocessing
+from sklearn.covariance import OAS
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-import tensorflow as tf
 from tensorflow.keras import layers, models
 from nas.src import config
 from brainflow import BoardShim
-from brainflow.data_filter import DataFilter
-from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.optimizers import Adam
-from sklearn.utils import shuffle
-from sklearn.metrics import roc_curve
-from sklearn.metrics import auc
-import matplotlib.pyplot as plt
-import nas.main as main_file
-from nas.src.dataset import Dataset
-import time
 
 
 class Classifier:
@@ -35,75 +27,71 @@ class Classifier:
         :type reg_data_types: list
     """
 
-    def __init__(self, login_data, reg_data, reg_data_types, login_data_types):
+    def __init__(self, login_data, reg_data, reg_data_types, login_data_types, user_ids=None):
         self.login_data = login_data
         self.reg_data = reg_data
         self.reg_data_types = reg_data_types
         self.login_data_types = login_data_types
+        self.user_ids = user_ids
 
-        # Reduced data.
+        # LDA input
         self.fit_data = []
         self.predict_data = []
+        self.fit_data_types = []
+        self.predict_data_types = []
 
+        # CNN input
         self.training_samples = None
         self.predicting_samples = None
+        self.training_samples_types = []
+        self.predicting_samples_types = []
 
+        # Result
         self.result = None
 
-    def reduce_dimension_lda(self):
-        """
-            Reduction of the dimension of EEG data for the correct functioning of the classification method.
-        """
-
-        # INTEGRAL TODO
-        neviem = scipy.integrate.simps((self.login_data[0][0]))
-        print(neviem)
-
-        scaler = MinMaxScaler(feature_range=(0, 1))
-
-        for i in range(len(self.reg_data)):
-            epoch = np.array([])
-            for y in range(len(self.reg_data[i])):
-                epoch = np.concatenate((epoch, self.reg_data[i][y]))
-
-            self.fit_data.append(epoch)
-
-        for i in range(len(self.login_data)):
-            epoch = np.array([])
-            for y in range(len(self.login_data[i])):
-                epoch = np.concatenate((epoch, self.login_data[i][y]))
-
-            self.predict_data.append(epoch)
-
     def prepare_cnn_data(self):
-        scaler = MinMaxScaler(feature_range=(0, 1))
+        """
+            Data preparation for CNN.
+        """
+
         training_samples = []
+        predicting_samples = []
+        predict_data_types = []
+        training_data_types = []
 
         for i in range(len(self.reg_data)):
-            #wind_0 = scaler.fit_transform(self.reg_data[i][0].reshape(-1, 1))
-            wind_0 = self.reg_data[i][0].reshape(-1, 1)
-            #wind_1 = scaler.fit_transform(self.reg_data[i][1].reshape(-1, 1))
-            wind_1 = self.reg_data[i][1].reshape(-1, 1)
-            #wind_2 = scaler.fit_transform(self.reg_data[i][2].reshape(-1, 1))
-            wind_2 = self.reg_data[i][2].reshape(-1, 1)
-            #wind_3 = scaler.fit_transform(self.reg_data[i][3].reshape(-1, 1))
-            wind_3 = self.reg_data[i][3].reshape(-1, 1)
-            window = [wind_0, wind_1, wind_2, wind_3]
-            training_samples.append(window)
-
-        self.training_samples = np.array(training_samples)
-
-        predicting_samples = []
+            epoch = []
+            norm_data_0 = preprocessing.normalize(np.array([self.reg_data[i][0]]))
+            norm_data_1 = preprocessing.normalize(np.array([self.reg_data[i][1]]))
+            norm_data_2 = preprocessing.normalize(np.array([self.reg_data[i][2]]))
+            norm_data_3 = preprocessing.normalize(np.array([self.reg_data[i][3]]))
+            epoch = np.array([[norm_data_0[0], norm_data_1[0], norm_data_2[0], norm_data_3[0]]])
+            training_samples.append(epoch)
+            training_data_types.append(self.reg_data_types[i])
 
         for i in range(len(self.login_data)):
-            wind_0 = scaler.fit_transform(self.login_data[i][0].reshape(-1, 1))
-            wind_1 = scaler.fit_transform(self.login_data[i][1].reshape(-1, 1))
-            wind_2 = scaler.fit_transform(self.login_data[i][2].reshape(-1, 1))
-            wind_3 = scaler.fit_transform(self.login_data[i][3].reshape(-1, 1))
-            window = [wind_0, wind_1, wind_2, wind_3]
-            predicting_samples.append(window)
+            epoch = []
+            norm_data_0 = preprocessing.normalize(np.array([self.login_data[i][0]]))
+            norm_data_1 = preprocessing.normalize(np.array([self.login_data[i][1]]))
+            norm_data_2 = preprocessing.normalize(np.array([self.login_data[i][2]]))
+            norm_data_3 = preprocessing.normalize(np.array([self.login_data[i][3]]))
+            epoch = np.array([[norm_data_0[0], norm_data_1[0], norm_data_2[0], norm_data_3[0]]])
+            predicting_samples.append(epoch)
+            predict_data_types.append(self.login_data_types[i])
 
-        self.predicting_samples = np.array(predicting_samples)
+        training_samples = np.array(training_samples)
+        predicting_samples = np.array(predicting_samples)
+        training_data_types = np.array(training_data_types)
+        predict_data_types = np.array(predict_data_types)
+
+        num_of_x = round(BoardShim.get_sampling_rate(config.BOARD_TYPE) * 0.8)
+        training_samples = training_samples.reshape(len(training_samples), 4, num_of_x, 1)
+        predicting_samples = predicting_samples.reshape(len(predicting_samples), 4, num_of_x, 1)
+
+        self.training_samples = training_samples
+        self.training_samples_types = training_data_types
+        self.predicting_samples = predicting_samples
+        self.predicting_samples_types = predict_data_types
 
     def classify(self, classification_method):
         """
@@ -114,81 +102,123 @@ class Classifier:
             :return: Result of classification.
             :rtype: list
         """
-        # TODO normalizacia taktato
-        # scaler = MinMaxScaler(feature_range=(0,1))
-        # scaled_train_samples = scaler.fit_transform(train_samples.reshape(-1,1))
+
         if classification_method == "LDA" or classification_method == "BOTH":
-            model = LinearDiscriminantAnalysis()
-            model.fit(self.fit_data, self.reg_data_types)
+            model = LinearDiscriminantAnalysis(solver='lsqr', shrinkage=0.924)
+            model.fit(self.fit_data, self.fit_data_types)
+
             self.result = model.predict(self.predict_data)
 
-            print(self.login_data_types)
-            print(self.result)
-
-            print("LDA HORE")
-
-            fpr_rf, tpr_rf, thresholds_rf = roc_curve(self.login_data_types, self.result)
-            auc_rf = auc(fpr_rf, tpr_rf)
-
         if classification_method == "CNN" or classification_method == "BOTH":
-            # MODEL
-            # input data of board
             num_of_x = round(BoardShim.get_sampling_rate(config.BOARD_TYPE) * 0.8)
 
             model = models.Sequential([
                 layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same',
-                              input_shape=(4, num_of_x, 1)),
-                layers.MaxPooling2D(pool_size=(1, 2), strides=2),
-                layers.Conv2D(filters=64, kernel_size=(3, 3), activation='relu', padding='same'),
-                layers.MaxPooling2D(pool_size=(1, 2), strides=2),
+                              input_shape=(4, num_of_x, 1), use_bias=True),
+                layers.MaxPooling2D(pool_size=(1, 4), strides=1),
+
+                layers.Conv2D(filters=64, kernel_size=(3, 3), activation='relu', padding='same', use_bias=True),
+                layers.MaxPooling2D(pool_size=(1, 4), strides=1),
+
                 layers.Flatten(),
+                layers.Dense(units=500, activation='relu'),
+                layers.BatchNormalization(),
+                layers.Dropout(0.2),
+                layers.Dense(units=100, activation='relu'),
                 layers.Dense(units=2, activation='softmax'),
             ])
 
-            model.summary()
-            model.compile(optimizer=Adam(learning_rate=0.0003), loss='sparse_categorical_crossentropy',
-                          metrics=['accuracy'])     # ROC AUC
+            model.compile(optimizer=Adam(learning_rate=0.002), loss='sparse_categorical_crossentropy',
+                          metrics=['accuracy'])
 
             model.fit(x=self.training_samples,
                       y=self.reg_data_types,
-                      batch_size=1,
-                      epochs=500,
-                      verbose=2)
+                      batch_size=10,
+                      epochs=30,
+                      verbose=0,
+                      shuffle=True)
 
-            result = model.predict(x=self.predicting_samples)
-            print("RESULT NESPRACOVANE")
-            print(result)
+            result = model.predict(x=self.predicting_samples, batch_size=1, verbose=0)
             result = np.round(result)
-            result = result[:,0]
+            result = result[:, 0]
             self.result = result
 
-        fpr_keras, tpr_keras, thresholds_keras = roc_curve(self.login_data_types, self.result)
-        auc_keras = auc(fpr_keras, tpr_keras)
+    def prepare_lda_data(self):
+        """
+            Data preparation for LDA.
+        """
 
-        fig = plt.figure(1500)
-        plt.plot([0, 1], [0, 1], 'k--')
+        fit_data = []
+        fit_data_types = []
+        predict_data = []
+        predict_data_types = []
 
-        if classification_method == "CNN" or classification_method == "BOTH":
-            plt.plot(fpr_keras, tpr_keras, label='CNN (area = {:.3f})'.format(auc_keras))
-        if classification_method == "LDA" or classification_method == "BOTH":
-            plt.plot(fpr_rf, tpr_rf, label='LDA (area = {:.3f})'.format(auc_rf))
+        for i in range(len(self.reg_data)):
+            epoch = []
+            norm_data_0 = preprocessing.normalize(np.array([self.reg_data[i][0]]))
+            norm_data_1 = preprocessing.normalize(np.array([self.reg_data[i][1]]))
+            norm_data_2 = preprocessing.normalize(np.array([self.reg_data[i][2]]))
+            norm_data_3 = preprocessing.normalize(np.array([self.reg_data[i][3]]))
 
-        plt.xlabel('False positive rate')
-        plt.ylabel('True positive rate')
-        plt.title('ROC curve')
-        plt.legend(loc='best')
-        ts = time.time()
-        plt.savefig(os.path.join(os.path.dirname(main_file.__file__), "datasets", str(ts) + ".jpg"))
-        fig
+            avg = (norm_data_0 + norm_data_1 + norm_data_2 + norm_data_3) / 4
+            epoch = avg[0]
+            fit_data.append(epoch)
 
-        plt.show()
+        for i in range(len(self.login_data)):
+            epoch = []
+            norm_data_0 = preprocessing.normalize(np.array([self.login_data[i][0]]))
+            norm_data_1 = preprocessing.normalize(np.array([self.login_data[i][1]]))
+            norm_data_2 = preprocessing.normalize(np.array([self.login_data[i][2]]))
+            norm_data_3 = preprocessing.normalize(np.array([self.login_data[i][3]]))
 
-        dataset = Dataset(self.reg_data, self.reg_data_types, self.login_data, self.login_data_types)
-        dataset.save_dataset()
+            avg = (norm_data_0 + norm_data_1 + norm_data_2 + norm_data_3) / 4
+            epoch = avg[0]
+            predict_data.append(epoch)
+
+        fit_data = np.array(fit_data)
+        fit_data_types = self.reg_data_types
+        predict_data = np.array(predict_data)
+        predict_data_types = self.login_data_types
+
+        self.fit_data = fit_data
+        self.fit_data_types = fit_data_types
+        self.predict_data = predict_data
+        self.predict_data_types = predict_data_types
+
+    def identification(self, classification_method):
+        """
+             Classification of reactions in the identification process.
+        """
+
+        model = LinearDiscriminantAnalysis(solver='lsqr', shrinkage=0.924)
+        model.fit(self.fit_data, self.fit_data_types)
+        result = model.predict(self.predict_data)
+
+        self.result = result
+
+    def determine_user_id(self):
+        """
+            This method determines the user ID.
+        """
+
+        pos_reactions = []
+
+        for i in range(len(self.result)):
+            if self.result[i] == 1:
+                pos_reactions.append(self.login_data_types[i])
+
+        try:
+            predicted_id = max(set(pos_reactions), key=pos_reactions.count)
+            return predicted_id
+        except:
+            return None
 
     def determine_access_right(self):
-        print(self.login_data_types)
-        print(self.result)
+        """
+            This method determines the result of the user's login.
+
+            :return True or False
+        """
 
         correct_self_face_reactions = 0
         correct_non_self_face_reactions = 0
@@ -199,14 +229,10 @@ class Classifier:
             if self.login_data_types[i] == 0 and self.login_data_types[i] == self.result[i]:
                 correct_non_self_face_reactions += 1
 
-        print(correct_self_face_reactions)
-        print(correct_non_self_face_reactions)
-
-        self_face_accuracy = (100 / round(config.STIMULI_NUM*0.2) * correct_self_face_reactions)
+        self_face_accuracy = (100 / round(config.STIMULI_NUM * 0.2) * correct_self_face_reactions)
         non_self_face_accuracy = (100 / config.STIMULI_NUM * correct_non_self_face_reactions)
 
-        if self_face_accuracy >= 70 and non_self_face_accuracy >= 60:
+        if self_face_accuracy >= 40 and non_self_face_accuracy >= 60:
             return True
         else:
             return False
-

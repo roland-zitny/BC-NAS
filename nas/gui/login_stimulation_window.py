@@ -182,10 +182,13 @@ class LoginStimulationPresentation(QtWidgets.QMainWindow, Ui_RegWindow):
         # reg data
         reg_stimuli_windows, reg_stimuli_types = self.reg_user.get_reg_data()
 
+        #TODO
+        self.StimuliImage.setText("Prebieha učenie klasifikačného modelu, vydržte prosím.")
+
         # CLASSIFIER
         classifier = Classifier(login_stimuli_windows, reg_stimuli_windows, reg_stimuli_types, login_stimuli_types)
         # Only deeded if LDA is used.
-        classifier.reduce_dimension_lda()
+        classifier.prepare_lda_data()
         classifier.prepare_cnn_data()
         classifier.classify(config.CLASSIFICATION)
         access_right = classifier.determine_access_right()

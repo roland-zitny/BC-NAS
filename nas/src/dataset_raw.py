@@ -5,12 +5,13 @@ import nas.main as main_file
 import time
 
 
-class Dataset:
-    def __init__(self, reg_data, reg_data_types, login_data, login_data_types):
-        self.reg_data = reg_data
-        self.reg_data_types = reg_data_types
-        self.login_data = login_data
-        self.login_data_types = login_data_types
+class DatasetRaw:
+    def __init__(self, raw_data, data_timestamps, stimuli_timestamps, number_of_stim, stimuli_types):
+        self.raw_data = raw_data
+        self.data_timestamps = data_timestamps
+        self.stimuli_timestamps = stimuli_timestamps
+        self.number_of_stim = number_of_stim
+        self.stimuli_types = stimuli_types
 
     def save_dataset(self):
         """
@@ -22,4 +23,4 @@ class Dataset:
         pickle.dump(self, open(path, "wb"))
 
     def get_dataset(self):
-        return self.reg_data, self.reg_data_types, self.login_data, self.login_data_types
+        return self.raw_data, self.data_timestamps, self.stimuli_timestamps, self.number_of_stim, self.stimuli_types

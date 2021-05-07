@@ -111,12 +111,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     @staticmethod
     def check_id(login):
         """
-            Check if user login exists in database.
+            Check if user login exists in datasets.
 
             :param login: User login ID.
             :type login: string
 
-            :return: True if login exists in database, false if login is available.
+            :return: True if login exists in datasets, false if login is available.
             :rtype: bool
         """
 

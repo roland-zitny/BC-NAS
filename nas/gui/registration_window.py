@@ -310,7 +310,7 @@ class RegistrationWindow(QtWidgets.QMainWindow, Ui_RegWindow):
             bytes_per_line = 3 * width
             q_img = QImage(img.data, width, height, bytes_per_line, QImage.Format_RGB888)
             pixmap = QPixmap(q_img)
-            self.FacePictureLabel.setPixmap(QPixmap(pixmap))
+            self.FacePictureLabel.setPixmap(QPixmap(pixmap.scaledToHeight(500)))
 
             # set user stimulus
             self.reg_user.set_user_stimulus(face_stimuli.get_face_b64())
